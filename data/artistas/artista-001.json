@@ -8,7 +8,7 @@
   "publicLinks": {
     "infoMaestra": "",
     "materialesPublicos": "",
-    "artifactCloud": "",
+    "artifactCloud": "https://docs.google.com/forms/d/1DU4ijRq93Lo5yqssmkpXDme8t-3pqkIWsdrnd6Nrip0/edit?usp=drive_web&ouid=103619232809009489616",
     "mixApp": "../mezcla/"
   },
   "recordingTiming": [
@@ -59,6 +59,64 @@
       "block": "Cierre de grabacion",
       "owner": "David + oficina",
       "detail": "Confirmar archivos, naming, copia de seguridad y siguientes pasos de postproduccion."
+    }
+  ],
+  "editorialCalendar": [
+    {
+      "week": "1",
+      "day": "Lunes",
+      "type": "Video promocional",
+      "platform": "Instagram",
+      "status": "Pendiente",
+      "note": "Presentacion del proyecto y apertura de narrativa."
+    },
+    {
+      "week": "1",
+      "day": "Miercoles",
+      "type": "Clip live session",
+      "platform": "Instagram",
+      "status": "Pendiente",
+      "note": "Primer fragmento musical de alto impacto."
+    },
+    {
+      "week": "1",
+      "day": "Viernes",
+      "type": "Making off",
+      "platform": "Instagram",
+      "status": "Pendiente",
+      "note": "Proceso creativo y contexto de estudio."
+    },
+    {
+      "week": "2",
+      "day": "Martes",
+      "type": "Entrevista clip",
+      "platform": "Instagram",
+      "status": "Pendiente",
+      "note": "Frase fuerte del artista sobre el proyecto."
+    },
+    {
+      "week": "2",
+      "day": "Jueves",
+      "type": "Live session completa",
+      "platform": "YouTube",
+      "status": "Pendiente",
+      "note": "Publicacion larga para archivo y enlace principal."
+    },
+    {
+      "week": "3",
+      "day": "Lunes",
+      "type": "Carrusel fotos",
+      "platform": "Instagram",
+      "status": "Pendiente",
+      "note": "Material de sesion fotografica y estetica."
+    },
+    {
+      "week": "3",
+      "day": "Miercoles",
+      "type": "Reel / contenido RRSS",
+      "platform": "Instagram",
+      "status": "Pendiente",
+      "note": "Pieza nativa para cierre de campana organica."
     }
   ],
   "steps": {

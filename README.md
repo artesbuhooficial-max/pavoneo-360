@@ -67,14 +67,17 @@ No debe contener:
 ## Flujo de oficina
 
 1. Oficina abre `oficina/`.
-2. Cambia el estado del expediente.
-3. Exporta el JSON del artista.
-4. Deja el JSON en `inbox/`.
-5. Ejecuta `scripts/Sincronizar_Pavoneo.bat`.
-6. El script valida privacidad.
-7. Si todo esta bien, actualiza `data/artistas/ARTISTA.json`.
-8. Hace commit y push.
-9. GitHub Pages publica la version nueva.
+2. Pulsa `Oficina` e introduce la clave provisional `pavoneo360`.
+3. Cambia el estado del expediente.
+4. Exporta el JSON del artista.
+5. Deja el JSON en `inbox/`.
+6. Ejecuta `scripts/Sincronizar_Pavoneo.bat`.
+7. El script valida privacidad.
+8. Si todo esta bien, actualiza `data/artistas/ARTISTA.json`.
+9. Hace commit y push.
+10. GitHub Pages publica la version nueva.
+
+Nota: esta clave es una barrera visual de front-end para evitar accesos accidentales. No sustituye permisos reales de servidor.
 
 ## Accesos necesarios
 

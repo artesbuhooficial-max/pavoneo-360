@@ -486,6 +486,9 @@
       border-bottom:1px solid rgba(216,227,245,.72);
       color:var(--ink-2);
     }
+    .timing-table tbody tr:nth-child(even) td{background:#f8fbff}
+    .timing-table tbody tr:nth-child(odd) td{background:#fff}
+    .timing-table tbody tr:hover td{background:#fff9e8}
     .timing-table input,.timing-table textarea{
       width:100%;
       min-height:32px;
@@ -497,8 +500,117 @@
       resize:vertical;
     }
     .timing-table textarea{min-height:54px}
-    .timing-time{font-family:"DM Mono",monospace;font-weight:500;color:var(--blue);white-space:nowrap}
+    .timing-time{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:52px;
+      border-radius:999px;
+      padding:4px 8px;
+      background:var(--blue-soft);
+      font-family:"DM Mono",monospace;
+      font-weight:500;
+      color:var(--blue);
+      white-space:nowrap;
+    }
     .timing-actions{display:flex;gap:8px;justify-content:flex-end;padding:12px 14px;background:#fff}
+    .reference-panel,.calendar-panel{
+      margin:0 18px 18px;
+      border:1px solid var(--border);
+      border-radius:10px;
+      background:#fff;
+      box-shadow:var(--shadow-soft);
+      overflow:hidden;
+    }
+    .reference-head,.calendar-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      padding:14px;
+      border-bottom:1px solid var(--border);
+      background:linear-gradient(135deg,#fff 0%,#fff8e8 100%);
+    }
+    .reference-title,.calendar-title{font-size:14px;font-weight:900;color:var(--ink);margin-bottom:3px}
+    .reference-note,.calendar-note{font-size:12px;color:var(--ink-2);line-height:1.42}
+    .reference-grid{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:12px;padding:14px}
+    .reference-card{
+      border:1px solid var(--border);
+      border-radius:8px;
+      padding:12px;
+      background:#fff;
+    }
+    .swatch-row{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 10px}
+    .swatch{width:56px;height:56px;border-radius:8px;border:1px solid rgba(7,28,72,.12);box-shadow:0 8px 18px rgba(7,28,72,.08)}
+    .tag-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+    .visual-tag{
+      display:inline-flex;
+      align-items:center;
+      min-height:26px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:var(--blue-soft);
+      color:var(--blue);
+      padding:5px 9px;
+      font-size:11px;
+      font-weight:800;
+    }
+    .reference-lines{display:grid;gap:7px;margin-top:8px}
+    .reference-line{display:grid;grid-template-columns:150px 1fr;gap:10px;border-top:1px solid var(--border);padding-top:8px;font-size:12px;color:var(--ink-2)}
+    .reference-line strong{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+    .calendar-tools{
+      display:grid;
+      grid-template-columns:90px 110px minmax(150px,1fr) 110px minmax(180px,1.4fr) auto;
+      gap:8px;
+      align-items:end;
+      padding:12px 14px;
+      border-bottom:1px solid var(--border);
+      background:#fff;
+    }
+    .calendar-tools label{display:grid;gap:4px;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:900}
+    .calendar-tools input,.calendar-tools select{
+      width:100%;
+      min-height:34px;
+      border:1px solid var(--border);
+      border-radius:8px;
+      padding:7px 9px;
+      color:var(--ink);
+      background:#fff;
+      letter-spacing:0;
+      text-transform:none;
+      font-weight:500;
+    }
+    .calendar-grid{display:grid;grid-template-columns:70px repeat(7,minmax(90px,1fr));gap:1px;background:var(--border)}
+    .cal-head,.cal-week,.cal-cell{background:#fff;padding:9px}
+    .cal-head{font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);font-weight:900;text-align:center;background:var(--blue-soft)}
+    .cal-week{font-size:11px;font-weight:900;color:var(--blue);background:#fff8e8}
+    .cal-cell{min-height:86px;display:grid;gap:6px;align-content:start}
+    .cal-item{
+      border-radius:8px;
+      padding:7px 8px;
+      background:var(--blue-soft);
+      border:1px solid #bfd5ff;
+      color:var(--ink-2);
+      font-size:11px;
+      line-height:1.25;
+    }
+    .cal-item strong{display:block;color:var(--ink);font-size:11px;margin-bottom:2px}
+    .cal-meta{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:10px;margin-top:4px}
+    .cal-delete{border:0;background:transparent;color:var(--red);font-weight:900;cursor:pointer}
+    .cal-item input,.cal-item select{
+      width:100%;
+      min-height:28px;
+      margin-top:6px;
+      border:1px solid rgba(216,227,245,.9);
+      border-radius:7px;
+      padding:5px 7px;
+      background:#fff;
+      color:var(--ink);
+      font-size:11px;
+    }
+    .calendar-empty{padding:18px 14px;color:var(--muted);font-size:12px}
+    .client-nav{display:none}
+    .client-mode .client-nav{display:inline-flex}
     .page-footer{
       display:flex;
       align-items:center;
@@ -689,6 +801,12 @@
       .timing-table tr{border-bottom:1px solid var(--border);padding:8px 0}
       .timing-table td{border-bottom:0;padding:5px 10px}
       .timing-table td:before{content:attr(data-label);display:block;margin-bottom:3px;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:900}
+      .reference-grid{grid-template-columns:1fr}
+      .reference-line{grid-template-columns:1fr}
+      .calendar-tools{grid-template-columns:1fr}
+      .calendar-grid{grid-template-columns:1fr}
+      .cal-head,.cal-week{display:none}
+      .cal-cell{min-height:0}
     }
   </style>
 </head>
@@ -731,7 +849,7 @@
             <div class="subtitle">Seguimiento de artista desde contacto inicial hasta cierre, consultoría final y siguientes servicios.</div>
           </div>
           <div class="mode-switch" aria-label="Modo de visualización">
-            <button class="mode-btn active" type="button" data-mode="office" onclick="setMode('office')">Oficina</button>
+            <button class="mode-btn active" type="button" data-mode="office" onclick="requestOfficeMode()">Oficina</button>
             <button class="mode-btn" type="button" data-mode="client" onclick="setMode('client')">Artista</button>
           </div>
         </div>
@@ -764,8 +882,8 @@
                 <input id="driveFolder" value="artista_pavoneo.json" oninput="saveMeta()">
               </div>
               <div class="field" style="grid-column:1 / -1">
-                <label for="artifactLink">Artefacto Cloud / formulario</label>
-                <input id="artifactLink" value="" placeholder="https://..." oninput="saveMeta()">
+                <label for="artifactLink">Formulario de preconsultoria</label>
+                <input id="artifactLink" value="https://docs.google.com/forms/d/1DU4ijRq93Lo5yqssmkpXDme8t-3pqkIWsdrnd6Nrip0/edit?usp=drive_web&ouid=103619232809009489616" placeholder="https://..." oninput="saveMeta()">
               </div>
               <div class="field" style="grid-column:1 / -1">
                 <label for="infoMaestraLink">Enlace Info Maestra</label>
@@ -855,6 +973,10 @@
     const PAGE_KEY = "pavoneo360-panel-page-v3";
     const MODE_KEY = "pavoneo360-panel-mode-v2";
     const TIMING_KEY = "pavoneo360-recording-timing-v1";
+    const CALENDAR_KEY = "pavoneo360-editorial-calendar-v1";
+    const PRECONSULTORIA_FORM_URL = "https://docs.google.com/forms/d/1DU4ijRq93Lo5yqssmkpXDme8t-3pqkIWsdrnd6Nrip0/edit?usp=drive_web&ouid=103619232809009489616";
+    const OFFICE_PASSWORD = "pavoneo360";
+    const OFFICE_UNLOCK_KEY = "pavoneo360-office-unlocked";
     const ARTIST_ROUTE = /\/artistas\//.test(window.location.pathname);
     let currentFilter = "all";
     let currentPageId = "contacto";
@@ -872,6 +994,17 @@
       { time:"16:30", block:"Cierre de grabacion", owner:"David + oficina", detail:"Confirmar archivos, naming, copia de seguridad y siguientes pasos de postproduccion." }
     ];
     let recordingTiming = DEFAULT_TIMING.map(item => ({...item}));
+
+    const DEFAULT_EDITORIAL_CALENDAR = [
+      { week:"1", day:"Lunes", type:"Video promocional", platform:"Instagram", status:"Pendiente", note:"Presentacion del proyecto y apertura de narrativa." },
+      { week:"1", day:"Miercoles", type:"Clip live session", platform:"Instagram", status:"Pendiente", note:"Primer fragmento musical de alto impacto." },
+      { week:"1", day:"Viernes", type:"Making off", platform:"Instagram", status:"Pendiente", note:"Proceso creativo y contexto de estudio." },
+      { week:"2", day:"Martes", type:"Entrevista clip", platform:"Instagram", status:"Pendiente", note:"Frase fuerte del artista sobre el proyecto." },
+      { week:"2", day:"Jueves", type:"Live session completa", platform:"YouTube", status:"Pendiente", note:"Publicacion larga para archivo y enlace principal." },
+      { week:"3", day:"Lunes", type:"Carrusel fotos", platform:"Instagram", status:"Pendiente", note:"Material de sesion fotografica y estetica." },
+      { week:"3", day:"Miercoles", type:"Reel / contenido RRSS", platform:"Instagram", status:"Pendiente", note:"Pieza nativa para cierre de campana organica." }
+    ];
+    let editorialCalendar = DEFAULT_EDITORIAL_CALENDAR.map(item => ({...item}));
 
     const steps = [
       {
@@ -1021,7 +1154,9 @@
       {
         id:"lanzamiento",
         num:"06",
-        title:"Lanzamientos",
+        title:"Calendario editorial",
+        clientTitle:"Calendario editorial",
+        intro:"Bloque de lanzamientos. Aqui se ordena el calendario editorial de publicaciones, aprobaciones y cambios para que el artista pueda consultarlo sin entrar en la gestion interna.",
         owner:"Miriam",
         week:"Postproduccion",
         pack:"both",
@@ -1133,6 +1268,26 @@
       localStorage.setItem(TIMING_KEY, JSON.stringify(recordingTiming));
     }
 
+    function loadEditorialCalendar(){
+      try{
+        const saved = JSON.parse(localStorage.getItem(CALENDAR_KEY) || "[]");
+        if(Array.isArray(saved) && saved.length){
+          editorialCalendar = saved.map(item => ({
+            week:item.week || "1",
+            day:item.day || "Lunes",
+            type:item.type || "Video promocional",
+            platform:item.platform || "Instagram",
+            status:item.status || "Pendiente",
+            note:item.note || ""
+          }));
+        }
+      }catch(error){}
+    }
+
+    function persistEditorialCalendar(){
+      localStorage.setItem(CALENDAR_KEY, JSON.stringify(editorialCalendar));
+    }
+
     function loadMeta(){
       try{
         const meta = JSON.parse(localStorage.getItem(META_KEY) || "{}");
@@ -1141,7 +1296,8 @@
         });
       }catch(error){}
       currentPageId = localStorage.getItem(PAGE_KEY) || currentPageId;
-      currentMode = ARTIST_ROUTE ? "client" : (localStorage.getItem(MODE_KEY) || currentMode);
+      const savedMode = localStorage.getItem(MODE_KEY) || currentMode;
+      currentMode = ARTIST_ROUTE ? "client" : (savedMode === "office" && !officeUnlocked() ? "client" : savedMode);
       syncMeta();
     }
 
@@ -1340,7 +1496,7 @@
         title = "Info Maestra de consulta permanente";
         note = "Desde el paso 2, la Info Maestra acompana el proceso como base viva del proyecto. La oficina pega aqui el enlace cuando este preparada.";
         buttons.push(linkButton(infoHref, "Abrir Info Maestra", true));
-        if(step.id === "formulario") buttons.push(linkButton(href, "Abrir formulario"));
+        if(step.id === "formulario") buttons.push(linkButton(href, "Abrir formulario de preconsultoria"));
         if(step.id === "postproduccion") buttons.push(linkButton(mixHref, "Abrir app de mezcla"));
       }
       return { title, note, buttons:buttons.join("") };
@@ -1412,10 +1568,156 @@
       persistTiming();
       render();
     }
+
+    function renderInfoMaestraVisualBlock(infoHref){
+      return `
+        <div class="reference-panel">
+          <div class="reference-head">
+            <div>
+              <div class="reference-title">Visualizacion estetica desde Info Maestra</div>
+              <div class="reference-note">Referencia rapida para vestimenta, colores, actitud visual y decisiones de grabacion. Si hay enlace de Info Maestra, se abre desde aqui.</div>
+            </div>
+            ${linkButton(infoHref, "Abrir Info Maestra", true)}
+          </div>
+          <div class="reference-grid">
+            <div class="reference-card">
+              <div class="block-title">Paleta visual de referencia</div>
+              <div class="swatch-row">
+                <span class="swatch" style="background:#1c2020" title="Negro urbano"></span>
+                <span class="swatch" style="background:#2b6565" title="Verde bronce"></span>
+                <span class="swatch" style="background:#f8f4ee" title="Crema"></span>
+                <span class="swatch" style="background:#b0c4b0" title="Oliva claro"></span>
+                <span class="swatch" style="background:#d4a830" title="Laton dorado"></span>
+              </div>
+              <div class="reference-note">Usar como guia hasta que la hoja de estetica de la Info Maestra quede cerrada al 100%.</div>
+            </div>
+            <div class="reference-card">
+              <div class="block-title">Decisiones para grabacion</div>
+              <div class="tag-row">
+                <span class="visual-tag">Vestuario</span>
+                <span class="visual-tag">Atrezzo</span>
+                <span class="visual-tag">Actitud</span>
+                <span class="visual-tag">Color</span>
+                <span class="visual-tag">Referentes</span>
+              </div>
+              <div class="reference-lines">
+                <div class="reference-line"><strong>Vestimenta</strong><span>Confirmar prendas, gama cromatica y elementos que no deben aparecer en camara.</span></div>
+                <div class="reference-line"><strong>Concepto</strong><span>Revisar si el artista debe verse mas urbano, elegante, disruptivo, intimo o festivo.</span></div>
+                <div class="reference-line"><strong>Prioridad</strong><span>No grabar pieza oficial si la estetica clave sigue sin validar.</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderEditorialCalendarBlock(editable){
+      const days = ["Lunes","Martes","Miercoles","Jueves","Viernes","Sabado","Domingo"];
+      const weeks = ["1","2","3"];
+      const typeOptions = ["Video promocional","Clip live session","Live session completa","Entrevista clip","Entrevista completa","Carrusel fotos","Making off","Reel / contenido RRSS"];
+      const platformOptions = ["Instagram","YouTube","Instagram + YouTube","TikTok"];
+      const statusOptions = ["Pendiente","En preparacion","Enviado al artista","Aprobado","Publicado","Cambios"];
+      const optionTags = (items) => items.map(item => `<option value="${escapeHtml(item)}">${escapeHtml(item)}</option>`).join("");
+      const selectedOptions = (items, value) => items.map(item => `<option value="${escapeHtml(item)}" ${item === value ? "selected" : ""}>${escapeHtml(item)}</option>`).join("");
+      const controls = editable ? `
+        <div class="calendar-tools">
+          <label>Semana<select id="calWeek">${weeks.map(w => `<option value="${w}">Semana ${w}</option>`).join("")}</select></label>
+          <label>Dia<select id="calDay">${optionTags(days)}</select></label>
+          <label>Tipo<select id="calType">${optionTags(typeOptions)}</select></label>
+          <label>Plataforma<select id="calPlatform">${optionTags(platformOptions)}</select></label>
+          <label>Nota<input id="calNote" placeholder="Caption, pieza, hashtags o aprobacion"></label>
+          <button class="action-btn primary" type="button" onclick="addEditorialItem()">Anadir</button>
+        </div>
+      ` : "";
+      const cells = weeks.map(week => `
+        <div class="cal-week">Semana ${week}</div>
+        ${days.map(day => {
+          const items = editorialCalendar.filter(item => item.week === week && item.day === day);
+          return `<div class="cal-cell" data-label="Semana ${week} - ${day}">
+            ${items.map(item => {
+              const index = editorialCalendar.indexOf(item);
+              return `<div class="cal-item">
+                <strong>${escapeHtml(item.type)}</strong>
+                ${editable ? `<input value="${escapeHtml(item.note || "")}" placeholder="Nota / caption" oninput="updateEditorialItem(${index}, 'note', this.value)">` : `<span>${escapeHtml(item.note || "Sin nota")}</span>`}
+                ${editable ? `<select onchange="updateEditorialItem(${index}, 'status', this.value)">${selectedOptions(statusOptions, item.status)}</select>` : ""}
+                <div class="cal-meta"><span>${escapeHtml(item.platform)}</span><span>${escapeHtml(item.status)}</span>${editable ? `<button class="cal-delete" type="button" onclick="deleteEditorialItem(${index})">x</button>` : ""}</div>
+              </div>`;
+            }).join("") || `<div class="calendar-empty">Sin publicacion</div>`}
+          </div>`;
+        }).join("")}
+      `).join("");
+      return `
+        <div class="calendar-panel">
+          <div class="calendar-head">
+            <div>
+              <div class="calendar-title">Calendario editorial de lanzamientos</div>
+              <div class="calendar-note">${editable ? "La oficina puede anadir, eliminar y ordenar publicaciones. El artista ve el calendario como consulta." : "Plan de publicaciones y aprobaciones previsto para el lanzamiento."}</div>
+            </div>
+            <button class="action-btn internal-only" type="button" onclick="resetEditorialCalendar()">Restaurar modelo</button>
+          </div>
+          ${controls}
+          <div class="calendar-grid">
+            <div class="cal-head">Semana</div>
+            ${days.map(day => `<div class="cal-head">${day.slice(0,3)}</div>`).join("")}
+            ${cells}
+          </div>
+        </div>
+      `;
+    }
+
+    function addEditorialItem(){
+      editorialCalendar.push({
+        week:document.getElementById("calWeek").value,
+        day:document.getElementById("calDay").value,
+        type:document.getElementById("calType").value,
+        platform:document.getElementById("calPlatform").value,
+        status:"Pendiente",
+        note:document.getElementById("calNote").value.trim()
+      });
+      persistEditorialCalendar();
+      render();
+    }
+
+    function updateEditorialItem(index, field, value){
+      if(!editorialCalendar[index]) return;
+      editorialCalendar[index][field] = value;
+      persistEditorialCalendar();
+      if(field === "status") render();
+    }
+
+    function deleteEditorialItem(index){
+      editorialCalendar.splice(index, 1);
+      persistEditorialCalendar();
+      render();
+    }
+
+    function resetEditorialCalendar(){
+      editorialCalendar = DEFAULT_EDITORIAL_CALENDAR.map(item => ({...item}));
+      persistEditorialCalendar();
+      render();
+    }
+
+    function clientMaxStepIndex(){
+      const visible = clientVisibleStep();
+      return Math.max(0, steps.findIndex(step => step.id === visible.id));
+    }
+
+    function goClientPrevious(){
+      const currentIndex = steps.findIndex(step => step.id === currentPageId);
+      currentPageId = steps[Math.max(0, currentIndex - 1)].id;
+      render();
+    }
+
+    function goClientCurrent(){
+      currentPageId = steps[clientMaxStepIndex()].id;
+      render();
+    }
+
     function render(){
       if(currentMode === "client"){
-        const visible = clientVisibleStep();
-        currentPageId = visible.id;
+        const maxIndex = clientMaxStepIndex();
+        const currentIndex = steps.findIndex(step => step.id === currentPageId);
+        if(currentIndex < 0 || currentIndex > maxIndex) currentPageId = steps[maxIndex].id;
       }
       renderOfficeNav();
       renderPage();
@@ -1489,14 +1791,18 @@
               </div>
             </div>
           </div>
+          ${step.id === "briefing" ? renderInfoMaestraVisualBlock(infoHref) : ""}
           ${step.id === "grabacion" ? renderTimingBlock(!clientCopy) : ""}
+          ${step.id === "lanzamiento" ? renderEditorialCalendarBlock(!clientCopy) : ""}
           <div class="page-footer">
             <div class="handoff"><strong>Traspaso:</strong> ${step.handoff}</div>
             <div class="page-move">
               <button class="action-btn internal-only" type="button" onclick="goRelative(-1)" ${index === 0 ? "disabled" : ""}>Anterior</button>
               <button class="send-btn internal-only" type="button" onclick="openAgent('${step.id}')">Enviar a subagente</button>
               <button class="action-btn internal-only" type="button" onclick="goRelative(1)" ${finalStep ? "disabled" : ""}>Siguiente</button>
-              <button class="action-btn primary" type="button" onclick="markDoneAndAdvance('${step.id}')">${finalStep ? "Cerrar proceso" : done ? "Ir al siguiente bloque" : step.id === "contacto" ? "PDF correcto - desbloquear siguiente" : "Validar y desbloquear siguiente"}</button>
+              <button class="action-btn primary internal-only" type="button" onclick="markDoneAndAdvance('${step.id}')">${finalStep ? "Cerrar proceso" : done ? "Ir al siguiente bloque" : step.id === "contacto" ? "PDF correcto - desbloquear siguiente" : "Validar y desbloquear siguiente"}</button>
+              <button class="action-btn client-nav" type="button" onclick="goClientPrevious()" ${index === 0 ? "disabled" : ""}>Volver al bloque anterior</button>
+              <button class="action-btn primary client-nav" type="button" onclick="goClientCurrent()" ${index === clientMaxStepIndex() ? "disabled" : ""}>Volver al bloque actual</button>
             </div>
           </div>
         </article>
@@ -1598,26 +1904,50 @@
       localStorage.removeItem(PAGE_KEY);
       localStorage.removeItem(MODE_KEY);
       localStorage.removeItem(TIMING_KEY);
+      localStorage.removeItem(CALENDAR_KEY);
       steps.forEach((step, index) => step.status = index === 0 ? "active" : "todo");
       document.getElementById("artistName").value = "Nombre del artista";
       document.getElementById("artistPack").selectedIndex = 0;
       document.getElementById("ownerName").value = "Equipo AB";
       document.getElementById("driveFolder").value = "artista_pavoneo.json";
-      document.getElementById("artifactLink").value = "";
+      document.getElementById("artifactLink").value = PRECONSULTORIA_FORM_URL;
       document.getElementById("infoMaestraLink").value = "";
       document.getElementById("mixAppLink").value = "../mezcla/";
       recordingTiming = DEFAULT_TIMING.map(item => ({...item}));
+      editorialCalendar = DEFAULT_EDITORIAL_CALENDAR.map(item => ({...item}));
       currentPageId = "contacto";
       currentMode = ARTIST_ROUTE ? "client" : "office";
       expanded = new Set(["contacto","formulario","briefing"]);
       saveMeta();
       persistTiming();
+      persistEditorialCalendar();
       setMode(currentMode);
       render();
       showToast("Estado restaurado");
     }
+    function officeUnlocked(){
+      return sessionStorage.getItem(OFFICE_UNLOCK_KEY) === "true";
+    }
+
+    function requestOfficeMode(){
+      if(ARTIST_ROUTE) return;
+      if(officeUnlocked()){
+        setMode("office");
+        return;
+      }
+      const pass = window.prompt("Clave de oficina");
+      if(pass === OFFICE_PASSWORD){
+        sessionStorage.setItem(OFFICE_UNLOCK_KEY, "true");
+        setMode("office");
+        showToast("Modo oficina desbloqueado");
+      }else if(pass !== null){
+        showToast("Clave incorrecta");
+      }
+    }
+
     function setMode(mode){
       if(ARTIST_ROUTE) mode = "client";
+      if(mode === "office" && !officeUnlocked()) mode = "client";
       currentMode = mode;
       localStorage.setItem(MODE_KEY, mode);
       document.getElementById("app").classList.toggle("client-mode", mode === "client");
@@ -1720,6 +2050,17 @@
         }));
         persistTiming();
       }
+      if(Array.isArray(data.editorialCalendar) && data.editorialCalendar.length){
+        editorialCalendar = data.editorialCalendar.map(item => ({
+          week:item.week || "1",
+          day:item.day || "Lunes",
+          type:item.type || "Video promocional",
+          platform:item.platform || "Instagram",
+          status:item.status || "Pendiente",
+          note:item.note || ""
+        }));
+        persistEditorialCalendar();
+      }
       if(data.currentStep && steps.some(step => step.id === data.currentStep)) currentPageId = data.currentStep;
       if(data.steps){
         steps.forEach(step => {
@@ -1761,6 +2102,7 @@
           mixApp: document.getElementById("mixAppLink").value || ""
         },
         recordingTiming,
+        editorialCalendar,
         steps: stepData
       };
     }
@@ -1787,6 +2129,7 @@
     loadState();
     loadMeta();
     loadTiming();
+    loadEditorialCalendar();
     loadPublishedArtistData().finally(() => setMode(currentMode));
   </script>
 </body>
