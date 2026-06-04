@@ -148,6 +148,7 @@
       box-shadow:var(--shadow-soft);
       flex:0 0 auto;
     }
+    .artist-route .mode-switch{display:none}
     .mode-btn{
       border:0;
       background:transparent;
@@ -448,6 +449,56 @@
     .artifact-panel{margin-top:12px;background:var(--blue-soft)}
     .artifact-title{font-size:13px;font-weight:900;color:var(--ink);margin-bottom:4px}
     .artifact-note{font-size:12px;color:var(--ink-2);line-height:1.4;margin-bottom:10px}
+    .tool-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .timing-panel{
+      margin:0 18px 18px;
+      border:1px solid var(--border);
+      border-radius:10px;
+      background:#fff;
+      box-shadow:var(--shadow-soft);
+      overflow:hidden;
+    }
+    .timing-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      padding:14px;
+      border-bottom:1px solid var(--border);
+      background:linear-gradient(135deg,#fff 0%,#fff8e8 100%);
+    }
+    .timing-title{font-size:14px;font-weight:900;color:var(--ink);margin-bottom:3px}
+    .timing-note{font-size:12px;color:var(--ink-2);line-height:1.42}
+    .timing-table{width:100%;border-collapse:collapse;font-size:12px}
+    .timing-table th{
+      text-align:left;
+      padding:9px 10px;
+      border-bottom:1px solid var(--border);
+      color:var(--muted);
+      font-size:9px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      background:var(--blue-soft);
+    }
+    .timing-table td{
+      vertical-align:top;
+      padding:8px 10px;
+      border-bottom:1px solid rgba(216,227,245,.72);
+      color:var(--ink-2);
+    }
+    .timing-table input,.timing-table textarea{
+      width:100%;
+      min-height:32px;
+      border:1px solid var(--border);
+      border-radius:8px;
+      background:#fff;
+      color:var(--ink);
+      padding:7px 8px;
+      resize:vertical;
+    }
+    .timing-table textarea{min-height:54px}
+    .timing-time{font-family:"DM Mono",monospace;font-weight:500;color:var(--blue);white-space:nowrap}
+    .timing-actions{display:flex;gap:8px;justify-content:flex-end;padding:12px 14px;background:#fff}
     .page-footer{
       display:flex;
       align-items:center;
@@ -632,6 +683,12 @@
       .step-actions{grid-column:1 / -1;justify-content:flex-start}
       .meta-grid{grid-template-columns:1fr}
       .hero:before{display:none}
+      .timing-head{display:grid}
+      .timing-table,.timing-table thead,.timing-table tbody,.timing-table tr,.timing-table th,.timing-table td{display:block}
+      .timing-table thead{display:none}
+      .timing-table tr{border-bottom:1px solid var(--border);padding:8px 0}
+      .timing-table td{border-bottom:0;padding:5px 10px}
+      .timing-table td:before{content:attr(data-label);display:block;margin-bottom:3px;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:900}
     }
   </style>
 </head>
@@ -714,6 +771,10 @@
                 <label for="infoMaestraLink">Enlace Info Maestra</label>
                 <input id="infoMaestraLink" value="" placeholder="https://..." oninput="saveMeta()">
               </div>
+              <div class="field" style="grid-column:1 / -1">
+                <label for="mixAppLink">App de mezcla / revisiones</label>
+                <input id="mixAppLink" value="../mezcla/" placeholder="https://... o ../mezcla/" oninput="saveMeta()">
+              </div>
             </div>
           </div>
         </div>
@@ -789,292 +850,256 @@
   <div class="toast" id="toast">Copiado</div>
 
   <script>
-    const STORAGE_KEY = "pavoneo360-panel-state-v2";
+    const STORAGE_KEY = "pavoneo360-panel-state-v3";
     const META_KEY = "pavoneo360-panel-meta-v1";
-    const PAGE_KEY = "pavoneo360-panel-page-v2";
+    const PAGE_KEY = "pavoneo360-panel-page-v3";
     const MODE_KEY = "pavoneo360-panel-mode-v2";
+    const TIMING_KEY = "pavoneo360-recording-timing-v1";
+    const ARTIST_ROUTE = /\/artistas\//.test(window.location.pathname);
     let currentFilter = "all";
     let currentPageId = "contacto";
     let currentMode = "office";
-    let expanded = new Set(["contacto","pack","formulario"]);
+    let expanded = new Set(["contacto","formulario","briefing"]);
+
+    const DEFAULT_TIMING = [
+      { time:"09:30", block:"Llegada y acogida", owner:"Oficina + artista", detail:"Recepcion, repaso del plan del dia, agua/cafe y revision rapida de vestuario." },
+      { time:"10:00", block:"Preparacion tecnica", owner:"David", detail:"Montaje de microfonia, pruebas de camara, escucha de referencias y ajuste de set." },
+      { time:"10:45", block:"Entrevista base", owner:"David + artista", detail:"Preguntas principales, relato del proyecto y frases utiles para piezas cortas." },
+      { time:"12:00", block:"Live session 1", owner:"David + artista", detail:"Grabacion de la primera pieza musical con toma de seguridad." },
+      { time:"13:15", block:"Pausa y fotos", owner:"Oficina", detail:"Descanso breve, seleccion de fondos y sesion fotografica en estudio." },
+      { time:"14:15", block:"Live session 2", owner:"David + artista", detail:"Grabacion de la segunda pieza o alternativa definida en briefing." },
+      { time:"15:30", block:"Making off y spot prescriptor", owner:"Oficina + artista", detail:"Recursos de proceso, planos cortos, testimonio y mensajes para redes." },
+      { time:"16:30", block:"Cierre de grabacion", owner:"David + oficina", detail:"Confirmar archivos, naming, copia de seguridad y siguientes pasos de postproduccion." }
+    ];
+    let recordingTiming = DEFAULT_TIMING.map(item => ({...item}));
 
     const steps = [
       {
         id:"contacto",
         num:"01",
-        title:"Contacto inicial y captación",
+        title:"Entrada en Pavoneo",
         clientTitle:"Contacto inicial",
-        intro:"Primera página del proceso. Sirve para mantener una reunión personal con el artista, ordenar la información de entrada y validar que el PDF/contrato se ha generado correctamente antes de pasar al siguiente bloque.",
+        intro:"Primera pagina del proceso. La oficina confirma la entrada del artista en Pavoneo, deja elegido el pack, genera contrato/RGPD y valida el PDF antes de activar el dashboard.",
         owner:"Equipo AB",
-        week:"Semana 1",
+        week:"Semana 0-1",
         pack:"both",
         status:"active",
-        handoff:"Oficina → Artista",
+        handoff:"Artista -> Oficina",
         actions:[
-          "Reunión personal con el artista.",
-          "Presentación de servicios: management, estudio, audiovisual y consultoría.",
-          "Envío del dossier HTML con packs disponibles y encaje del proceso."
+          "Llamada o conversacion de entrada marcada como OK.",
+          "Confirmar pack: Basico 950 EUR o Premium 1.450 EUR.",
+          "Generar contrato de formacion y documento RGPD.",
+          "Formalizar pago y entrada en Pavoneo 360.",
+          "Exportar PDF del alta para compartirlo y archivarlo."
+        ],
+        clientActions:[
+          "Realizamos la llamada inicial y confirmamos que el proceso encaja con tu proyecto.",
+          "Dejamos elegido el pack de trabajo y las condiciones de entrada.",
+          "Preparamos el contrato, privacidad/RGPD y documento PDF de alta.",
+          "Cuando la oficina valide el alta, se abrira tu acceso al dashboard."
         ],
         alerts:[
-          {type:"critical",text:"Sin contrato firmado no debe comenzar ningún punto formal del proceso."},
-          {type:"critical",text:"Sin referencia RGPD no debe tratarse información personal del artista."}
+          {type:"critical",text:"Sin contrato firmado no debe comenzar ningun punto formal del proceso."},
+          {type:"critical",text:"El RGPD pertenece al alta/contrato, no al formulario de preconsultoria."}
         ],
-        agent:"captacion-onboarding",
-        prompt:"Prepara el expediente inicial del artista, valida si existen contrato y RGPD, y devuelve una checklist de alta para Pavoneo 360."
-      },
-      {
-        id:"pack",
-        num:"02",
-        title:"Selección de pack",
-        owner:"Cliente + Oficina",
-        week:"Semana 1",
-        pack:"both",
-        status:"todo",
-        handoff:"Artista → Oficina",
-        actions:[
-          "Confirmar Pack Básico: 950 €.",
-          "Confirmar Pack Premium: 1.450 €, incluyendo inversión inicial en redes sociales.",
-          "Registrar precio, alcance, condiciones y fecha de aceptación."
-        ],
-        alerts:[
-          {type:"important",text:"Los packs apenas se diferencian más allá de la inversión en redes: conviene revisar discurso de valor."},
-          {type:"info",text:"Aparece una mención externa de 4.000 € en transcripción: verificar cifras del dossier."}
-        ],
-        agent:"selector-pack",
-        prompt:"Revisa el expediente y deja el pack elegido con precio, alcance, condiciones y dudas comerciales pendientes."
+        agent:"entrada-pavoneo",
+        prompt:"Prepara el alta del artista: llamada OK, pack elegido, contrato, RGPD, pago, PDF generado y bloqueos pendientes."
       },
       {
         id:"formulario",
-        num:"03",
-        title:"Formulario pre-consultoría",
+        num:"02",
+        title:"Dashboard, preconsultoria e Info Maestra",
+        clientTitle:"Preconsultoria e Info Maestra",
+        intro:"Desde este paso el dashboard y la Info Maestra pasan a ser herramientas de consulta constante. El formulario solo recoge preguntas del proyecto; el RGPD ya debe venir resuelto desde la entrada.",
         owner:"Oficina + Cliente",
-        week:"Semana 1",
+        week:"Una semana antes",
         pack:"both",
         status:"todo",
-        handoff:"Oficina → Artista → Info Maestra",
+        handoff:"Oficina -> Artista -> Info Maestra",
         actions:[
-          "Enviar la página/formulario al artista.",
-          "El artista rellena todos los datos del proyecto.",
-          "Vincular el formulario con la Info Maestra HTML como fuente inicial."
-        ],
-        alerts:[
-          {type:"important",text:"Definir quién persigue el formulario si llega incompleto."},
-          {type:"info",text:"No se detallan todavía los campos exactos que alimentan la Info Maestra."}
-        ],
-        agent:"preconsultoria-formulario",
-        prompt:"Audita el formulario pre-consultoría, enumera campos faltantes y prepara un resumen del artista para la consultoría."
-      },
-      {
-        id:"consultoria",
-        num:"04",
-        title:"Consultoría con Román",
-        owner:"Román + Artista",
-        week:"Mes 1",
-        pack:"both",
-        status:"todo",
-        handoff:"Román → Transcripción → Oficina",
-        actions:[
-          "Sesión presencial grabada en ordenador.",
-          "Transcripción completa de la sesión.",
-          "Análisis del contenido existente del artista.",
-          "Definición de objetivos a corto, medio y largo plazo.",
-          "Decisión del plan de producción: tipo y cantidad de contenidos.",
-          "Verificación de asignación del equipo del artista."
-        ],
-        alerts:[
-          {type:"important",text:"Debe quedar fijado quién transcribe y en qué plazo se entrega a David."},
-          {type:"important",text:"Sin protocolo de acceso previo, la sesión puede llegar sin materiales suficientes."}
-        ],
-        agent:"consultoria-roman",
-        prompt:"A partir de la grabación/transcripción de la consultoría, extrae objetivos, bloqueos, prioridades y decisiones de producción."
-      },
-      {
-        id:"infomaestra",
-        num:"05",
-        title:"Análisis y relleno de Info Maestra",
-        clientTitle:"Elaboración de Info Maestra",
-        intro:"La oficina recopila los datos del formulario de preconsultoría, la consultoría y la información base del proyecto para elaborar la primera versión de la Info Maestra. Cuando esté lista, aparecerá aquí el enlace para revisarla.",
-        owner:"Oficina + Extractor",
-        week:"Mes 1",
-        pack:"both",
-        status:"todo",
-        handoff:"Transcripción → Info Maestra",
-        actions:[
-          "Extraer campos desde la transcripción y el formulario.",
-          "Rellenar únicamente las secciones Pavoneo de la Info Maestra.",
-          "Bloquear secciones no Pavoneo: InfraPavoneo, booking y materiales ampliados.",
-          "Dejar señales claras de qué partes se desbloquearán en cierre/venta."
+          "Activar acceso al dashboard del artista.",
+          "Enviar formulario de preconsultoria con preguntas solo sobre el proyecto.",
+          "Realizar consultoria y guardar transcripcion.",
+          "Rellenar o actualizar la Info Maestra con formulario, consultoria y datos base.",
+          "Mantener la Info Maestra como referencia viva para los siguientes pasos."
         ],
         clientActions:[
-          "Recopilamos la información del formulario de preconsultoría y de inscripción al servicio Pavoneo.",
-          "Revisamos la consultoría y los datos base del proyecto para ordenar el relato, materiales y necesidades.",
-          "Elaboramos una primera versión de la Info Maestra dentro de nuestra base de trabajo.",
-          "Cuando esté preparada, podrás abrir el enlace de la Info Maestra desde esta página para revisarla y pedir correcciones."
+          "Tendras acceso a tu dashboard de seguimiento.",
+          "Rellenas el formulario de preconsultoria con informacion de tu proyecto.",
+          "Realizamos la consultoria y la oficina ordena la transcripcion.",
+          "Con esos datos preparamos tu Info Maestra para que puedas consultarla desde aqui."
         ],
         alerts:[
-          {type:"critical",text:"Necesaria capa de permisos por sección para no mezclar Pavoneo con otros servicios."},
-          {type:"info",text:"Conviene usar etiquetas owner/locked por bloque dentro del expediente JSON."}
+          {type:"important",text:"Definir quien revisa el formulario si llega incompleto."},
+          {type:"info",text:"La Info Maestra debe estar enlazada desde este paso y seguir disponible durante todo el proceso."}
         ],
-        agent:"extractor-info-maestra",
-        prompt:"Lee formulario y transcripción. Rellena solo campos Pavoneo de la Info Maestra y marca el resto como locked:true con owner correspondiente."
+        agent:"preconsultoria-formulario",
+        prompt:"Audita formulario y transcripcion, detecta huecos del proyecto y prepara/actualiza la Info Maestra consultable."
       },
       {
         id:"briefing",
-        num:"06",
-        title:"Briefing y pre-producción",
+        num:"03",
+        title:"Briefing y preproduccion",
         owner:"Oficina + David",
-        week:"Post-consultoría",
+        week:"Previo a grabacion",
         pack:"both",
         status:"todo",
-        handoff:"Román/Oficina → David",
+        handoff:"Consultoria -> David",
         actions:[
-          "Almacenamiento y pre-maquetación de los datos de la transcripción.",
-          "Preparación del briefing para David como técnico de estudio.",
-          "Acuerdo de fecha de grabación con el artista.",
-          "Test de audio si procede.",
-          "El artista prepara dinámicas para la entrevista."
+          "Revisar materiales que se van a grabar.",
+          "Planificar entrevista y entregar tips al artista.",
+          "Definir vestimenta segun Info Maestra.",
+          "Alinear actitud/acting como refuerzo conceptual.",
+          "Planificar piezas: teaser, preteaser, collage, entrevista, making off y spot prescriptor."
+        ],
+        clientActions:[
+          "Preparamos contigo los materiales que se grabaran.",
+          "Dejamos clara la entrevista, vestimenta y actitud del dia.",
+          "La Info Maestra nos sirve como referencia para que el rodaje tenga coherencia."
         ],
         alerts:[
-          {type:"important",text:"Falta coordinador definido entre Román/estrategia y David/producción."},
-          {type:"info",text:"No se especifica el formato exacto del briefing entregado a David."}
+          {type:"important",text:"Conviene cerrar lista de piezas antes de entrar a grabacion."},
+          {type:"info",text:"La Info Maestra debe orientar entrevista, vestimenta y enfoque conceptual."}
         ],
         agent:"briefing-produccion",
-        prompt:"Convierte objetivos y decisiones de consultoría en un briefing de producción claro para David, con checklist de sesión."
+        prompt:"Convierte consultoria e Info Maestra en briefing de grabacion: materiales, entrevista, vestimenta, actitud y piezas a capturar."
       },
       {
         id:"grabacion",
-        num:"07",
-        title:"Grabación en estudio",
+        num:"04",
+        title:"Grabacion en estudio",
         owner:"David + Artista",
-        week:"Mes 1-2",
+        week:"Dia de grabacion",
         pack:"both",
         status:"todo",
-        handoff:"Producción → Post-producción",
+        handoff:"Grabacion -> Postproduccion",
         actions:[
-          "Grabación de 2 live sessions.",
-          "Sesión de fotos en el estudio.",
-          "Entrevista del proyecto.",
-          "Making-of y vídeos del proceso creativo.",
-          "Captura de contenidos específicos para redes sociales."
+          "Generar y revisar el timing del dia.",
+          "Preparar modelo Canva o referencia visual del rodaje.",
+          "Grabar live sessions o piezas musicales previstas.",
+          "Grabar entrevista, making off y spot prescriptor.",
+          "Confirmar backup y ubicacion de archivos al cerrar el dia."
+        ],
+        clientActions:[
+          "Tendras visible el timing del dia de grabacion.",
+          "Grabamos las piezas definidas en briefing: musica, entrevista, making off y materiales para redes.",
+          "Al terminar, la oficina confirma que los archivos quedan organizados para postproduccion."
         ],
         alerts:[
-          {type:"info",text:"Los proyectos especiales pueden variar: una live session, sesión alternativa o contenido híbrido."}
+          {type:"info",text:"El timing debe poder adaptarse al tipo de artista, numero de piezas y ritmo real del estudio."}
         ],
         agent:"control-grabacion",
-        prompt:"Genera una checklist de grabación para el artista activo y verifica que cada material queda nombrado y ubicado."
+        prompt:"Revisa el timing de grabacion, materiales previstos, piezas capturadas, backup y traspaso a postproduccion."
       },
       {
         id:"postproduccion",
-        num:"08",
-        title:"Post-producción",
+        num:"05",
+        title:"Postproduccion",
         owner:"David + Miriam",
-        week:"Mes 2",
+        week:"Despues de grabacion",
         pack:"both",
         status:"todo",
-        handoff:"David → Miriam",
+        handoff:"David -> Miriam",
         actions:[
-          "Edición de todos los vídeos.",
-          "Mezcla y master del audio.",
-          "Traspaso de material a Miriam con margen suficiente.",
-          "Preparar versiones para redes, archivo y entrega final."
+          "Subir archivos a la app de mezcla/revision.",
+          "Editar material de video y audio.",
+          "Centralizar correcciones para evitar caos de mensajes.",
+          "Revisar y aprobar material final antes de lanzamiento."
+        ],
+        clientActions:[
+          "La oficina organiza el material en la app de revision.",
+          "Podras consultar avances y centralizar correcciones desde el enlace del bloque.",
+          "Cerramos material final antes de preparar calendario de publicaciones."
         ],
         alerts:[
-          {type:"important",text:"Falta plazo definido para la entrega de post-producción."},
-          {type:"important",text:"Falta proceso de revisión y aprobación del artista sobre el material editado."}
+          {type:"important",text:"La app de mezcla debe ser el punto unico de subida y correcciones."},
+          {type:"important",text:"Definir fecha limite de correcciones antes de calendario editorial."}
         ],
         agent:"postproduccion-drive",
-        prompt:"Verifica estado de vídeos, audio y materiales. Devuelve qué falta, dónde está y qué debe aprobar el artista."
+        prompt:"Verifica archivos, versiones, correcciones y aprobacion final. Devuelve que falta, donde esta y quien debe responder."
       },
       {
         id:"lanzamiento",
-        num:"09",
-        title:"Lanzamiento en redes",
+        num:"06",
+        title:"Lanzamientos",
         owner:"Miriam",
-        week:"Semanas 2-3",
+        week:"Postproduccion",
         pack:"both",
         status:"todo",
-        handoff:"Miriam → Canales del artista",
+        handoff:"Miriam -> Artista",
         actions:[
-          "Publicar vídeo promocional inicial si encaja con el proyecto.",
-          "Activar 2-3 semanas de publicaciones constantes.",
-          "Priorizar crecimiento orgánico previo a la inversión de pago.",
-          "Recoger señales de rendimiento para decidir qué impulsar."
+          "Crear calendario editorial dentro del dashboard.",
+          "Enviar contenidos al artista para aprobacion.",
+          "Aplicar hasta 2 cambios maximos por pieza.",
+          "Publicar y recoger senales de rendimiento organico."
+        ],
+        clientActions:[
+          "Veras el calendario de publicaciones del proyecto.",
+          "Podras aprobar contenidos y pedir cambios dentro del margen acordado.",
+          "La oficina ordena publicaciones y lectura inicial de resultados."
         ],
         alerts:[
-          {type:"important",text:"Falta calendario editorial definido para las publicaciones."},
-          {type:"important",text:"Falta proceso de aprobación del artista sobre contenidos publicados."}
+          {type:"important",text:"Sin aprobacion del artista no deberia publicarse contenido final."},
+          {type:"info",text:"El limite de 2 cambios debe aparecer claro para evitar revisiones infinitas."}
         ],
         agent:"redactor-publicaciones",
-        prompt:"Crea calendario editorial de 2-3 semanas con copys, piezas, canal, objetivo y estado de aprobación."
-      },
-      {
-        id:"entrega",
-        num:"10",
-        title:"Entrega Info Maestra",
-        owner:"Equipo AB",
-        week:"Cierre mes 2",
-        pack:"both",
-        status:"todo",
-        handoff:"Oficina → Artista",
-        actions:[
-          "Entregar repositorio HTML en plataforma de publicación.",
-          "Incluir entrevistas, notas de prensa, ficha artística, rider, logos y materiales.",
-          "Mostrar funcionalidades bloqueadas para futuro acceso completo.",
-          "Explicar el upsell de plataforma Infra y suscripción mensual."
-        ],
-        alerts:[
-          {type:"premium",text:"El 70% bloqueado puede generar fricción si no se presenta como mapa de crecimiento."},
-          {type:"info",text:"La transición hacia Infra no tiene todavía proceso definido en este protocolo."}
-        ],
-        agent:"entrega-info-maestra",
-        prompt:"Prepara la entrega de Info Maestra: índice, secciones abiertas, secciones bloqueadas y discurso de próximos desbloqueos."
+        prompt:"Crea calendario editorial con piezas, copy, canal, estado de aprobacion, cambios solicitados y fecha prevista."
       },
       {
         id:"inversion",
-        num:"11",
-        title:"Inversión en redes",
-        owner:"Miriam + Héctor",
-        week:"Post-orgánico",
+        num:"07",
+        title:"Inversion en redes sociales",
+        owner:"Miriam + Hector",
+        week:"Postorganico",
         pack:"premium",
         status:"todo",
-        handoff:"Miriam → Héctor",
+        handoff:"Miriam -> Hector",
         actions:[
-          "Invertir 100 € en YouTube e Instagram.",
-          "Reinvertir en el contenido con mejor rendimiento orgánico previo.",
-          "Héctor, trafficker, configura y gestiona campañas.",
-          "Comunicar límites de presupuesto y lectura de resultados."
+          "Definir inversion segun pack y lectura organica previa.",
+          "Asignar 80% Instagram y 20% YouTube.",
+          "Elegir contenidos a impulsar con criterios objetivos.",
+          "Registrar metricas de inversion para cierre."
+        ],
+        clientActions:[
+          "Si tu pack incluye inversion, la oficina reparte presupuesto entre Instagram y YouTube.",
+          "Impulsamos los contenidos con mejor lectura previa.",
+          "Las metricas quedaran registradas para revisarlas en la consultoria de cierre."
         ],
         alerts:[
-          {type:"premium",text:"100 € puede parecer escaso para un cliente que ha pagado 1.450 €: comunicar bien el valor."},
-          {type:"info",text:"Faltan criterios objetivos para elegir qué contenido impulsar."}
+          {type:"premium",text:"Explicar con claridad que el reparto definido es 80% Instagram y 20% YouTube."},
+          {type:"info",text:"Faltan criterios objetivos si no se registran resultados organicos antes de invertir."}
         ],
         agent:"trafico-redes",
-        prompt:"Diseña una microcampaña de 100 € con hipótesis, contenido a impulsar, segmentación inicial y métricas de lectura."
+        prompt:"Disena inversion con reparto 80/20, contenido elegido, hipotesis, segmentacion y metricas de lectura."
       },
       {
         id:"cierre",
-        num:"12",
-        title:"Consultoría de cierre y venta",
+        num:"08",
+        title:"Consultoria de cierre",
         owner:"Por definir",
-        week:"Mes 3 mínimo",
+        week:"Ultimo paso",
         pack:"both",
         status:"todo",
-        handoff:"Oficina → Artista → Venta",
+        handoff:"Oficina -> Artista",
         actions:[
-          "Presentar métricas finales obtenidas.",
-          "Mostrar documento de pago y configuración de campaña.",
-          "Explicar la Info Maestra entregada y sus bloqueos.",
-          "Convertir aprendizajes en propuesta de siguientes servicios: InfraPavoneo, campañas, booking o consultoría."
+          "Revisar metricas finales y aprendizajes.",
+          "Consultar Info Maestra actualizada y materiales entregados.",
+          "Explicar resultados de campana si hubo inversion.",
+          "Plantear propuesta a futuro solo si encaja: InfraPavoneo, campanas, booking o consultoria."
+        ],
+        clientActions:[
+          "Revisamos contigo resultados, materiales e Info Maestra final.",
+          "Convertimos lo aprendido en decisiones claras para el siguiente movimiento.",
+          "Si tiene sentido, la oficina puede proponerte servicios posteriores."
         ],
         alerts:[
-          {type:"critical",text:"Debe definirse responsable de la transcripción y del cierre completo del proceso."},
-          {type:"info",text:"No está claro si este cierre aplica también al pack básico de 950 €."}
+          {type:"critical",text:"Debe definirse responsable final de la consultoria de cierre."},
+          {type:"info",text:"Este paso tambien funciona como consultoria de venta para futuros servicios."}
         ],
         agent:"generador-cierre",
-        prompt:"Compila métricas, entregables, aprendizajes y propuesta de siguientes servicios para la consultoría de cierre/venta."
+        prompt:"Compila metricas, entregables, aprendizajes, Info Maestra final y propuesta de siguientes servicios si procede."
       }
     ];
-
     function loadState(){
       try{
         const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
@@ -1090,15 +1115,33 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     }
 
+    function loadTiming(){
+      try{
+        const saved = JSON.parse(localStorage.getItem(TIMING_KEY) || "[]");
+        if(Array.isArray(saved) && saved.length){
+          recordingTiming = saved.map(item => ({
+            time:item.time || "",
+            block:item.block || "",
+            owner:item.owner || "",
+            detail:item.detail || ""
+          }));
+        }
+      }catch(error){}
+    }
+
+    function persistTiming(){
+      localStorage.setItem(TIMING_KEY, JSON.stringify(recordingTiming));
+    }
+
     function loadMeta(){
       try{
         const meta = JSON.parse(localStorage.getItem(META_KEY) || "{}");
-        ["artistName","artistPack","ownerName","driveFolder","artifactLink","infoMaestraLink"].forEach(id => {
+        ["artistName","artistPack","ownerName","driveFolder","artifactLink","infoMaestraLink","mixAppLink"].forEach(id => {
           if(meta[id]) document.getElementById(id).value = meta[id];
         });
       }catch(error){}
       currentPageId = localStorage.getItem(PAGE_KEY) || currentPageId;
-      currentMode = localStorage.getItem(MODE_KEY) || currentMode;
+      currentMode = ARTIST_ROUTE ? "client" : (localStorage.getItem(MODE_KEY) || currentMode);
       syncMeta();
     }
 
@@ -1109,7 +1152,8 @@
         ownerName:document.getElementById("ownerName").value,
         driveFolder:document.getElementById("driveFolder").value,
         artifactLink:document.getElementById("artifactLink").value,
-        infoMaestraLink:document.getElementById("infoMaestraLink").value
+        infoMaestraLink:document.getElementById("infoMaestraLink").value,
+        mixAppLink:document.getElementById("mixAppLink").value
       };
       localStorage.setItem(META_KEY, JSON.stringify(meta));
       syncMeta();
@@ -1175,56 +1219,199 @@
     function gateChecks(step){
       if(step.id === "contacto"){
         return [
-          "Reunión personal realizada o conversación inicial cerrada.",
-          "Información de entrada recogida en conversación o en el artefacto Cloud.",
-          "PDF generado correctamente desde el artefacto.",
-          "Contrato y referencia RGPD revisados antes de continuar."
+          "Llamada/entrada OK.",
+          "Pack elegido: Basico 950 EUR o Premium 1.450 EUR.",
+          "Contrato generado y revisado.",
+          "Documento de privacidad/RGPD recibido y archivado fuera del JSON publico.",
+          "Pago o entrada formalizada.",
+          "PDF de alta exportado correctamente."
         ];
       }
       if(step.id === "formulario"){
         return [
-          "Formulario recibido completo.",
-          "Campos esenciales revisados por oficina.",
-          "Datos vinculados con el expediente y la Info Maestra."
+          "Acceso al dashboard activado para el artista.",
+          "Formulario de preconsultoria recibido con preguntas solo del proyecto.",
+          "Consultoria realizada y transcripcion guardada.",
+          "Info Maestra creada o actualizada desde formulario y consultoria.",
+          "Info Maestra vista por el artista y correcciones recogidas."
         ];
       }
-      if(step.id === "infomaestra"){
+      if(step.id === "briefing"){
         return [
-          "Formulario de datos e inscripción al servicio Pavoneo rellenado.",
-          "Documento de privacidad / RGPD recibido y archivado fuera del JSON público.",
-          "Datos de consultoría y datos base del proyecto revisados por la oficina.",
-          "Primera versión de la Info Maestra preparada y enlazada.",
-          "Info Maestra vista por el artista y correcciones recogidas."
+          "Materiales a grabar definidos.",
+          "Plan de entrevista preparado.",
+          "Vestimenta revisada segun Info Maestra.",
+          "Actitud/acting alineado con el concepto.",
+          "Lista de piezas cerrada: teaser, preteaser, collage, entrevista, making off y spot prescriptor."
+        ];
+      }
+      if(step.id === "grabacion"){
+        return [
+          "Timing del dia revisado por oficina.",
+          "Artista informado de horarios y bloques.",
+          "Piezas grabadas o incidencias registradas.",
+          "Archivos nombrados, ubicados y con backup.",
+          "Traspaso a postproduccion preparado."
+        ];
+      }
+      if(step.id === "postproduccion"){
+        return [
+          "Archivos subidos u organizados en la app de mezcla/revision.",
+          "Correcciones centralizadas.",
+          "Audio y video revisados por oficina.",
+          "Material final aprobado antes de lanzamiento."
+        ];
+      }
+      if(step.id === "lanzamiento"){
+        return [
+          "Calendario editorial preparado en dashboard.",
+          "Contenidos aprobados por el artista.",
+          "Cambios pedidos dentro del maximo acordado.",
+          "Publicaciones y primeras metricas registradas."
+        ];
+      }
+      if(step.id === "inversion"){
+        return [
+          "Contenido a impulsar elegido con criterio.",
+          "Reparto confirmado: 80% Instagram y 20% YouTube.",
+          "Presupuesto y configuracion documentados.",
+          "Metricas preparadas para cierre."
         ];
       }
       if(step.id === "cierre"){
         return [
-          "Métricas finales revisadas.",
+          "Metricas finales revisadas.",
+          "Info Maestra final consultada.",
           "Entregables explicados al artista.",
-          "Siguiente servicio propuesto solo si encaja con el proyecto."
+          "Propuesta futura definida solo si encaja con el proyecto."
         ];
       }
       return [
         "Acciones principales revisadas por la oficina.",
         "Materiales o decisiones del bloque registrados en el expediente.",
-        "Sin bloqueos críticos para pasar a la siguiente página."
+        "Sin bloqueos criticos para pasar a la siguiente pagina."
       ];
     }
 
-    function isArtifactStep(step){
-      return step.id === "contacto" || step.id === "formulario";
+    function cleanHref(raw){
+      const value = String(raw || "").trim();
+      if(!value || /^javascript:/i.test(value)) return "";
+      return /^https?:\/\//i.test(value) || /^(\.{1,2}\/|\/|#)/.test(value) ? value : "";
+    }
+
+    function escapeHtml(value){
+      return String(value || "").replace(/[&<>"']/g, char => ({
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        "\"":"&quot;",
+        "'":"&#39;"
+      }[char]));
     }
 
     function artifactHref(){
-      const raw = document.getElementById("artifactLink").value.trim();
-      return raw && /^https?:\/\//i.test(raw) ? raw : "";
+      return cleanHref(document.getElementById("artifactLink").value);
     }
 
     function infoMaestraHref(){
-      const raw = document.getElementById("infoMaestraLink").value.trim();
-      return raw && /^https?:\/\//i.test(raw) ? raw : "";
+      return cleanHref(document.getElementById("infoMaestraLink").value);
     }
 
+    function mixAppHref(){
+      return cleanHref(document.getElementById("mixAppLink").value);
+    }
+
+    function linkButton(href, label, primary = false){
+      const safeHref = escapeHtml(href);
+      return href
+        ? `<a class="action-btn ${primary ? "primary" : ""}" href="${safeHref}" target="_blank" rel="noopener">${label}</a>`
+        : `<button class="action-btn" type="button" disabled>${label} pendiente</button>`;
+    }
+
+    function artifactContent(step, index, href, infoHref, mixHref){
+      const buttons = [];
+      let title = "Herramientas del bloque";
+      let note = "Este bloque queda registrado en el expediente para mantener trazabilidad de decisiones y materiales.";
+      if(step.id === "contacto"){
+        title = "Entrada, contrato y PDF";
+        note = "Aqui se vincula el artefacto o documento de alta. El RGPD se guarda fuera del JSON publico y solo queda marcada la validacion.";
+        buttons.push(linkButton(href, "Abrir alta / PDF", true));
+      }else{
+        title = "Info Maestra de consulta permanente";
+        note = "Desde el paso 2, la Info Maestra acompana el proceso como base viva del proyecto. La oficina pega aqui el enlace cuando este preparada.";
+        buttons.push(linkButton(infoHref, "Abrir Info Maestra", true));
+        if(step.id === "formulario") buttons.push(linkButton(href, "Abrir formulario"));
+        if(step.id === "postproduccion") buttons.push(linkButton(mixHref, "Abrir app de mezcla"));
+      }
+      return { title, note, buttons:buttons.join("") };
+    }
+
+    function renderTimingBlock(editable){
+      const rows = recordingTiming.map((item, index) => {
+        const time = escapeHtml(item.time);
+        const block = escapeHtml(item.block);
+        const owner = escapeHtml(item.owner);
+        const detail = escapeHtml(item.detail);
+        return editable ? `
+        <tr>
+          <td data-label="Hora"><input value="${time}" oninput="updateTiming(${index}, 'time', this.value)"></td>
+          <td data-label="Bloque"><input value="${block}" oninput="updateTiming(${index}, 'block', this.value)"></td>
+          <td data-label="Responsable"><input value="${owner}" oninput="updateTiming(${index}, 'owner', this.value)"></td>
+          <td data-label="Detalle"><textarea oninput="updateTiming(${index}, 'detail', this.value)">${detail}</textarea></td>
+          <td data-label="Accion"><button class="icon-btn" type="button" onclick="deleteTimingRow(${index})" aria-label="Eliminar">x</button></td>
+        </tr>
+      ` : `
+        <tr>
+          <td data-label="Hora" class="timing-time">${time}</td>
+          <td data-label="Bloque"><strong>${block}</strong></td>
+          <td data-label="Responsable">${owner}</td>
+          <td data-label="Detalle">${detail}</td>
+        </tr>
+      `;
+      }).join("");
+      return `
+        <div class="timing-panel">
+          <div class="timing-head">
+            <div>
+              <div class="timing-title">Timing del dia de grabacion</div>
+              <div class="timing-note">${editable ? "La oficina puede ajustar horarios, responsables y notas. El artista vera esta misma tabla en modo consulta." : "Este es el plan de trabajo previsto para el dia de grabacion."}</div>
+            </div>
+            <button class="action-btn internal-only" type="button" onclick="addTimingRow()">Anadir bloque</button>
+          </div>
+          <table class="timing-table">
+            <thead><tr><th>Hora</th><th>Bloque</th><th>Responsable</th><th>Detalle</th>${editable ? "<th></th>" : ""}</tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+          <div class="timing-actions internal-only">
+            <button class="action-btn" type="button" onclick="resetTiming()">Restaurar timing modelo</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function updateTiming(index, field, value){
+      if(!recordingTiming[index]) return;
+      recordingTiming[index][field] = value;
+      persistTiming();
+    }
+
+    function addTimingRow(){
+      recordingTiming.push({time:"", block:"Nuevo bloque", owner:"Oficina", detail:""});
+      persistTiming();
+      render();
+    }
+
+    function deleteTimingRow(index){
+      recordingTiming.splice(index, 1);
+      persistTiming();
+      render();
+    }
+
+    function resetTiming(){
+      recordingTiming = DEFAULT_TIMING.map(item => ({...item}));
+      persistTiming();
+      render();
+    }
     function render(){
       if(currentMode === "client"){
         const visible = clientVisibleStep();
@@ -1255,28 +1442,17 @@
       const index = steps.findIndex(item => item.id === step.id);
       const href = artifactHref();
       const infoHref = infoMaestraHref();
+      const mixHref = mixAppHref();
+      const tools = artifactContent(step, index, href, infoHref, mixHref);
       const clientCopy = currentMode === "client";
       const visibleActions = clientCopy && step.clientActions ? step.clientActions : step.actions;
-      const next = steps[index + 1];
       const done = step.status === "done";
       const finalStep = index === steps.length - 1;
-      const artifactTitle = step.id === "infomaestra" ? "Info Maestra del proyecto" : isArtifactStep(step) ? "Artefacto Cloud vinculado" : "Expediente de trabajo";
-      const artifactNote = step.id === "infomaestra"
-        ? "Este enlace abrirá la primera versión de la Info Maestra cuando la oficina la tenga preparada. Ahí se revisa el relato, la información del proyecto y los materiales base."
-        : isArtifactStep(step)
-          ? "Este es el punto que debe conectar con el artefacto para rellenar información y generar el PDF. Por ahora el HTML solo lo muestra o abre si la oficina pega el enlace."
-          : "Este bloque queda registrado en el expediente interno para mantener trazabilidad de decisiones y materiales.";
-      const canOpenArtifact = (href && isArtifactStep(step)) || (infoHref && step.id === "infomaestra");
-      const artifactButton = step.id === "infomaestra" && infoHref
-        ? `<a class="action-btn primary" href="${infoHref}" target="_blank" rel="noopener">Abrir Info Maestra</a>`
-        : canOpenArtifact
-        ? `<a class="action-btn primary" href="${href}" target="_blank" rel="noopener">Abrir artefacto Cloud</a>`
-        : `<button class="action-btn" type="button" disabled>${step.id === "infomaestra" ? "Info Maestra pendiente de enlace" : isArtifactStep(step) ? "Artefacto pendiente de enlace" : "Sin artefacto en esta página"}</button>`;
       shell.innerHTML = `
         <article class="page-card" data-status="${step.status}">
           <div class="page-head">
             <div>
-              <div class="page-count">Página ${step.num} de ${String(steps.length).padStart(2,"0")}</div>
+              <div class="page-count">Pagina ${step.num} de ${String(steps.length).padStart(2,"0")}</div>
               <h2 class="page-title">${displayTitle(step)}</h2>
               <p class="page-intro">${pageIntro(step)}</p>
             </div>
@@ -1288,14 +1464,14 @@
           </div>
           <div class="page-grid">
             <div class="process-panel">
-              ${clientCopy ? `<div class="client-note">Ahora solo estás en esta página. Los siguientes pasos aparecerán cuando la oficina valide que este bloque está correcto.</div>` : ""}
-              <div class="block-title">${clientCopy ? "Qué haremos ahora" : "Acciones de esta página"}</div>
+              ${clientCopy ? `<div class="client-note">Ahora solo estas en esta pagina. Los siguientes pasos apareceran cuando la oficina valide que este bloque esta correcto.</div>` : ""}
+              <div class="block-title">${clientCopy ? "Que haremos ahora" : "Acciones de esta pagina"}</div>
               <ul class="todo-list">${visibleActions.map(action => `<li>${action}</li>`).join("")}</ul>
             </div>
             <div>
               <div class="gate-panel">
-                <div class="block-title">Validación para desbloquear</div>
-                <ul class="gate-list">${gateChecks(step).map((gate, gateIndex) => `
+                <div class="block-title">Validacion para desbloquear</div>
+                <ul class="gate-list">${gateChecks(step).map(gate => `
                   <li class="gate-row">
                     <input type="checkbox" ${done ? "checked" : ""} onchange="syncGateCheck('${step.id}', this)">
                     <span>${gate}</span>
@@ -1303,9 +1479,9 @@
                 `).join("")}</ul>
               </div>
               <div class="artifact-panel">
-                <div class="artifact-title">${artifactTitle}</div>
-                <div class="artifact-note">${artifactNote}</div>
-                <div class="page-move">${artifactButton}</div>
+                <div class="artifact-title">${tools.title}</div>
+                <div class="artifact-note">${tools.note}</div>
+                <div class="tool-actions">${tools.buttons}</div>
               </div>
               <div class="process-panel internal-only" style="margin-top:12px">
                 <div class="block-title">Alertas y mejoras internas</div>
@@ -1313,19 +1489,19 @@
               </div>
             </div>
           </div>
+          ${step.id === "grabacion" ? renderTimingBlock(!clientCopy) : ""}
           <div class="page-footer">
             <div class="handoff"><strong>Traspaso:</strong> ${step.handoff}</div>
             <div class="page-move">
               <button class="action-btn internal-only" type="button" onclick="goRelative(-1)" ${index === 0 ? "disabled" : ""}>Anterior</button>
               <button class="send-btn internal-only" type="button" onclick="openAgent('${step.id}')">Enviar a subagente</button>
               <button class="action-btn internal-only" type="button" onclick="goRelative(1)" ${finalStep ? "disabled" : ""}>Siguiente</button>
-              <button class="action-btn primary" type="button" onclick="markDoneAndAdvance('${step.id}')">${finalStep ? "Cerrar proceso" : done ? "Ir al siguiente bloque" : step.id === "contacto" ? "PDF correcto · desbloquear siguiente" : "Validar y desbloquear siguiente"}</button>
+              <button class="action-btn primary" type="button" onclick="markDoneAndAdvance('${step.id}')">${finalStep ? "Cerrar proceso" : done ? "Ir al siguiente bloque" : step.id === "contacto" ? "PDF correcto - desbloquear siguiente" : "Validar y desbloquear siguiente"}</button>
             </div>
           </div>
         </article>
       `;
     }
-
     function syncGateCheck(id, checkbox){
       if(!checkbox.checked) return;
       const step = steps.find(item => item.id === id);
@@ -1421,26 +1597,31 @@
       localStorage.removeItem(META_KEY);
       localStorage.removeItem(PAGE_KEY);
       localStorage.removeItem(MODE_KEY);
+      localStorage.removeItem(TIMING_KEY);
       steps.forEach((step, index) => step.status = index === 0 ? "active" : "todo");
       document.getElementById("artistName").value = "Nombre del artista";
-      document.getElementById("artistPack").value = "Básico · 950 €";
+      document.getElementById("artistPack").selectedIndex = 0;
       document.getElementById("ownerName").value = "Equipo AB";
       document.getElementById("driveFolder").value = "artista_pavoneo.json";
       document.getElementById("artifactLink").value = "";
       document.getElementById("infoMaestraLink").value = "";
+      document.getElementById("mixAppLink").value = "../mezcla/";
+      recordingTiming = DEFAULT_TIMING.map(item => ({...item}));
       currentPageId = "contacto";
-      currentMode = "office";
-      expanded = new Set(["contacto","pack","formulario"]);
+      currentMode = ARTIST_ROUTE ? "client" : "office";
+      expanded = new Set(["contacto","formulario","briefing"]);
       saveMeta();
-      setMode("office");
+      persistTiming();
+      setMode(currentMode);
       render();
       showToast("Estado restaurado");
     }
-
     function setMode(mode){
+      if(ARTIST_ROUTE) mode = "client";
       currentMode = mode;
       localStorage.setItem(MODE_KEY, mode);
       document.getElementById("app").classList.toggle("client-mode", mode === "client");
+      document.getElementById("app").classList.toggle("artist-route", ARTIST_ROUTE);
       document.querySelectorAll(".mode-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.mode === mode));
       if(mode === "client") currentPageId = clientVisibleStep().id;
       render();
@@ -1529,6 +1710,16 @@
       if(data.pack) document.getElementById("artistPack").value = normalizePack(data.pack);
       if(data.publicLinks && data.publicLinks.artifactCloud) document.getElementById("artifactLink").value = data.publicLinks.artifactCloud;
       if(data.publicLinks && data.publicLinks.infoMaestra) document.getElementById("infoMaestraLink").value = data.publicLinks.infoMaestra;
+      if(data.publicLinks && data.publicLinks.mixApp) document.getElementById("mixAppLink").value = data.publicLinks.mixApp;
+      if(Array.isArray(data.recordingTiming) && data.recordingTiming.length){
+        recordingTiming = data.recordingTiming.map(item => ({
+          time:item.time || "",
+          block:item.block || "",
+          owner:item.owner || "",
+          detail:item.detail || ""
+        }));
+        persistTiming();
+      }
       if(data.currentStep && steps.some(step => step.id === data.currentStep)) currentPageId = data.currentStep;
       if(data.steps){
         steps.forEach(step => {
@@ -1566,8 +1757,10 @@
         publicLinks: {
           infoMaestra: document.getElementById("infoMaestraLink").value || "",
           materialesPublicos: "",
-          artifactCloud: document.getElementById("artifactLink").value || ""
+          artifactCloud: document.getElementById("artifactLink").value || "",
+          mixApp: document.getElementById("mixAppLink").value || ""
         },
+        recordingTiming,
         steps: stepData
       };
     }
@@ -1593,6 +1786,7 @@
 
     loadState();
     loadMeta();
+    loadTiming();
     loadPublishedArtistData().finally(() => setMode(currentMode));
   </script>
 </body>

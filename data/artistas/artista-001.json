@@ -8,28 +8,77 @@
   "publicLinks": {
     "infoMaestra": "",
     "materialesPublicos": "",
-    "artifactCloud": ""
+    "artifactCloud": "",
+    "mixApp": "../mezcla/"
   },
+  "recordingTiming": [
+    {
+      "time": "09:30",
+      "block": "Llegada y acogida",
+      "owner": "Oficina + artista",
+      "detail": "Recepcion, repaso del plan del dia, agua/cafe y revision rapida de vestuario."
+    },
+    {
+      "time": "10:00",
+      "block": "Preparacion tecnica",
+      "owner": "David",
+      "detail": "Montaje de microfonia, pruebas de camara, escucha de referencias y ajuste de set."
+    },
+    {
+      "time": "10:45",
+      "block": "Entrevista base",
+      "owner": "David + artista",
+      "detail": "Preguntas principales, relato del proyecto y frases utiles para piezas cortas."
+    },
+    {
+      "time": "12:00",
+      "block": "Live session 1",
+      "owner": "David + artista",
+      "detail": "Grabacion de la primera pieza musical con toma de seguridad."
+    },
+    {
+      "time": "13:15",
+      "block": "Pausa y fotos",
+      "owner": "Oficina",
+      "detail": "Descanso breve, seleccion de fondos y sesion fotografica en estudio."
+    },
+    {
+      "time": "14:15",
+      "block": "Live session 2",
+      "owner": "David + artista",
+      "detail": "Grabacion de la segunda pieza o alternativa definida en briefing."
+    },
+    {
+      "time": "15:30",
+      "block": "Making off y spot prescriptor",
+      "owner": "Oficina + artista",
+      "detail": "Recursos de proceso, planos cortos, testimonio y mensajes para redes."
+    },
+    {
+      "time": "16:30",
+      "block": "Cierre de grabacion",
+      "owner": "David + oficina",
+      "detail": "Confirmar archivos, naming, copia de seguridad y siguientes pasos de postproduccion."
+    }
+  ],
   "steps": {
     "contacto": {
       "status": "active",
       "updatedAt": "2026-06-04",
       "checks": {
-        "meetingDone": false,
-        "infoCollected": false,
-        "pdfGenerated": false,
-        "rgpdReviewed": false
+        "callOk": false,
+        "packChosen": false,
+        "contractReady": false,
+        "rgpdArchived": false,
+        "paymentFormalized": false,
+        "pdfExported": false
       }
     },
-    "pack": { "status": "todo" },
     "formulario": { "status": "todo" },
-    "consultoria": { "status": "todo" },
-    "infomaestra": { "status": "todo" },
     "briefing": { "status": "todo" },
     "grabacion": { "status": "todo" },
     "postproduccion": { "status": "todo" },
     "lanzamiento": { "status": "todo" },
-    "entrega": { "status": "todo" },
     "inversion": { "status": "todo" },
     "cierre": { "status": "todo" }
   }

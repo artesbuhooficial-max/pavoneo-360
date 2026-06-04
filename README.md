@@ -8,6 +8,7 @@ Este repo separa tres capas:
 
 - `oficina/`: vista interna para saltar entre procesos, validar estados y preparar instrucciones.
 - `artistas/`: vista de artista, bloqueada paso a paso.
+- `mezcla/`: app de mezcla/revision con branding Pavoneo, enlazable desde postproduccion.
 - `data/artistas/`: JSON publico y minimo por artista.
 - `private/`: material sensible local. No se publica.
 - `inbox/`: JSON exportados desde oficina antes de sincronizar.
@@ -20,6 +21,7 @@ Si el repo se llama `pavoneo-360`, la URL de prueba sera:
 https://USUARIO.github.io/pavoneo-360/
 https://USUARIO.github.io/pavoneo-360/oficina/
 https://USUARIO.github.io/pavoneo-360/artistas/?id=artista-001
+https://USUARIO.github.io/pavoneo-360/mezcla/
 ```
 
 Si se crea una organizacion o usuario llamado `pavoneo`, podria existir:
@@ -48,6 +50,7 @@ Ese JSON solo debe contener estado operativo:
 - bloque actual
 - bloque desbloqueado
 - enlaces publicos o no sensibles
+- timing publico del dia de grabacion
 - estado por pasos
 
 No debe contener:
@@ -107,4 +110,5 @@ Inicializar proyecto maestro Pavoneo 360
 
 - Conectar `oficina/` para exportar JSON real a `inbox/`.
 - Conectar `artistas/` para cargar `data/artistas/{id}.json`.
+- Ajustar la app `mezcla/` cuando se defina el flujo final de subida/correcciones.
 - Crear el agente Claude Code `gestor-expedientes-pavoneo`.

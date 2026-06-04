@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="theme-color" content="#0757D8"/>
+<title>Mix Studio · Pavoneo 360°</title>
+<link rel="icon" href="pavoneo-logo.png"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,900&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',system-ui,sans-serif;background:linear-gradient(135deg,#f8fbff 0%,#ffffff 46%,#fff7df 100%);color:#071c48}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#0757D855;border-radius:2px}
+select,input,textarea{font-family:inherit}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(7,28,72,.46);display:flex;align-items:center;justify-content:center;z-index:999;padding:20px;backdrop-filter:blur(8px)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script type="text/babel">
+const{useState,useRef,useCallback,useEffect}=React;
+const SHEETS_URL="https://script.google.com/macros/s/AKfycbxeylh5siQspZFx4Fc2uaBIlBTGdN8Cc3BaX5Oxj62uLEWk4rcqrGnuDcxuR2JL5IhJKQ/exec";
+const P={bg:"linear-gradient(135deg,#f8fbff 0%,#ffffff 46%,#fff7df 100%)",card:"#FFFFFF",cardAlt:"#F3F7FF",border:"#D8E3F5",cyan:"#0757D8",cyanDark:"#0447B9",cyanGlow:"#0B66FF",gold:"#E8B83E",text:"#071C48",muted:"#6A7EA6",dim:"#9BB0D0",white:"#071C48"};
+const INST=[
+{id:"drums",l:"Batería",c:"#EF5350",i:"🥁",g:"R"},{id:"bass",l:"Bajo",c:"#66BB6A",i:"🎸",g:"R"},{id:"elec_gtr",l:"G.Eléc",c:"#FFA726",i:"⚡",g:"R"},{id:"acou_gtr",l:"G.Acúst",c:"#A1887F",i:"🪕",g:"R"},{id:"percussion",l:"Percusión",c:"#EC407A",i:"🪘",g:"R"},
+{id:"vocals",l:"Voz",c:"#FFCA28",i:"🎤",g:"V"},{id:"chorus",l:"Coros",c:"#FF9800",i:"🎶",g:"V"},{id:"backing",l:"2ª Voces",c:"#FFB74D",i:"🗣️",g:"V"},
+{id:"sax",l:"Saxo",c:P.gold,i:"🎷",g:"W"},{id:"trumpet",l:"Trompeta",c:"#FF7043",i:"🎺",g:"W"},{id:"trombone",l:"Trombón",c:"#E65100",i:"📯",g:"W"},{id:"flute",l:"Flauta",c:"#4DB6AC",i:"🪈",g:"W"},{id:"clarinet",l:"Clarinete",c:"#9575CD",i:"🎵",g:"W"},{id:"trompa",l:"Trompa",c:"#FF8A65",i:"🎺",g:"W"},{id:"baritone",l:"Barítono",c:"#D4A843",i:"🎷",g:"W"},{id:"tenor",l:"Tenor",c:"#FFAB40",i:"🎷",g:"W"},
+{id:"piano",l:"Piano",c:"#7986CB",i:"🎹",g:"K"},{id:"synth",l:"Synth",c:"#BA68C8",i:"🔊",g:"K"},
+{id:"strings",l:"Cuerdas",c:"#EF5350",i:"🎻",g:"O"},{id:"dj",l:"DJ",c:"#AB47BC",i:"💿",g:"O"},
+{id:"tuning",l:"Afinación",c:"#F06292",i:"🔧",g:"M"},{id:"alt_take",l:"Otra toma",c:"#9575CD",i:"🔄",g:"M"},{id:"eq",l:"EQ",c:"#42A5F5",i:"📊",g:"M"},{id:"compression",l:"Compresión",c:"#26C6DA",i:"📈",g:"M"},{id:"reverb",l:"Reverb",c:"#26A69A",i:"🌊",g:"M"},{id:"panning",l:"Paneo",c:"#9CCC65",i:"↔️",g:"M"},{id:"reference",l:"Referencia",c:"#29B6F6",i:"🔗",g:"M"},{id:"general",l:"Nota",c:"#90A4AE",i:"📝",g:"M"},
+];
+const GRP={R:"Rítmica",V:"Voces",W:"Vientos",K:"Teclados",O:"Otros",M:"Mezcla"};
+const ROLES=["Principal","Base","Acompañamiento","Colchón","No toca"];
+const RCbg={Principal:"#1B5E2033",Base:"#B71C1C33",Acompañamiento:"#F57F1733","Colchón":"#4A148C33","No toca":"#26323833"};
+const fmt=s=>{if(typeof s!=="number"||isNaN(s))return"0:00.00";const m=Math.floor(s/60),sc=Math.floor(s%60),ms=Math.floor((s%1)*100);return`${m}:${sc.toString().padStart(2,"0")}.${ms.toString().padStart(2,"0")}`;};
+const EMPTY_SONGS=[{name:"Canción 1",sections:["Intro","A","B","Puente","Final"],takes:["—","—","—","—","—"],dynamics:{},cutPoints:[]}];
+const EMPTY_CREDITS={songName:"",albumName:"",projectName:"",genre:"",year:"2026",label:"",isrc:"",upc:"",members:[{name:"",role:"",instruments:""}],producer:"",mixer:"",mastering:"",recordingStudio:"Artes Búho",composer:"",lyricist:"",arranger:"",videoDirector:""};
+
+function Wave({buf,time,dur,markers,onSeek}){
+  const ref=useRef();
+  useEffect(()=>{const c=ref.current;if(!c)return;const ctx=c.getContext("2d"),w=c.width,h=c.height;ctx.clearRect(0,0,w,h);
+    ctx.fillStyle=P.card;ctx.fillRect(0,0,w,h);
+    ctx.strokeStyle=P.border;ctx.lineWidth=1;for(let i=0;i<w;i+=80){ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,h);ctx.stroke();}
+    if(buf){const d=buf.getChannelData(0),step=Math.max(1,Math.floor(d.length/w));const g=ctx.createLinearGradient(0,0,0,h);g.addColorStop(0,P.cyan+"99");g.addColorStop(.5,P.cyan+"22");g.addColorStop(1,P.cyan+"99");ctx.fillStyle=g;for(let i=0;i<w;i++){const si=i*step;if(si>=d.length)break;let mn=1,mx=-1;for(let j=0;j<step;j++){const v=d[si+j]||0;if(v<mn)mn=v;if(v>mx)mx=v;}ctx.fillRect(i,((1+mx)*h)/2,1.5,((1+mn)*h)/2-((1+mx)*h)/2||1);}}
+    else{ctx.fillStyle=P.cyan+"15";for(let i=0;i<w;i+=2){const a=Math.sin(i*.012)*.3+Math.sin(i*.035)*.2+Math.random()*.08;ctx.fillRect(i,(h-Math.abs(a)*h*.55)/2,1.5,Math.abs(a)*h*.55);}}
+    markers.forEach(m=>{const t=INST.find(x=>x.id===m.type);if(!t||dur<=0)return;const x=(m.time/dur)*w;if(x<0||x>w)return;ctx.strokeStyle=t.c;ctx.lineWidth=1.5;ctx.globalAlpha=.6;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1;ctx.fillStyle=t.c;ctx.beginPath();ctx.moveTo(x-4,0);ctx.lineTo(x+4,0);ctx.lineTo(x,7);ctx.closePath();ctx.fill();});
+    if(dur>0){const px=(time/dur)*w;ctx.strokeStyle=P.cyanGlow;ctx.lineWidth=2;ctx.shadowColor=P.cyanGlow;ctx.shadowBlur=6;ctx.beginPath();ctx.moveTo(px,0);ctx.lineTo(px,h);ctx.stroke();ctx.shadowBlur=0;ctx.fillStyle=P.cyanGlow;ctx.beginPath();ctx.moveTo(px-5,0);ctx.lineTo(px+5,0);ctx.lineTo(px,6);ctx.closePath();ctx.fill();}
+  },[buf,time,dur,markers]);
+  return React.createElement("canvas",{ref,width:1200,height:130,onClick:e=>{const r=ref.current.getBoundingClientRect();onSeek(Math.max(0,Math.min(dur,((e.clientX-r.left)/r.width)*dur)));},style:{width:"100%",height:"130px",borderRadius:"8px",cursor:"crosshair",border:`1px solid ${P.border}`}});
+}
+
+function App(){
+  const[file,setFile]=useState(null);const[buf,setBuf]=useState(null);const[playing,setPlaying]=useState(false);const[time,setTime]=useState(0);const[dur,setDur]=useState(180);const[markers,setMarkers]=useState([]);const[selMarker,setSelMarker]=useState(null);const[note,setNote]=useState("");const[tab,setTab]=useState("timeline");const[projName,setProjName]=useState("Nuevo Proyecto");const[editName,setEditName]=useState(false);const[gf,setGf]=useState(null);const[activeSong,setAS]=useState(0);const[songs,setSongs]=useState(EMPTY_SONGS.map(s=>({...s})));
+  const[credits,setCredits]=useState({...EMPTY_CREDITS});const[sendSt,setSendSt]=useState("idle");const[showReset,setShowReset]=useState(false);
+  // Track if a session was loaded (to show waveform placeholder even without audio file)
+  const[sessionLoaded,setSessionLoaded]=useState(false);
+  const aRef=useRef(),acRef=useRef(),afRef=useRef(),ldRef=useRef();
+
+  const loadAudio=useCallback(async e=>{const f=e.target.files?.[0];if(!f)return;setFile(f);if(!sessionLoaded)setProjName(f.name.replace(/\.[^/.]+$/,""));const url=URL.createObjectURL(f);if(aRef.current){aRef.current.src=url;aRef.current.load();}try{if(!acRef.current)acRef.current=new(window.AudioContext||window.webkitAudioContext)();const d=await acRef.current.decodeAudioData(await f.arrayBuffer());setBuf(d);setDur(d.duration);}catch(e){console.error(e);}},[sessionLoaded]);
+  const play=useCallback(()=>{if(!aRef.current?.src)return;if(playing){aRef.current.pause();cancelAnimationFrame(afRef.current);}else{aRef.current.play();const t=()=>{setTime(aRef.current.currentTime);afRef.current=requestAnimationFrame(t);};t();}setPlaying(!playing);},[playing]);
+  const seek=useCallback(t=>{setTime(t);if(aRef.current&&aRef.current.src)aRef.current.currentTime=t;},[]);
+
+  // Tap instrument = instant mark at current time (with debounce)
+  const lastMarkRef=useRef(0);
+  const addMark=useCallback((typeId)=>{
+    const now=Date.now();
+    if(now-lastMarkRef.current<300)return; // ignore clicks within 300ms
+    lastMarkRef.current=now;
+    setMarkers(p=>[...p,{id:now.toString(),time:parseFloat(time.toFixed(2)),type:typeId,note:""}].sort((a,b)=>a.time-b.time));
+  },[time]);
+
+  useEffect(()=>{const h=e=>{if(["INPUT","TEXTAREA","SELECT"].includes(e.target.tagName))return;if(e.code==="Space"){e.preventDefault();play();}};window.addEventListener("keydown",h);return()=>window.removeEventListener("keydown",h);},[play]);
+
+  const resetAll=()=>{setFile(null);setBuf(null);setPlaying(false);setTime(0);setDur(180);setMarkers([]);setSelMarker(null);setNote("");setTab("timeline");setProjName("Nuevo Proyecto");setEditName(false);setGf(null);setAS(0);setSongs(EMPTY_SONGS.map(s=>({...s})));setCredits({...EMPTY_CREDITS});setSendSt("idle");setShowReset(false);setSessionLoaded(false);if(aRef.current){aRef.current.pause();aRef.current.src="";}};
+  const saveProj=()=>{const p={v:1,name:projName,date:new Date().toISOString(),markers,songs,credits,dur};const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(p,null,2)]));a.download=`${projName.replace(/[^a-zA-Z0-9áéíóúñ ]/gi,"").replace(/\s+/g,"_")}_mix.json`;a.click();};
+  const loadProj=e=>{const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const p=JSON.parse(ev.target.result);if(!p.v){alert("Archivo no válido");return;}setProjName(p.name||"Proyecto");
+    // Ensure markers have numeric time
+    const safeMarkers=(p.markers||[]).map(m=>({...m,time:typeof m.time==="number"?m.time:parseFloat(m.time)||0}));
+    setMarkers(safeMarkers);
+    setSongs(p.songs||EMPTY_SONGS.map(s=>({...s})));setCredits(p.credits||{...EMPTY_CREDITS});
+    if(p.dur)setDur(p.dur);
+    setAS(0);setTab("timeline");setSelMarker(null);setNote("");setSendSt("idle");setSessionLoaded(true);
+    }catch(err){alert("Error: "+err.message);}};r.readAsText(f);e.target.value="";};
+  const send=async()=>{setSendSt("sending");try{await fetch(SHEETS_URL,{method:"POST",body:JSON.stringify({type:"completo",projectName:projName,songName:credits.songName||songs[0]?.name||"",credits,songs,markers:markers.map(m=>({time:fmt(m.time),type:INST.find(x=>x.id===m.type)?.l||m.type,note:m.note||""}))}),mode:"no-cors"});setSendSt("sent");setTimeout(()=>setSendSt("idle"),5000);}catch(err){setSendSt("error");setTimeout(()=>setSendSt("idle"),4000);}};
+
+  const fi=gf?INST.filter(x=>x.g===gf):INST;
+  const song=songs[activeSong];
+  const setSong=fn=>setSongs(s=>{const n=[...s];n[activeSong]=typeof fn==="function"?fn(n[activeSong]):{...n[activeSong],...fn};return n;});
+  const hasData=markers.length>0||credits.songName;
+  const showPlayer=file||sessionLoaded; // Show waveform if audio loaded OR session loaded
+  const inp={padding:"7px 10px",borderRadius:"6px",border:`1px solid ${P.border}`,background:P.card,color:P.text,fontSize:"13px",outline:"none",width:"100%",boxSizing:"border-box"};
+  const lbl={fontSize:"10px",color:P.muted,textTransform:"uppercase",letterSpacing:"1px",marginBottom:"3px",display:"block"};
+  const bi={width:"36px",height:"36px",borderRadius:"8px",border:`1px solid ${P.border}`,background:P.card,color:P.muted,fontSize:"16px",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"};
+
+  return(
+  <div style={{minHeight:"100vh",background:P.bg}}>
+    <audio ref={aRef} onEnded={()=>setPlaying(false)}/>
+    <input ref={ldRef} type="file" accept=".json" onChange={loadProj} style={{display:"none"}}/>
+
+    {showReset&&<div className="modal-overlay" onClick={()=>setShowReset(false)}><div onClick={e=>e.stopPropagation()} style={{background:P.card,borderRadius:"16px",padding:"24px",maxWidth:"360px",width:"100%",boxShadow:"0 8px 40px rgba(0,0,0,.4)",textAlign:"center",border:`1px solid ${P.border}`}}>
+      <div style={{fontSize:"40px",marginBottom:"10px"}}>🔄</div>
+      <div style={{fontSize:"16px",fontWeight:700,marginBottom:"6px",color:P.white}}>¿Nuevo proyecto?</div>
+      <div style={{fontSize:"13px",color:P.muted,marginBottom:"20px",lineHeight:1.5}}>Se borrarán todos los datos.{hasData&&sendSt!=="sent"&&<><br/><b style={{color:"#EF5350"}}>⚠️ Datos sin enviar</b></>}</div>
+      <div style={{display:"flex",gap:"8px"}}>
+        <button onClick={()=>setShowReset(false)} style={{flex:1,padding:"10px",borderRadius:"8px",border:`1px solid ${P.border}`,background:P.card,color:P.muted,fontSize:"13px",cursor:"pointer"}}>Cancelar</button>
+        {hasData&&sendSt!=="sent"&&<button onClick={async()=>{await send();resetAll();}} style={{flex:1,padding:"10px",borderRadius:"8px",border:"none",background:P.gold,color:"#000",fontSize:"13px",fontWeight:700,cursor:"pointer"}}>Enviar + Nuevo</button>}
+        <button onClick={resetAll} style={{flex:1,padding:"10px",borderRadius:"8px",border:"none",background:"#EF5350",color:"#FFF",fontSize:"13px",fontWeight:700,cursor:"pointer"}}>Borrar</button>
+      </div>
+    </div></div>}
+
+    {/* HEADER */}
+    <div style={{padding:"10px 16px",display:"flex",alignItems:"center",justifyContent:"space-between",background:P.card,borderBottom:`1px solid ${P.border}`,gap:"8px",boxShadow:"0 8px 22px rgba(7,28,72,.06)"}}>
+      <div style={{display:"flex",alignItems:"center",gap:"10px",minWidth:0,flex:1}}>
+        <img src="pavoneo-logo.png" alt="" style={{width:"42px",height:"38px",objectFit:"contain",flexShrink:0,filter:"drop-shadow(0 7px 12px rgba(7,28,72,.12))"}}/>
+        <div style={{minWidth:0}}>
+          <div style={{fontSize:"9px",color:P.gold,textTransform:"uppercase",letterSpacing:"2.5px",fontWeight:900}}>Pavoneo 360°</div>
+          {editName?<input value={projName} onChange={e=>setProjName(e.target.value)} onBlur={()=>setEditName(false)} onKeyDown={e=>e.key==="Enter"&&setEditName(false)} autoFocus style={{border:`1px solid ${P.cyan}`,borderRadius:"4px",padding:"2px 8px",fontSize:"14px",fontWeight:700,outline:"none",background:P.cardAlt,color:P.white,width:"100%"}}/>
+          :<div onClick={()=>setEditName(true)} style={{fontSize:"15px",fontWeight:700,cursor:"pointer",color:P.white,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{projName}</div>}
+        </div>
+      </div>
+      <div style={{display:"flex",gap:"5px",flexShrink:0}}>
+        <button onClick={()=>ldRef.current?.click()} title="Abrir" style={bi}>📂</button>
+        <button onClick={saveProj} title="Guardar" style={bi}>💾</button>
+        <button onClick={()=>setShowReset(true)} title="Nuevo" style={bi}>🔄</button>
+        <button onClick={send} disabled={sendSt==="sending"} style={{padding:"6px 14px",borderRadius:"8px",border:"none",background:sendSt==="sent"?"#43A047":sendSt==="error"?"#EF5350":`linear-gradient(135deg,${P.cyan},${P.cyanDark})`,color:"#FFF",fontSize:"12px",fontWeight:700,cursor:sendSt==="sending"?"wait":"pointer",opacity:sendSt==="sending"?.6:1,whiteSpace:"nowrap"}}>
+          {sendSt==="idle"&&"📤 Enviar"}{sendSt==="sending"&&"⏳"}{sendSt==="sent"&&"✅"}{sendSt==="error"&&"❌"}
+        </button>
+      </div>
+    </div>
+
+    <div style={{maxWidth:"1100px",margin:"0 auto",padding:"14px 16px",display:"flex",flexDirection:"column",gap:"12px"}}>
+
+      {/* PLAYER AREA — shows if audio loaded OR session loaded */}
+      {showPlayer?
+        <div style={{background:P.card,borderRadius:"12px",padding:"14px",border:`1px solid ${P.border}`}}>
+          <div style={{display:"flex",alignItems:"center",gap:"12px",marginBottom:"10px"}}>
+            <button onClick={play} disabled={!file} style={{width:"38px",height:"38px",borderRadius:"50%",border:"none",background:file?`linear-gradient(135deg,${P.cyan},${P.cyanDark})`:P.dim,color:"#FFF",fontSize:"14px",cursor:file?"pointer":"default",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:file?`0 2px 12px ${P.cyan}33`:"none",flexShrink:0}}>{playing?"⏸":"▶"}</button>
+            <span style={{fontSize:"22px",fontWeight:300,color:P.cyanGlow,fontVariantNumeric:"tabular-nums"}}>{fmt(time)}</span>
+            <span style={{fontSize:"12px",color:P.dim}}>/ {fmt(dur)}</span>
+            {!file&&sessionLoaded&&<label style={{marginLeft:"auto",padding:"5px 12px",borderRadius:"6px",border:`1px dashed ${P.cyan}44`,color:P.cyan,fontSize:"11px",cursor:"pointer"}}>
+              <input type="file" accept="audio/*" onChange={loadAudio} style={{display:"none"}}/>🎵 Cargar audio
+            </label>}
+          </div>
+          <Wave buf={buf} time={time} dur={dur} markers={markers} onSeek={seek}/>
+        </div>
+      :<label style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:"140px",border:`2px dashed ${P.border}`,borderRadius:"12px",cursor:"pointer",background:P.card,gap:"8px"}}>
+        <input type="file" accept="audio/*" onChange={loadAudio} style={{display:"none"}}/>
+        <div style={{fontSize:"32px",opacity:.4}}>🎵</div>
+        <div style={{fontSize:"13px",color:P.muted}}>Toca para cargar audio</div>
+      </label>}
+
+      {/* TABS */}
+      <div style={{display:"flex",gap:"4px",flexWrap:"wrap"}}>
+        {[["timeline","🎯 Timeline"],["structure","📐 Estructura"],["dynamics","🎼 Dinámicas"],["credits","📋 Créditos"],["stems","🎛️ Pistas"]].map(([id,l])=><button key={id} onClick={()=>setTab(id)} style={{padding:"8px 14px",borderRadius:"8px",border:`1px solid ${tab===id?P.cyan+"44":P.border}`,background:tab===id?P.cyan+"12":P.card,color:tab===id?P.cyanGlow:P.muted,fontSize:"12px",fontWeight:tab===id?700:500,cursor:"pointer"}}>{l}</button>)}
+      </div>
+
+      <div style={{background:P.card,borderRadius:"12px",padding:"16px",border:`1px solid ${P.border}`,minHeight:"200px"}}>
+
+        {/* ═══ TIMELINE ═══ */}
+        {tab==="timeline"&&<div style={{display:"flex",flexDirection:"column",gap:"10px"}}>
+
+          {/* Instrument buttons — tap = instant mark */}
+          {showPlayer&&<>
+            <div style={{display:"flex",gap:"4px",flexWrap:"wrap"}}>
+              <button onClick={()=>setGf(null)} style={{padding:"3px 10px",borderRadius:"16px",border:`1px solid ${!gf?P.cyan+"55":P.border}`,background:!gf?P.cyan+"15":"transparent",color:!gf?P.cyan:P.dim,fontSize:"10px",cursor:"pointer",fontWeight:600}}>Todos</button>
+              {Object.entries(GRP).map(([k,v])=><button key={k} onClick={()=>setGf(gf===k?null:k)} style={{padding:"3px 10px",borderRadius:"16px",border:`1px solid ${gf===k?P.cyan+"55":P.border}`,background:gf===k?P.cyan+"15":"transparent",color:gf===k?P.cyan:P.dim,fontSize:"10px",cursor:"pointer",fontWeight:600}}>{v}</button>)}
+            </div>
+            <div style={{display:"flex",flexWrap:"wrap",gap:"4px"}}>
+              {fi.map(t=><button key={t.id} onClick={()=>addMark(t.id)} style={{padding:"5px 10px",borderRadius:"6px",border:`1.5px solid ${t.c}44`,background:t.c+"12",color:t.c,fontSize:"11px",cursor:"pointer",display:"flex",alignItems:"center",gap:"4px",fontWeight:600}} title={`Marcar ${t.l} en ${fmt(time)}`}><span style={{fontSize:"13px"}}>{t.i}</span>{t.l}</button>)}
+            </div>
+            <div style={{fontSize:"10px",color:P.dim,textAlign:"center"}}>Toca la onda para posicionar · Toca un instrumento para marcar</div>
+          </>}
+
+          {/* Marks list */}
+          {markers.length===0?
+            <div style={{textAlign:"center",padding:"30px 20px",color:P.dim}}>
+              <div style={{fontSize:"28px",marginBottom:"8px"}}>🎯</div>
+              <div style={{fontSize:"13px"}}>{showPlayer?"Toca un instrumento para crear tu primera marca":"Carga un audio o abre un proyecto para empezar"}</div>
+            </div>
+          :<>
+            <div style={{fontSize:"11px",color:P.dim,textTransform:"uppercase",letterSpacing:"1px",marginBottom:"4px"}}>Marcas ({markers.length})</div>
+            <div style={{display:"flex",flexDirection:"column",gap:"3px",maxHeight:"45vh",overflowY:"auto",paddingRight:"4px"}}>
+              {markers.map(m=>{const t=INST.find(x=>x.id===m.type);const sl=selMarker?.id===m.id;return(
+                <div key={m.id} style={{borderRadius:"8px",border:`1px solid ${sl?t?.c+"44":P.border}`,background:sl?t?.c+"08":P.cardAlt,overflow:"hidden",flexShrink:0}}>
+                  <div onClick={()=>{if(sl){setSelMarker(null);setNote("");}else{setSelMarker(m);setNote(m.note||"");seek(m.time);}}} style={{display:"flex",alignItems:"center",gap:"10px",padding:"10px 12px",cursor:"pointer",minHeight:"42px"}}>
+                    <span style={{fontSize:"16px",flexShrink:0}}>{t?.i||"📝"}</span>
+                    <span style={{fontSize:"13px",fontWeight:700,color:t?.c||P.cyan,minWidth:"65px",fontVariantNumeric:"tabular-nums",flexShrink:0}}>{fmt(m.time)}</span>
+                    <span style={{fontSize:"12px",color:P.muted,flex:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{t?.l||m.type}</span>
+                    {m.note&&!sl&&<span style={{fontSize:"11px",color:P.dim,maxWidth:"180px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",flexShrink:0}}>{m.note}</span>}
+                    <span onClick={e=>{e.stopPropagation();setMarkers(p=>p.filter(x=>x.id!==m.id));if(sl)setSelMarker(null);}} style={{fontSize:"13px",color:P.dim,cursor:"pointer",padding:"4px 6px",flexShrink:0}}>✕</span>
+                  </div>
+                  {sl&&<div style={{padding:"8px 12px",borderTop:`1px solid ${P.border}`,background:P.card}}>
+                    <textarea value={note} onChange={e=>{const v=e.target.value;setNote(v);setMarkers(p=>p.map(x=>x.id===m.id?{...x,note:v}:x));}} placeholder="Escribe una nota..." autoFocus style={{width:"100%",minHeight:"50px",border:`1px solid ${P.border}`,borderRadius:"6px",padding:"8px",fontSize:"12px",resize:"vertical",outline:"none",boxSizing:"border-box",background:P.cardAlt,color:P.text}}/>
+                  </div>}
+                </div>);})}
+            </div>
+          </>}
+        </div>}
+
+        {/* ═══ STRUCTURE ═══ */}
+        {tab==="structure"&&<div style={{display:"flex",flexDirection:"column",gap:"12px"}}>
+          <div style={{display:"flex",gap:"6px",alignItems:"center",flexWrap:"wrap"}}>
+            <span style={lbl}>Canción:</span>
+            {songs.map((s,i)=><button key={i} onClick={()=>setAS(i)} style={{padding:"5px 14px",borderRadius:"6px",border:`1.5px solid ${activeSong===i?P.cyan:P.border}`,background:activeSong===i?P.cyan+"15":P.cardAlt,color:activeSong===i?P.cyanGlow:P.muted,fontWeight:700,fontSize:"12px",cursor:"pointer"}}>{s.name}</button>)}
+            <button onClick={()=>{setSongs(s=>[...s,{name:"Canción "+(s.length+1),sections:["Intro","A","B"],takes:["—","—","—"],dynamics:{},cutPoints:[]}]);setAS(songs.length);}} style={{padding:"5px 12px",borderRadius:"6px",border:`1px dashed ${P.cyan}44`,color:P.cyan,fontSize:"11px",cursor:"pointer",background:"transparent"}}>+</button>
+          </div>
+          <div><span style={{fontSize:"10px",color:P.dim}}>Nombre: </span><input value={song.name} onChange={e=>setSong(s=>({...s,name:e.target.value}))} style={{...inp,width:"200px",display:"inline",fontWeight:700}}/></div>
+          <div style={{overflowX:"auto"}}><table style={{width:"100%",borderCollapse:"collapse",fontSize:"12px"}}>
+            <thead><tr><th style={{padding:"8px",textAlign:"left",color:P.muted,fontSize:"10px",borderBottom:`2px solid ${P.cyan}`,background:P.cyan+"08"}}>SECCIÓN</th>{song.sections.map((sc,i)=><th key={i} style={{padding:"8px",borderBottom:`2px solid ${P.cyan}`,background:P.cyan+"08",minWidth:"80px"}}><input value={sc} onChange={e=>{const ns=[...song.sections];ns[i]=e.target.value;setSong(x=>({...x,sections:ns}));}} style={{width:"100%",border:"none",background:"transparent",textAlign:"center",fontWeight:700,fontSize:"12px",color:P.white,outline:"none"}}/></th>)}<th style={{borderBottom:`2px solid ${P.cyan}`}}><button onClick={()=>setSong(s=>({...s,sections:[...s.sections,"Nueva"],takes:[...s.takes,"—"]}))} style={{border:"none",background:"none",color:P.cyan,cursor:"pointer",fontSize:"16px"}}>+</button></th></tr></thead>
+            <tbody><tr><td style={{padding:"8px",fontWeight:600,color:P.muted,fontSize:"10px"}}>TOMA</td>{song.takes.map((t,i)=><td key={i} style={{padding:"4px",textAlign:"center"}}><select value={t} onChange={e=>{const nt=[...song.takes];nt[i]=e.target.value;setSong(x=>({...x,takes:nt}));}} style={{padding:"5px",borderRadius:"5px",border:`1px solid ${P.border}`,fontSize:"11px",background:t==="Tercera"?"#1B5E20":t==="Penúltima"?"#4A148C":t==="Última"?"#0D47A1":P.cardAlt,color:P.text,cursor:"pointer",fontWeight:600}}>{["—","Primera","Segunda","Tercera","Penúltima","Última"].map(o=><option key={o}>{o}</option>)}</select></td>)}</tr></tbody>
+          </table></div>
+          {song.cutPoints?.length>0&&<div>{song.cutPoints.map((cp,i)=><div key={i} style={{display:"flex",gap:"10px",alignItems:"center",padding:"8px 12px",borderRadius:"6px",background:P.cardAlt,border:`1px solid ${P.border}`,marginBottom:"4px"}}><span style={{fontWeight:700,color:P.cyanGlow,fontSize:"13px",minWidth:"110px"}}>{cp.time}</span><span style={{fontSize:"12px"}}>{cp.note}</span></div>)}</div>}
+        </div>}
+
+        {/* ═══ DYNAMICS ═══ */}
+        {tab==="dynamics"&&<div style={{display:"flex",flexDirection:"column",gap:"12px"}}>
+          <div style={{display:"flex",gap:"6px",alignItems:"center",flexWrap:"wrap"}}>
+            <span style={lbl}>Canción:</span>
+            {songs.map((s,i)=><button key={i} onClick={()=>setAS(i)} style={{padding:"5px 14px",borderRadius:"6px",border:`1.5px solid ${activeSong===i?P.gold:P.border}`,background:activeSong===i?P.gold+"15":P.cardAlt,color:activeSong===i?P.gold:P.muted,fontWeight:700,fontSize:"12px",cursor:"pointer"}}>{s.name}</button>)}
+          </div>
+          <div style={{overflowX:"auto"}}><table style={{width:"100%",borderCollapse:"collapse",fontSize:"12px"}}>
+            <thead><tr><th style={{padding:"8px",textAlign:"left",color:P.muted,fontSize:"10px",borderBottom:`2px solid ${P.gold}`,background:P.gold+"08"}}>INSTRUMENTO</th>{song.sections.map((sc,i)=><th key={i} style={{padding:"8px",borderBottom:`2px solid ${P.gold}`,background:P.gold+"08",fontWeight:700,fontSize:"11px",color:P.white}}>{sc}</th>)}</tr></thead>
+            <tbody>{Object.keys(song.dynamics||{}).map(inst=><tr key={inst} style={{borderBottom:`1px solid ${P.border}`}}><td style={{padding:"8px",fontWeight:700,fontSize:"12px",color:P.white}}>{inst}</td>{song.dynamics[inst].map((role,i)=><td key={i} style={{padding:"4px",textAlign:"center"}}><select value={role} onChange={e=>{const nd={...song.dynamics};nd[inst]=[...nd[inst]];nd[inst][i]=e.target.value;setSong(x=>({...x,dynamics:nd}));}} style={{padding:"4px",borderRadius:"4px",border:`1px solid ${P.border}`,fontSize:"11px",background:RCbg[role]||P.cardAlt,color:P.white,cursor:"pointer",fontWeight:600,width:"100%"}}>{ROLES.map(r=><option key={r}>{r}</option>)}</select></td>)}</tr>)}</tbody>
+          </table></div>
+          <button onClick={()=>{const n=prompt("Instrumento:");if(n)setSong(s=>({...s,dynamics:{...s.dynamics,[n]:s.sections.map(()=>"Principal")}}));}} style={{padding:"6px 16px",borderRadius:"6px",border:`1px dashed ${P.gold}`,background:"transparent",color:P.gold,fontSize:"12px",cursor:"pointer",fontWeight:600,alignSelf:"flex-start"}}>+ Instrumento</button>
+          <div style={{display:"flex",gap:"6px",flexWrap:"wrap"}}>{ROLES.map(r=><span key={r} style={{padding:"3px 10px",borderRadius:"4px",background:RCbg[r],fontSize:"11px",fontWeight:600,color:P.white}}>{r}</span>)}</div>
+        </div>}
+
+        {/* ═══ CREDITS ═══ */}
+        {tab==="credits"&&<div style={{display:"flex",flexDirection:"column",gap:"12px"}}>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"8px"}}>{[["songName","Canción"],["albumName","Álbum/EP"],["projectName","Proyecto/Banda"],["genre","Género"],["year","Año"],["label","Sello"],["isrc","ISRC"],["upc","UPC"]].map(([k,l])=><div key={k}><span style={lbl}>{l}</span><input value={credits[k]||""} onChange={e=>setCredits(c=>({...c,[k]:e.target.value}))} style={inp} placeholder={l}/></div>)}</div>
+          <div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"6px"}}><span style={lbl}>Integrantes</span><button onClick={()=>setCredits(c=>({...c,members:[...c.members,{name:"",role:"",instruments:""}]}))} style={{padding:"3px 12px",borderRadius:"5px",border:`1px solid ${P.cyan}33`,background:P.cyan+"10",color:P.cyan,fontSize:"11px",cursor:"pointer"}}>+</button></div>
+            {credits.members.map((m,i)=><div key={i} style={{display:"flex",gap:"5px",marginBottom:"5px"}}><input value={m.name} onChange={e=>{const ms=[...credits.members];ms[i]={...ms[i],name:e.target.value};setCredits(c=>({...c,members:ms}));}} placeholder="Nombre" style={{...inp,flex:1}}/><input value={m.role} onChange={e=>{const ms=[...credits.members];ms[i]={...ms[i],role:e.target.value};setCredits(c=>({...c,members:ms}));}} placeholder="Rol" style={{...inp,flex:1}}/><input value={m.instruments} onChange={e=>{const ms=[...credits.members];ms[i]={...ms[i],instruments:e.target.value};setCredits(c=>({...c,members:ms}));}} placeholder="Instrumentos" style={{...inp,flex:1}}/><span onClick={()=>setCredits(c=>({...c,members:c.members.filter((_,j)=>j!==i)}))} style={{color:P.dim,cursor:"pointer",padding:"6px"}}>✕</span></div>)}
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"8px"}}>{[["producer","Productor"],["mixer","Mezcla"],["mastering","Mastering"],["recordingStudio","Estudio"],["composer","Compositor"],["lyricist","Letrista"],["arranger","Arreglista"],["videoDirector","Dir. Video"]].map(([k,l])=><div key={k}><span style={lbl}>{l}</span><input value={credits[k]||""} onChange={e=>setCredits(c=>({...c,[k]:e.target.value}))} style={inp} placeholder={l}/></div>)}</div>
+        </div>}
+
+        {/* ═══ STEMS ═══ */}
+        {tab==="stems"&&<div style={{display:"flex",flexDirection:"column",gap:"14px"}}>
+          <div style={{display:"flex",alignItems:"center",gap:"12px",padding:"16px",borderRadius:"10px",background:`linear-gradient(135deg,${P.cyan}12,${P.gold}08)`,border:`1px solid ${P.cyan}22`}}>
+            <span style={{fontSize:"28px"}}>🎛️</span>
+            <div><div style={{fontSize:"15px",fontWeight:700,color:P.white}}>Separar pistas con IA</div><div style={{fontSize:"12px",color:P.muted}}>Usa tu cuenta de Moises.ai</div></div>
+          </div>
+          <a href="https://studio.moises.ai/" target="_blank" rel="noopener noreferrer" style={{display:"flex",alignItems:"center",justifyContent:"center",gap:"8px",padding:"14px",borderRadius:"8px",textDecoration:"none",background:`linear-gradient(135deg,${P.cyan},${P.cyanDark})`,color:"#FFF",fontSize:"15px",fontWeight:700,boxShadow:`0 4px 20px ${P.cyan}33`}}>🎵 Abrir Moises.ai</a>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"6px"}}>{[{i:"🎤",n:"Voces",c:"#FFCA28"},{i:"🥁",n:"Batería",c:"#EF5350"},{i:"🎸",n:"Bajo",c:"#66BB6A"},{i:"⚡",n:"Guitarra",c:"#FFA726"},{i:"🎹",n:"Piano",c:"#7986CB"},{i:"🎷",n:"Vientos",c:P.gold},{i:"🎻",n:"Cuerdas",c:"#EF5350"},{i:"🎵",n:"Otros",c:"#90A4AE"}].map(x=><div key={x.n} style={{display:"flex",alignItems:"center",gap:"8px",padding:"8px 12px",borderRadius:"6px",background:P.cardAlt,border:`1px solid ${P.border}`}}><span style={{fontSize:"18px"}}>{x.i}</span><span style={{fontSize:"12px",fontWeight:700,color:x.c}}>{x.n}</span></div>)}</div>
+          <div style={{padding:"10px",borderRadius:"6px",background:P.gold+"0A",border:`1px solid ${P.gold}22`,fontSize:"11px",color:P.muted}}><b style={{color:P.gold}}>💡</b> Gratis (5/mes) · Premium $3.99/mes · Pro $9.99/mes</div>
+        </div>}
+      </div>
+    </div>
+
+    <div style={{padding:"8px 16px",textAlign:"center",fontSize:"10px",color:P.dim,borderTop:`1px solid ${P.border}`,background:P.card,marginTop:"16px"}}>
+      <span style={{color:P.cyan,fontWeight:700}}>Artes Búho</span> · <span style={{color:P.gold,fontWeight:700}}>Pavoneo 360°</span> · Mix Studio
+    </div>
+  </div>);
+}
+ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
+</script>
+</body>
+</html>
