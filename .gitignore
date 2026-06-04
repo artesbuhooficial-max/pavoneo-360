@@ -1,0 +1,15 @@
+# Local/private material. Never publish RGPD, contracts, transcripts, or private PDFs.
+private/**
+!private/
+!private/README.md
+!private/artistas/
+!private/artistas/.gitkeep
+
+# JSON exported by the office UI before validation/sync.
+inbox/*.json
+exports/*.json
+
+# Local OS/editor noise.
+.DS_Store
+Thumbs.db
+.vscode/

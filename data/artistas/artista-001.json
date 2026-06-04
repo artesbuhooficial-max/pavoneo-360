@@ -1,0 +1,36 @@
+{
+  "artistId": "artista-001",
+  "displayName": "Nombre del artista",
+  "pack": "basico",
+  "currentStep": "contacto",
+  "unlockedUntil": "contacto",
+  "updatedAt": "2026-06-04",
+  "publicLinks": {
+    "infoMaestra": "",
+    "materialesPublicos": "",
+    "artifactCloud": ""
+  },
+  "steps": {
+    "contacto": {
+      "status": "active",
+      "updatedAt": "2026-06-04",
+      "checks": {
+        "meetingDone": false,
+        "infoCollected": false,
+        "pdfGenerated": false,
+        "rgpdReviewed": false
+      }
+    },
+    "pack": { "status": "todo" },
+    "formulario": { "status": "todo" },
+    "consultoria": { "status": "todo" },
+    "infomaestra": { "status": "todo" },
+    "briefing": { "status": "todo" },
+    "grabacion": { "status": "todo" },
+    "postproduccion": { "status": "todo" },
+    "lanzamiento": { "status": "todo" },
+    "entrega": { "status": "todo" },
+    "inversion": { "status": "todo" },
+    "cierre": { "status": "todo" }
+  }
+}

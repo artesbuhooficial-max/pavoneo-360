@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pavoneo 360 · Panel de Proceso</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,900&family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --cream:#f7f2e5;
+      --cream-2:#fff8e8;
+      --paper:#ffffff;
+      --ink:#071c48;
+      --ink-2:#24406e;
+      --muted:#6a7ea6;
+      --blue:#0757d8;
+      --blue-2:#0b66ff;
+      --blue-soft:#eaf2ff;
+      --gold:#e8b83e;
+      --gold-soft:#fff5d7;
+      --terra:#d59a18;
+      --red:#b64848;
+      --red-soft:#ffe8e8;
+      --teal:#1b9a8a;
+      --teal-soft:#e8fbf7;
+      --violet:#6a4aa0;
+      --violet-soft:#f0ecff;
+      --sage:#456c8f;
+      --sage-soft:#eef5fb;
+      --border:#d8e3f5;
+      --shadow:0 14px 38px rgba(7,28,72,.1);
+      --shadow-soft:0 8px 22px rgba(7,28,72,.06);
+      --radius:8px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:"DM Sans",Arial,sans-serif;
+      color:var(--ink);
+      background:linear-gradient(135deg,#f8fbff 0%,#ffffff 46%,#fff7df 100%);
+    }
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    a{color:inherit}
+    .app{display:flex;min-height:100vh}
+    .sidebar{
+      width:274px;
+      min-width:274px;
+      height:100vh;
+      position:sticky;
+      top:0;
+      overflow:auto;
+      background:linear-gradient(180deg,#0757d8 0%,#054cc2 54%,#03378e 100%);
+      color:#fff;
+      box-shadow:10px 0 34px rgba(7,87,216,.16);
+      scrollbar-width:none;
+    }
+    .sidebar::-webkit-scrollbar{display:none}
+    .sb-head{padding:26px 18px 18px;border-bottom:1px solid rgba(255,255,255,.14)}
+    .brand-lockup{display:flex;align-items:center;gap:12px;margin-bottom:15px}
+    .brand-mark{
+      width:64px;
+      height:58px;
+      flex:0 0 auto;
+      border-radius:8px;
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+      filter:drop-shadow(0 10px 16px rgba(0,0,0,.13));
+    }
+    .brand-mark img{width:100%;height:100%;object-fit:contain;display:block}
+    .brand-word{font-size:18px;font-weight:900;line-height:.86;letter-spacing:-.05em;color:var(--cream-2)}
+    .brand-word span{display:block}
+    .brand-note{margin-top:6px;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,248,232,.66);font-weight:700}
+    .artist-box{
+      background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.22);
+      border-radius:10px;
+      padding:12px 13px;
+    }
+    .artist-label{font-size:9px;letter-spacing:.17em;text-transform:uppercase;color:rgba(255,255,255,.45);font-weight:700}
+    .artist-name{margin-top:4px;font-size:18px;font-weight:900;line-height:1.12;color:#fff}
+    .artist-sub{margin-top:3px;font-size:11px;color:rgba(255,255,255,.66)}
+    .artist-badge{
+      display:inline-flex;
+      margin-top:10px;
+      padding:4px 10px;
+      border-radius:999px;
+      background:var(--cream-2);
+      color:var(--blue);
+      font-size:9px;
+      font-weight:900;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+    .sidebar nav{padding:14px 0 18px}
+    .ng-label{padding:10px 22px 5px;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,248,232,.7);font-weight:800}
+    .ni{
+      display:flex;
+      align-items:center;
+      gap:9px;
+      padding:9px 22px;
+      margin:1px 9px;
+      border-left:2px solid transparent;
+      border-radius:8px;
+      color:rgba(255,255,255,.82);
+      font-size:12.5px;
+      font-weight:500;
+      text-decoration:none;
+      transition:.16s;
+    }
+    .ni:hover,.ni.active{background:rgba(255,255,255,.12);color:#fff;text-decoration:none}
+    .ni.active{background:var(--cream-2);color:var(--blue);border-left-color:var(--cream-2);font-weight:900;box-shadow:0 8px 20px rgba(0,0,0,.14)}
+    .ni .ic{
+      width:14px;
+      height:14px;
+      border-radius:50%;
+      border:2px solid currentColor;
+      opacity:.7;
+      flex:0 0 auto;
+    }
+    .sb-foot{padding:16px 22px;border-top:1px solid rgba(255,255,255,.12);font-size:11px;color:rgba(255,255,255,.72);line-height:1.5}
+    .sb-foot strong{color:#fff}
+    .main{flex:1;min-width:0;padding:28px 34px 68px}
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:18px;
+      margin-bottom:18px;
+    }
+    .title-block{min-width:0}
+    .eyebrow{font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--blue);font-weight:900;margin-bottom:7px}
+    h1{margin:0;font-size:42px;line-height:.98;letter-spacing:-.045em;font-weight:900}
+    h1 em{font-family:"Playfair Display",serif;color:var(--gold);font-style:italic;font-weight:700}
+    .subtitle{margin-top:8px;color:var(--ink-2);font-weight:600}
+    .mode-switch{
+      display:flex;
+      gap:4px;
+      padding:4px;
+      border:1px solid var(--border);
+      background:#fff;
+      border-radius:8px;
+      box-shadow:var(--shadow-soft);
+      flex:0 0 auto;
+    }
+    .mode-btn{
+      border:0;
+      background:transparent;
+      color:var(--muted);
+      padding:8px 12px;
+      border-radius:6px;
+      font-size:12px;
+      font-weight:800;
+    }
+    .mode-btn.active{background:var(--blue);color:#fff}
+    .hero{
+      position:relative;
+      overflow:hidden;
+      border:1px solid rgba(216,227,245,.95);
+      background:linear-gradient(135deg,#fff 0%,#fff 58%,#fff3c9 100%);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:26px 28px;
+      margin-bottom:18px;
+    }
+    .hero:before{
+      content:"360";
+      position:absolute;
+      right:26px;
+      top:14px;
+      font-family:"Playfair Display",serif;
+      font-size:108px;
+      line-height:1;
+      font-weight:700;
+      color:rgba(7,87,216,.06);
+      pointer-events:none;
+    }
+    .hero-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:26px;position:relative}
+    .hero h2{margin:0 0 8px;font-size:22px;line-height:1.12;font-weight:900;letter-spacing:-.02em}
+    .hero p{margin:0;color:var(--ink-2);max-width:780px;font-size:14px}
+    .meta-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+    .field{display:flex;flex-direction:column;gap:4px}
+    .field label{font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--blue);font-weight:900}
+    .field input,.field select{
+      width:100%;
+      border:1px solid var(--border);
+      border-radius:8px;
+      background:#fff;
+      color:var(--ink);
+      padding:8px 10px;
+      min-height:36px;
+      box-shadow:0 6px 15px rgba(7,87,216,.04);
+    }
+    .kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:16px 0 20px}
+    .kpi{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:8px;
+      padding:14px 14px 12px;
+      box-shadow:var(--shadow-soft);
+      min-height:84px;
+    }
+    .kpi-value{font-family:"Playfair Display",serif;font-size:29px;line-height:1;color:var(--blue);font-weight:700}
+    .kpi-label{margin-top:6px;font-size:9px;letter-spacing:.13em;text-transform:uppercase;font-weight:900;color:var(--muted)}
+    .controls{
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      gap:8px;
+      margin:0 0 16px;
+    }
+    .chip,.action-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+      min-height:34px;
+      border:1px solid var(--border);
+      border-radius:8px;
+      background:#fff;
+      color:var(--ink-2);
+      padding:7px 12px;
+      font-size:12px;
+      font-weight:800;
+      box-shadow:0 6px 15px rgba(7,87,216,.04);
+      transition:.14s;
+    }
+    .chip:hover,.action-btn:hover{border-color:var(--blue-2);color:var(--blue);background:var(--blue-soft)}
+    .chip.active{background:var(--ink);border-color:var(--ink);color:#fff}
+    .action-btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+    .action-btn.primary:hover{background:#0447b9;color:#fff}
+    .action-btn.warn{background:var(--gold-soft);border-color:#f2d06a;color:#7b5b00}
+    .action-btn.ghost{background:transparent}
+    .action-btn:disabled,.icon-btn:disabled{opacity:.48;cursor:not-allowed}
+    .dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block;flex:0 0 auto}
+    .process-list{display:grid;gap:10px}
+    .step-card{
+      background:#fff;
+      border:1px solid var(--border);
+      border-left:4px solid var(--blue);
+      border-radius:8px;
+      box-shadow:var(--shadow-soft);
+      overflow:hidden;
+    }
+    .step-card[data-status="done"]{border-left-color:var(--teal)}
+    .step-card[data-status="active"]{border-left-color:var(--gold)}
+    .step-card[data-status="blocked"]{border-left-color:var(--red)}
+    .step-head{
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      gap:12px;
+      align-items:center;
+      padding:13px 14px;
+      border-bottom:1px solid rgba(216,227,245,.72);
+    }
+    .num{
+      width:30px;
+      height:30px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:var(--blue-soft);
+      color:var(--blue);
+      font-family:"DM Mono",monospace;
+      font-size:12px;
+      font-weight:500;
+    }
+    .step-title-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+    .step-title{font-size:15px;font-weight:900;color:var(--ink)}
+    .step-meta{margin-top:2px;font-size:11px;color:var(--muted)}
+    .status-pill,.small-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      min-height:24px;
+      border-radius:999px;
+      padding:4px 9px;
+      font-size:10px;
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+    .status-pill{border:1px solid var(--border);background:var(--cream-2);color:var(--muted)}
+    .status-pill.active{background:#fff3c4;border-color:#e8b83e;color:#775700}
+    .status-pill.done{background:var(--teal-soft);border-color:#8edbcf;color:#087366}
+    .status-pill.blocked{background:var(--red-soft);border-color:#f0aaaa;color:#9a2f2f}
+    .small-pill.basic{background:var(--sage-soft);color:var(--sage)}
+    .small-pill.premium{background:var(--gold-soft);color:#7c5b00}
+    .small-pill.both{background:var(--blue-soft);color:var(--blue)}
+    .step-actions{display:flex;align-items:center;gap:7px;justify-content:flex-end;flex-wrap:wrap}
+    .icon-btn{
+      width:32px;
+      height:32px;
+      border-radius:8px;
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--muted);
+      display:grid;
+      place-items:center;
+      font-weight:900;
+    }
+    .icon-btn:hover{color:var(--blue);border-color:var(--blue-2);background:var(--blue-soft)}
+    .step-body{
+      display:grid;
+      grid-template-columns:1.05fr .95fr;
+      gap:14px;
+      padding:14px;
+    }
+    .block-title{font-size:9px;letter-spacing:.15em;text-transform:uppercase;font-weight:900;color:var(--muted);margin-bottom:8px}
+    .todo-list,.alert-list{display:grid;gap:7px;margin:0;padding:0;list-style:none}
+    .todo-list li{
+      position:relative;
+      padding-left:15px;
+      color:var(--ink-2);
+      font-size:12.5px;
+      line-height:1.42;
+    }
+    .todo-list li:before{
+      content:"";
+      position:absolute;
+      left:0;
+      top:.58em;
+      width:6px;
+      height:2px;
+      border-radius:2px;
+      background:var(--blue);
+    }
+    .alert-item{
+      border-radius:8px;
+      padding:8px 10px;
+      color:var(--ink-2);
+      font-size:12px;
+      line-height:1.35;
+      border:1px solid var(--border);
+      background:var(--sage-soft);
+    }
+    .alert-item.critical{background:var(--red-soft);border-color:#efb1b1;color:#8d2b2b}
+    .alert-item.important{background:#fff1b8;border-color:#eed273;color:#6d5300}
+    .alert-item.info{background:var(--blue-soft);border-color:#bfd5ff;color:#17487f}
+    .alert-item.premium{background:var(--gold-soft);border-color:#f0d789;color:#775500}
+    .step-footer{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:0 14px 14px;
+      flex-wrap:wrap;
+    }
+    .handoff{font-size:11px;color:var(--muted)}
+    .handoff strong{color:var(--ink)}
+    .send-btn{
+      border:1px solid var(--blue);
+      background:var(--blue);
+      color:#fff;
+      border-radius:8px;
+      min-height:34px;
+      padding:7px 11px;
+      font-size:12px;
+      font-weight:900;
+      box-shadow:0 9px 18px rgba(7,87,216,.15);
+    }
+    .send-btn:hover{background:#0449bd;border-color:#0449bd}
+    .office-step-nav{display:grid;gap:5px}
+    .page-nav-btn{
+      width:calc(100% - 18px);
+      margin:1px 9px;
+      border:0;
+      border-left:2px solid transparent;
+      border-radius:8px;
+      background:transparent;
+      color:rgba(255,255,255,.82);
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      gap:8px;
+      align-items:center;
+      padding:8px 12px;
+      text-align:left;
+      font-size:12px;
+      font-weight:700;
+    }
+    .page-nav-btn:hover{background:rgba(255,255,255,.12);color:#fff}
+    .page-nav-btn.active{background:var(--cream-2);color:var(--blue);border-left-color:var(--cream-2);box-shadow:0 8px 20px rgba(0,0,0,.14)}
+    .page-nav-num{font-family:"DM Mono",monospace;font-size:10px;opacity:.76}
+    .page-nav-status{width:8px;height:8px;border-radius:50%;background:currentColor;opacity:.7}
+    .page-nav-btn[data-status="done"] .page-nav-status{background:#51d3c0;opacity:1}
+    .page-nav-btn[data-status="active"] .page-nav-status{background:var(--gold);opacity:1}
+    .page-nav-btn[data-status="blocked"] .page-nav-status{background:#ff9c9c;opacity:1}
+    .page-shell{display:grid;gap:14px}
+    .page-card{
+      background:#fff;
+      border:1px solid var(--border);
+      border-left:4px solid var(--blue);
+      border-radius:10px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .page-card[data-status="done"]{border-left-color:var(--teal)}
+    .page-card[data-status="active"]{border-left-color:var(--gold)}
+    .page-card[data-status="blocked"]{border-left-color:var(--red)}
+    .page-head{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:18px;
+      align-items:start;
+      padding:22px;
+      border-bottom:1px solid rgba(216,227,245,.8);
+      background:linear-gradient(135deg,#fff 0%,#fff 68%,#fff8e8 100%);
+    }
+    .page-count{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);font-weight:900;margin-bottom:8px}
+    .page-title{margin:0;font-size:28px;line-height:1.05;letter-spacing:-.035em;font-weight:900;color:var(--ink)}
+    .page-intro{margin:9px 0 0;color:var(--ink-2);font-size:14px;max-width:760px}
+    .page-badges{display:flex;flex-wrap:wrap;gap:7px;justify-content:flex-end}
+    .page-grid{
+      display:grid;
+      grid-template-columns:minmax(0,1.05fr) minmax(320px,.95fr);
+      gap:16px;
+      padding:18px;
+    }
+    .process-panel,.gate-panel,.artifact-panel{
+      border:1px solid var(--border);
+      background:#fff;
+      border-radius:8px;
+      padding:14px;
+      box-shadow:var(--shadow-soft);
+    }
+    .gate-panel{background:linear-gradient(135deg,#fff 0%,#fffdf6 100%)}
+    .gate-list{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+    .gate-row{
+      display:grid;
+      grid-template-columns:auto 1fr;
+      gap:9px;
+      align-items:start;
+      padding:9px 10px;
+      border-radius:8px;
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--ink-2);
+      font-size:12.5px;
+      line-height:1.38;
+    }
+    .gate-row input{margin-top:2px;accent-color:var(--blue)}
+    .artifact-panel{margin-top:12px;background:var(--blue-soft)}
+    .artifact-title{font-size:13px;font-weight:900;color:var(--ink);margin-bottom:4px}
+    .artifact-note{font-size:12px;color:var(--ink-2);line-height:1.4;margin-bottom:10px}
+    .page-footer{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      padding:0 18px 18px;
+    }
+    .page-move{display:flex;gap:8px;flex-wrap:wrap}
+    .client-note{
+      border:1px solid #f0d789;
+      background:var(--gold-soft);
+      color:#735500;
+      border-radius:8px;
+      padding:10px 12px;
+      font-size:12px;
+      font-weight:800;
+      margin-bottom:12px;
+    }
+    .client-status{display:none}
+    .client-only{display:none!important}
+    .client-mode .client-only{display:initial!important}
+    .client-mode .client-status{display:inline-flex}
+    .client-mode .sidebar nav,.client-mode .sb-foot,.client-mode .office-only,.client-mode .internal-only{display:none!important}
+    .client-mode .sidebar{height:auto;position:relative;width:100%;min-width:0}
+    .app.client-mode{display:block}
+    .client-mode .main{padding:20px 16px 52px}
+    .client-mode .meta-grid,.client-mode .kpis,.client-mode .controls,.client-mode .summary-band{display:none!important}
+    .client-mode .hero{padding:20px}
+    .client-mode .hero h2{font-size:19px}
+    .client-mode .hero:before{display:none}
+    .client-mode .page-head{grid-template-columns:1fr}
+    .client-mode .page-badges{justify-content:flex-start}
+    .client-mode .page-grid{grid-template-columns:1fr}
+    .client-mode .page-card{border-left-color:var(--teal)}
+    .client-mode .internal-only{display:none!important}
+    .client-mode .step-body{grid-template-columns:1fr}
+    .client-mode .step-card{border-left-color:var(--teal)}
+    .summary-band{
+      margin-top:22px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+    }
+    .section-box{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:8px;
+      box-shadow:var(--shadow-soft);
+      padding:16px;
+    }
+    .section-box h3{margin:0 0 12px;font-size:17px;letter-spacing:-.01em}
+    .incident-groups{display:grid;gap:8px}
+    .incident-row{
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      gap:10px;
+      align-items:start;
+      padding:9px 10px;
+      border-radius:8px;
+      border:1px solid var(--border);
+      background:var(--sage-soft);
+      font-size:12px;
+    }
+    .incident-row strong{font-size:10px;font-family:"DM Mono",monospace;color:var(--muted)}
+    .incident-row .src{font-size:10px;color:var(--muted);white-space:nowrap}
+    .incident-row.critical{background:var(--red-soft);border-color:#efb1b1;color:#8d2b2b}
+    .incident-row.important{background:#fff1b8;border-color:#eed273;color:#6d5300}
+    .incident-row.info{background:var(--blue-soft);border-color:#bfd5ff;color:#17487f}
+    .unlock-grid{display:grid;gap:8px}
+    .unlock{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:8px;
+      align-items:center;
+      padding:10px;
+      border-radius:8px;
+      border:1px solid var(--border);
+      background:var(--cream-2);
+    }
+    .unlock-title{font-weight:900;font-size:13px}
+    .unlock-note{font-size:11px;color:var(--muted);margin-top:2px}
+    .lock-pill{
+      border-radius:999px;
+      padding:5px 9px;
+      font-size:10px;
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      background:#fff;
+      color:var(--muted);
+      border:1px solid var(--border);
+    }
+    .lock-pill.open{background:var(--teal-soft);border-color:#8edbcf;color:#087366}
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      z-index:200;
+      display:none;
+      place-items:center;
+      padding:20px;
+      background:rgba(7,28,72,.46);
+      backdrop-filter:blur(8px);
+    }
+    .modal-backdrop.open{display:grid}
+    .modal{
+      width:min(760px,100%);
+      max-height:min(760px,90vh);
+      overflow:auto;
+      border-radius:12px;
+      background:#fff;
+      color:var(--ink);
+      box-shadow:0 26px 80px rgba(7,28,72,.28);
+      border:1px solid var(--border);
+    }
+    .modal-head{
+      padding:18px 20px;
+      border-bottom:1px solid var(--border);
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      align-items:center;
+      background:linear-gradient(135deg,#fff 0%,#fff8e8 100%);
+    }
+    .modal-title{font-size:18px;font-weight:900}
+    .modal-body{padding:18px 20px}
+    .safe-note{
+      padding:10px 12px;
+      border-radius:8px;
+      background:var(--gold-soft);
+      border:1px solid #f0d789;
+      color:#735500;
+      font-size:12px;
+      font-weight:700;
+      margin-bottom:12px;
+    }
+    textarea.prompt{
+      width:100%;
+      min-height:260px;
+      resize:vertical;
+      border:1px solid var(--border);
+      border-radius:8px;
+      padding:12px;
+      font-family:"DM Mono",Consolas,monospace;
+      font-size:12px;
+      line-height:1.55;
+      color:var(--ink);
+      background:#fbfdff;
+    }
+    .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px;flex-wrap:wrap}
+    .toast{
+      position:fixed;
+      right:22px;
+      bottom:22px;
+      z-index:260;
+      transform:translateY(20px);
+      opacity:0;
+      pointer-events:none;
+      border-radius:8px;
+      background:var(--ink);
+      color:#fff;
+      padding:10px 13px;
+      font-size:12px;
+      font-weight:800;
+      transition:.18s;
+      box-shadow:0 14px 34px rgba(7,28,72,.25);
+    }
+    .toast.show{opacity:1;transform:translateY(0)}
+    .hidden{display:none!important}
+    @media(max-width:1160px){
+      .hero-grid,.step-body,.summary-band{grid-template-columns:1fr}
+      .kpis{grid-template-columns:repeat(3,minmax(0,1fr))}
+    }
+    @media(max-width:820px){
+      .app{display:block}
+      .sidebar{width:100%;min-width:0;height:auto;position:relative}
+      .main{padding:20px 16px 52px}
+      .topbar{display:grid}
+      h1{font-size:35px}
+      .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .step-head{grid-template-columns:auto 1fr}
+      .step-actions{grid-column:1 / -1;justify-content:flex-start}
+      .meta-grid{grid-template-columns:1fr}
+      .hero:before{display:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+    <aside class="sidebar">
+      <div class="sb-head">
+        <div class="brand-lockup" aria-label="Artes Buho Pavoneo 360">
+          <div class="brand-mark" aria-hidden="true"><img src="pavoneo-logo.png" alt=""></div>
+          <div>
+            <div class="brand-word"><span>Pavoneo</span><span>360</span></div>
+            <div class="brand-note">Artes Buho Management</div>
+          </div>
+        </div>
+        <div class="artist-box">
+          <div class="artist-label">Expediente activo</div>
+          <div class="artist-name" id="sideArtist">Nombre del artista</div>
+          <div class="artist-sub" id="sidePack">Pack por definir · Oficina AB</div>
+          <div class="artist-badge">Seguimiento</div>
+        </div>
+      </div>
+      <nav>
+        <div class="ng-label">Proceso</div>
+        <div class="office-step-nav" id="officeStepNav"></div>
+        <div class="ng-label">Modo de trabajo</div>
+        <a class="ni" href="#incidencias"><span class="ic"></span> Alertas y desbloqueos</a>
+      </nav>
+      <div class="sb-foot">
+        <strong>Cabina Nivel 1</strong><br>
+        Panel estático con instrucciones preparadas para subagentes. No ejecuta automatizaciones.
+      </div>
+    </aside>
+
+    <main class="main">
+      <section id="panel">
+        <div class="topbar">
+          <div class="title-block">
+            <div class="eyebrow">Artes Buho · Protocolo operativo</div>
+            <h1>Comienza <em>Pavoneo</em></h1>
+            <div class="subtitle">Seguimiento de artista desde contacto inicial hasta cierre, consultoría final y siguientes servicios.</div>
+          </div>
+          <div class="mode-switch" aria-label="Modo de visualización">
+            <button class="mode-btn active" type="button" data-mode="office" onclick="setMode('office')">Oficina</button>
+            <button class="mode-btn" type="button" data-mode="client" onclick="setMode('client')">Artista</button>
+          </div>
+        </div>
+
+        <div class="hero">
+          <div class="hero-grid">
+            <div>
+              <h2><span class="internal-only">Panel de mando para cada expediente Pavoneo</span><span class="client-only">Tu proceso Pavoneo paso a paso</span></h2>
+              <p><span class="internal-only">La oficina ve responsables, alertas, bloqueos y próximos movimientos. El artista puede entender el recorrido sin entrar en las capas internas de automatización.</span><span class="client-only">Cada pantalla corresponde a un momento concreto. Avanzaremos solo cuando el bloque actual esté revisado y listo.</span></p>
+            </div>
+            <div class="meta-grid">
+              <div class="field">
+                <label for="artistName">Artista / proyecto</label>
+                <input id="artistName" value="Nombre del artista" oninput="saveMeta()">
+              </div>
+              <div class="field">
+                <label for="artistPack">Pack</label>
+                <select id="artistPack" onchange="saveMeta()">
+                  <option>Básico · 950 €</option>
+                  <option>Premium · 1.450 €</option>
+                  <option>Por definir</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="ownerName">Responsable oficina</label>
+                <input id="ownerName" value="Equipo AB" oninput="saveMeta()">
+              </div>
+              <div class="field">
+                <label for="driveFolder">Carpeta / expediente</label>
+                <input id="driveFolder" value="artista_pavoneo.json" oninput="saveMeta()">
+              </div>
+              <div class="field" style="grid-column:1 / -1">
+                <label for="artifactLink">Artefacto Cloud / formulario</label>
+                <input id="artifactLink" value="" placeholder="https://..." oninput="saveMeta()">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpis internal-only" aria-label="Resumen de progreso">
+          <div class="kpi"><div class="kpi-value" id="kpiDone">0</div><div class="kpi-label">Bloques cerrados</div></div>
+          <div class="kpi"><div class="kpi-value" id="kpiActive">0</div><div class="kpi-label">En curso</div></div>
+          <div class="kpi"><div class="kpi-value" id="kpiBlocked">0</div><div class="kpi-label">Bloqueos</div></div>
+          <div class="kpi"><div class="kpi-value" id="kpiAlerts">0</div><div class="kpi-label">Alertas internas</div></div>
+          <div class="kpi"><div class="kpi-value" id="kpiPct">0%</div><div class="kpi-label">Progreso global</div></div>
+        </div>
+
+        <div class="controls internal-only" id="bloques">
+          <button class="action-btn primary" type="button" onclick="goFirstPending()">Ir al primer pendiente</button>
+          <button class="action-btn" type="button" onclick="goRelative(-1)">Página anterior</button>
+          <button class="action-btn" type="button" onclick="goRelative(1)">Página siguiente</button>
+          <button class="action-btn" type="button" onclick="exportCurrentArtistJson()">Exportar JSON</button>
+          <button class="action-btn warn" type="button" onclick="resetState()">Restaurar estado</button>
+        </div>
+
+        <div class="page-shell" id="pageShell"></div>
+      </section>
+
+      <section class="summary-band internal-only" id="incidencias">
+        <div class="section-box internal-only">
+          <h3>Resumen de incidencias</h3>
+          <div class="incident-groups" id="incidentList"></div>
+        </div>
+        <div class="section-box" id="infomaestra">
+          <h3>Info Maestra y desbloqueos</h3>
+          <div class="unlock-grid">
+            <div class="unlock">
+              <div><div class="unlock-title">Pavoneo 360</div><div class="unlock-note">Consultoría, análisis, contenidos, redes y cierre.</div></div>
+              <span class="lock-pill open">Editable</span>
+            </div>
+            <div class="unlock">
+              <div><div class="unlock-title">InfraPavoneo</div><div class="unlock-note">Se ofrece desde cierre/venta si el proyecto necesita una capa técnica mayor.</div></div>
+              <span class="lock-pill">Bloqueado</span>
+            </div>
+            <div class="unlock">
+              <div><div class="unlock-title">Booking, dossier y materiales ampliados</div><div class="unlock-note">Se desbloquean tras validar métricas, discurso y activos finales.</div></div>
+              <span class="lock-pill">Bloqueado</span>
+            </div>
+            <div class="unlock" id="cierre">
+              <div><div class="unlock-title">Consultoría de cierre / venta</div><div class="unlock-note">Cierra Pavoneo y abre la conversación de servicios posteriores.</div></div>
+              <span class="lock-pill open">Puerta final</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <div class="modal-head">
+        <div>
+          <div class="eyebrow" style="margin-bottom:4px">Subagente VS Code</div>
+          <div class="modal-title" id="modalTitle">Instrucción preparada</div>
+        </div>
+        <button class="icon-btn" type="button" onclick="closeModal()" aria-label="Cerrar">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="safe-note">Este botón no lanza automatizaciones. Solo prepara una instrucción para copiarla y trabajarla después en Claude Code / VS Code.</div>
+        <textarea class="prompt" id="promptBox" spellcheck="false"></textarea>
+        <div class="modal-actions">
+          <button class="action-btn" type="button" onclick="closeModal()">Cerrar</button>
+          <button class="action-btn primary" type="button" onclick="copyPrompt()">Copiar instrucción</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="toast" id="toast">Copiado</div>
+
+  <script>
+    const STORAGE_KEY = "pavoneo360-panel-state-v2";
+    const META_KEY = "pavoneo360-panel-meta-v1";
+    const PAGE_KEY = "pavoneo360-panel-page-v2";
+    const MODE_KEY = "pavoneo360-panel-mode-v2";
+    let currentFilter = "all";
+    let currentPageId = "contacto";
+    let currentMode = "office";
+    let expanded = new Set(["contacto","pack","formulario"]);
+
+    const steps = [
+      {
+        id:"contacto",
+        num:"01",
+        title:"Contacto inicial y captación",
+        clientTitle:"Contacto inicial",
+        intro:"Primera página del proceso. Sirve para mantener una reunión personal con el artista, ordenar la información de entrada y validar que el PDF/contrato se ha generado correctamente antes de pasar al siguiente bloque.",
+        owner:"Equipo AB",
+        week:"Semana 1",
+        pack:"both",
+        status:"active",
+        handoff:"Oficina → Artista",
+        actions:[
+          "Reunión personal con el artista.",
+          "Presentación de servicios: management, estudio, audiovisual y consultoría.",
+          "Envío del dossier HTML con packs disponibles y encaje del proceso."
+        ],
+        alerts:[
+          {type:"critical",text:"Sin contrato firmado no debe comenzar ningún punto formal del proceso."},
+          {type:"critical",text:"Sin referencia RGPD no debe tratarse información personal del artista."}
+        ],
+        agent:"captacion-onboarding",
+        prompt:"Prepara el expediente inicial del artista, valida si existen contrato y RGPD, y devuelve una checklist de alta para Pavoneo 360."
+      },
+      {
+        id:"pack",
+        num:"02",
+        title:"Selección de pack",
+        owner:"Cliente + Oficina",
+        week:"Semana 1",
+        pack:"both",
+        status:"todo",
+        handoff:"Artista → Oficina",
+        actions:[
+          "Confirmar Pack Básico: 950 €.",
+          "Confirmar Pack Premium: 1.450 €, incluyendo inversión inicial en redes sociales.",
+          "Registrar precio, alcance, condiciones y fecha de aceptación."
+        ],
+        alerts:[
+          {type:"important",text:"Los packs apenas se diferencian más allá de la inversión en redes: conviene revisar discurso de valor."},
+          {type:"info",text:"Aparece una mención externa de 4.000 € en transcripción: verificar cifras del dossier."}
+        ],
+        agent:"selector-pack",
+        prompt:"Revisa el expediente y deja el pack elegido con precio, alcance, condiciones y dudas comerciales pendientes."
+      },
+      {
+        id:"formulario",
+        num:"03",
+        title:"Formulario pre-consultoría",
+        owner:"Oficina + Cliente",
+        week:"Semana 1",
+        pack:"both",
+        status:"todo",
+        handoff:"Oficina → Artista → Info Maestra",
+        actions:[
+          "Enviar la página/formulario al artista.",
+          "El artista rellena todos los datos del proyecto.",
+          "Vincular el formulario con la Info Maestra HTML como fuente inicial."
+        ],
+        alerts:[
+          {type:"important",text:"Definir quién persigue el formulario si llega incompleto."},
+          {type:"info",text:"No se detallan todavía los campos exactos que alimentan la Info Maestra."}
+        ],
+        agent:"preconsultoria-formulario",
+        prompt:"Audita el formulario pre-consultoría, enumera campos faltantes y prepara un resumen del artista para la consultoría."
+      },
+      {
+        id:"consultoria",
+        num:"04",
+        title:"Consultoría con Román",
+        owner:"Román + Artista",
+        week:"Mes 1",
+        pack:"both",
+        status:"todo",
+        handoff:"Román → Transcripción → Oficina",
+        actions:[
+          "Sesión presencial grabada en ordenador.",
+          "Transcripción completa de la sesión.",
+          "Análisis del contenido existente del artista.",
+          "Definición de objetivos a corto, medio y largo plazo.",
+          "Decisión del plan de producción: tipo y cantidad de contenidos.",
+          "Verificación de asignación del equipo del artista."
+        ],
+        alerts:[
+          {type:"important",text:"Debe quedar fijado quién transcribe y en qué plazo se entrega a David."},
+          {type:"important",text:"Sin protocolo de acceso previo, la sesión puede llegar sin materiales suficientes."}
+        ],
+        agent:"consultoria-roman",
+        prompt:"A partir de la grabación/transcripción de la consultoría, extrae objetivos, bloqueos, prioridades y decisiones de producción."
+      },
+      {
+        id:"infomaestra",
+        num:"05",
+        title:"Análisis y relleno de Info Maestra",
+        owner:"Oficina + Extractor",
+        week:"Mes 1",
+        pack:"both",
+        status:"todo",
+        handoff:"Transcripción → Info Maestra",
+        actions:[
+          "Extraer campos desde la transcripción y el formulario.",
+          "Rellenar únicamente las secciones Pavoneo de la Info Maestra.",
+          "Bloquear secciones no Pavoneo: InfraPavoneo, booking y materiales ampliados.",
+          "Dejar señales claras de qué partes se desbloquearán en cierre/venta."
+        ],
+        alerts:[
+          {type:"critical",text:"Necesaria capa de permisos por sección para no mezclar Pavoneo con otros servicios."},
+          {type:"info",text:"Conviene usar etiquetas owner/locked por bloque dentro del expediente JSON."}
+        ],
+        agent:"extractor-info-maestra",
+        prompt:"Lee formulario y transcripción. Rellena solo campos Pavoneo de la Info Maestra y marca el resto como locked:true con owner correspondiente."
+      },
+      {
+        id:"briefing",
+        num:"06",
+        title:"Briefing y pre-producción",
+        owner:"Oficina + David",
+        week:"Post-consultoría",
+        pack:"both",
+        status:"todo",
+        handoff:"Román/Oficina → David",
+        actions:[
+          "Almacenamiento y pre-maquetación de los datos de la transcripción.",
+          "Preparación del briefing para David como técnico de estudio.",
+          "Acuerdo de fecha de grabación con el artista.",
+          "Test de audio si procede.",
+          "El artista prepara dinámicas para la entrevista."
+        ],
+        alerts:[
+          {type:"important",text:"Falta coordinador definido entre Román/estrategia y David/producción."},
+          {type:"info",text:"No se especifica el formato exacto del briefing entregado a David."}
+        ],
+        agent:"briefing-produccion",
+        prompt:"Convierte objetivos y decisiones de consultoría en un briefing de producción claro para David, con checklist de sesión."
+      },
+      {
+        id:"grabacion",
+        num:"07",
+        title:"Grabación en estudio",
+        owner:"David + Artista",
+        week:"Mes 1-2",
+        pack:"both",
+        status:"todo",
+        handoff:"Producción → Post-producción",
+        actions:[
+          "Grabación de 2 live sessions.",
+          "Sesión de fotos en el estudio.",
+          "Entrevista del proyecto.",
+          "Making-of y vídeos del proceso creativo.",
+          "Captura de contenidos específicos para redes sociales."
+        ],
+        alerts:[
+          {type:"info",text:"Los proyectos especiales pueden variar: una live session, sesión alternativa o contenido híbrido."}
+        ],
+        agent:"control-grabacion",
+        prompt:"Genera una checklist de grabación para el artista activo y verifica que cada material queda nombrado y ubicado."
+      },
+      {
+        id:"postproduccion",
+        num:"08",
+        title:"Post-producción",
+        owner:"David + Miriam",
+        week:"Mes 2",
+        pack:"both",
+        status:"todo",
+        handoff:"David → Miriam",
+        actions:[
+          "Edición de todos los vídeos.",
+          "Mezcla y master del audio.",
+          "Traspaso de material a Miriam con margen suficiente.",
+          "Preparar versiones para redes, archivo y entrega final."
+        ],
+        alerts:[
+          {type:"important",text:"Falta plazo definido para la entrega de post-producción."},
+          {type:"important",text:"Falta proceso de revisión y aprobación del artista sobre el material editado."}
+        ],
+        agent:"postproduccion-drive",
+        prompt:"Verifica estado de vídeos, audio y materiales. Devuelve qué falta, dónde está y qué debe aprobar el artista."
+      },
+      {
+        id:"lanzamiento",
+        num:"09",
+        title:"Lanzamiento en redes",
+        owner:"Miriam",
+        week:"Semanas 2-3",
+        pack:"both",
+        status:"todo",
+        handoff:"Miriam → Canales del artista",
+        actions:[
+          "Publicar vídeo promocional inicial si encaja con el proyecto.",
+          "Activar 2-3 semanas de publicaciones constantes.",
+          "Priorizar crecimiento orgánico previo a la inversión de pago.",
+          "Recoger señales de rendimiento para decidir qué impulsar."
+        ],
+        alerts:[
+          {type:"important",text:"Falta calendario editorial definido para las publicaciones."},
+          {type:"important",text:"Falta proceso de aprobación del artista sobre contenidos publicados."}
+        ],
+        agent:"redactor-publicaciones",
+        prompt:"Crea calendario editorial de 2-3 semanas con copys, piezas, canal, objetivo y estado de aprobación."
+      },
+      {
+        id:"entrega",
+        num:"10",
+        title:"Entrega Info Maestra",
+        owner:"Equipo AB",
+        week:"Cierre mes 2",
+        pack:"both",
+        status:"todo",
+        handoff:"Oficina → Artista",
+        actions:[
+          "Entregar repositorio HTML en plataforma de publicación.",
+          "Incluir entrevistas, notas de prensa, ficha artística, rider, logos y materiales.",
+          "Mostrar funcionalidades bloqueadas para futuro acceso completo.",
+          "Explicar el upsell de plataforma Infra y suscripción mensual."
+        ],
+        alerts:[
+          {type:"premium",text:"El 70% bloqueado puede generar fricción si no se presenta como mapa de crecimiento."},
+          {type:"info",text:"La transición hacia Infra no tiene todavía proceso definido en este protocolo."}
+        ],
+        agent:"entrega-info-maestra",
+        prompt:"Prepara la entrega de Info Maestra: índice, secciones abiertas, secciones bloqueadas y discurso de próximos desbloqueos."
+      },
+      {
+        id:"inversion",
+        num:"11",
+        title:"Inversión en redes",
+        owner:"Miriam + Héctor",
+        week:"Post-orgánico",
+        pack:"premium",
+        status:"todo",
+        handoff:"Miriam → Héctor",
+        actions:[
+          "Invertir 100 € en YouTube e Instagram.",
+          "Reinvertir en el contenido con mejor rendimiento orgánico previo.",
+          "Héctor, trafficker, configura y gestiona campañas.",
+          "Comunicar límites de presupuesto y lectura de resultados."
+        ],
+        alerts:[
+          {type:"premium",text:"100 € puede parecer escaso para un cliente que ha pagado 1.450 €: comunicar bien el valor."},
+          {type:"info",text:"Faltan criterios objetivos para elegir qué contenido impulsar."}
+        ],
+        agent:"trafico-redes",
+        prompt:"Diseña una microcampaña de 100 € con hipótesis, contenido a impulsar, segmentación inicial y métricas de lectura."
+      },
+      {
+        id:"cierre",
+        num:"12",
+        title:"Consultoría de cierre y venta",
+        owner:"Por definir",
+        week:"Mes 3 mínimo",
+        pack:"both",
+        status:"todo",
+        handoff:"Oficina → Artista → Venta",
+        actions:[
+          "Presentar métricas finales obtenidas.",
+          "Mostrar documento de pago y configuración de campaña.",
+          "Explicar la Info Maestra entregada y sus bloqueos.",
+          "Convertir aprendizajes en propuesta de siguientes servicios: InfraPavoneo, campañas, booking o consultoría."
+        ],
+        alerts:[
+          {type:"critical",text:"Debe definirse responsable de la transcripción y del cierre completo del proceso."},
+          {type:"info",text:"No está claro si este cierre aplica también al pack básico de 950 €."}
+        ],
+        agent:"generador-cierre",
+        prompt:"Compila métricas, entregables, aprendizajes y propuesta de siguientes servicios para la consultoría de cierre/venta."
+      }
+    ];
+
+    function loadState(){
+      try{
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+        steps.forEach(step => {
+          if(saved[step.id]) step.status = saved[step.id];
+        });
+      }catch(error){}
+    }
+
+    function persistState(){
+      const state = {};
+      steps.forEach(step => state[step.id] = step.status);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function loadMeta(){
+      try{
+        const meta = JSON.parse(localStorage.getItem(META_KEY) || "{}");
+        ["artistName","artistPack","ownerName","driveFolder","artifactLink"].forEach(id => {
+          if(meta[id]) document.getElementById(id).value = meta[id];
+        });
+      }catch(error){}
+      currentPageId = localStorage.getItem(PAGE_KEY) || currentPageId;
+      currentMode = localStorage.getItem(MODE_KEY) || currentMode;
+      syncMeta();
+    }
+
+    function saveMeta(){
+      const meta = {
+        artistName:document.getElementById("artistName").value,
+        artistPack:document.getElementById("artistPack").value,
+        ownerName:document.getElementById("ownerName").value,
+        driveFolder:document.getElementById("driveFolder").value,
+        artifactLink:document.getElementById("artifactLink").value
+      };
+      localStorage.setItem(META_KEY, JSON.stringify(meta));
+      syncMeta();
+    }
+
+    function syncMeta(){
+      const artist = document.getElementById("artistName").value || "Nombre del artista";
+      const pack = document.getElementById("artistPack").value || "Pack por definir";
+      const owner = document.getElementById("ownerName").value || "Equipo AB";
+      document.getElementById("sideArtist").textContent = artist;
+      document.getElementById("sidePack").textContent = pack + " · " + owner;
+    }
+
+    function statusLabel(status){
+      return {
+        todo:"Pendiente",
+        active:"En curso",
+        blocked:"Bloqueado",
+        done:"Hecho"
+      }[status] || "Pendiente";
+    }
+
+    function packLabel(pack){
+      return {
+        both:"Ambos packs",
+        premium:"Premium",
+        basic:"Básico"
+      }[pack] || "Ambos packs";
+    }
+
+    function nextStatus(status){
+      return {
+        todo:"active",
+        active:"blocked",
+        blocked:"done",
+        done:"todo"
+      }[status] || "active";
+    }
+
+    function currentStep(){
+      return steps.find(step => step.id === currentPageId) || steps[0];
+    }
+
+    function firstPendingStep(){
+      return steps.find(step => step.status !== "done") || steps[steps.length - 1];
+    }
+
+    function clientVisibleStep(){
+      const firstPending = firstPendingStep();
+      if(firstPending.status === "todo") firstPending.status = "active";
+      return firstPending;
+    }
+
+    function displayTitle(step){
+      return currentMode === "client" ? (step.clientTitle || step.title) : step.title;
+    }
+
+    function pageIntro(step){
+      if(step.intro) return step.intro;
+      return "Esta página concentra un único tramo del proceso. La oficina valida el trabajo interno y el artista solo ve lo necesario para avanzar con claridad.";
+    }
+
+    function gateChecks(step){
+      if(step.id === "contacto"){
+        return [
+          "Reunión personal realizada o conversación inicial cerrada.",
+          "Información de entrada recogida en conversación o en el artefacto Cloud.",
+          "PDF generado correctamente desde el artefacto.",
+          "Contrato y referencia RGPD revisados antes de continuar."
+        ];
+      }
+      if(step.id === "formulario"){
+        return [
+          "Formulario recibido completo.",
+          "Campos esenciales revisados por oficina.",
+          "Datos vinculados con el expediente y la Info Maestra."
+        ];
+      }
+      if(step.id === "cierre"){
+        return [
+          "Métricas finales revisadas.",
+          "Entregables explicados al artista.",
+          "Siguiente servicio propuesto solo si encaja con el proyecto."
+        ];
+      }
+      return [
+        "Acciones principales revisadas por la oficina.",
+        "Materiales o decisiones del bloque registrados en el expediente.",
+        "Sin bloqueos críticos para pasar a la siguiente página."
+      ];
+    }
+
+    function isArtifactStep(step){
+      return step.id === "contacto" || step.id === "formulario";
+    }
+
+    function artifactHref(){
+      const raw = document.getElementById("artifactLink").value.trim();
+      return raw && /^https?:\/\//i.test(raw) ? raw : "";
+    }
+
+    function render(){
+      if(currentMode === "client"){
+        const visible = clientVisibleStep();
+        currentPageId = visible.id;
+      }
+      renderOfficeNav();
+      renderPage();
+      updateKpis();
+      renderIncidents();
+      localStorage.setItem(PAGE_KEY, currentPageId);
+    }
+
+    function renderOfficeNav(){
+      const nav = document.getElementById("officeStepNav");
+      if(!nav) return;
+      nav.innerHTML = steps.map(step => `
+        <button class="page-nav-btn ${step.id === currentPageId ? "active" : ""}" data-status="${step.status}" type="button" onclick="goPage('${step.id}')">
+          <span class="page-nav-num">${step.num}</span>
+          <span>${step.title}</span>
+          <span class="page-nav-status"></span>
+        </button>
+      `).join("");
+    }
+
+    function renderPage(){
+      const shell = document.getElementById("pageShell");
+      const step = currentStep();
+      const index = steps.findIndex(item => item.id === step.id);
+      const href = artifactHref();
+      const clientCopy = currentMode === "client";
+      const next = steps[index + 1];
+      const done = step.status === "done";
+      const finalStep = index === steps.length - 1;
+      const canOpenArtifact = href && isArtifactStep(step);
+      const artifactButton = canOpenArtifact
+        ? `<a class="action-btn primary" href="${href}" target="_blank" rel="noopener">Abrir artefacto Cloud</a>`
+        : `<button class="action-btn" type="button" disabled>${isArtifactStep(step) ? "Artefacto pendiente de enlace" : "Sin artefacto en esta página"}</button>`;
+      shell.innerHTML = `
+        <article class="page-card" data-status="${step.status}">
+          <div class="page-head">
+            <div>
+              <div class="page-count">Página ${step.num} de ${String(steps.length).padStart(2,"0")}</div>
+              <h2 class="page-title">${displayTitle(step)}</h2>
+              <p class="page-intro">${pageIntro(step)}</p>
+            </div>
+            <div class="page-badges">
+              <span class="small-pill ${step.pack}">${packLabel(step.pack)}</span>
+              <button class="status-pill ${step.status} internal-only" type="button" onclick="cycleStatus('${step.id}')"><span class="dot"></span>${statusLabel(step.status)}</button>
+              <span class="status-pill ${step.status} client-status"><span class="dot"></span>${statusLabel(step.status)}</span>
+            </div>
+          </div>
+          <div class="page-grid">
+            <div class="process-panel">
+              ${clientCopy ? `<div class="client-note">Ahora solo estás en esta página. Los siguientes pasos aparecerán cuando la oficina valide que este bloque está correcto.</div>` : ""}
+              <div class="block-title">${clientCopy ? "Qué haremos ahora" : "Acciones de esta página"}</div>
+              <ul class="todo-list">${step.actions.map(action => `<li>${action}</li>`).join("")}</ul>
+            </div>
+            <div>
+              <div class="gate-panel">
+                <div class="block-title">Validación para desbloquear</div>
+                <ul class="gate-list">${gateChecks(step).map((gate, gateIndex) => `
+                  <li class="gate-row">
+                    <input type="checkbox" ${done ? "checked" : ""} onchange="syncGateCheck('${step.id}', this)">
+                    <span>${gate}</span>
+                  </li>
+                `).join("")}</ul>
+              </div>
+              <div class="artifact-panel">
+                <div class="artifact-title">${isArtifactStep(step) ? "Artefacto Cloud vinculado" : "Expediente de trabajo"}</div>
+                <div class="artifact-note">${isArtifactStep(step) ? "Este es el punto que debe conectar con el artefacto para rellenar información y generar el PDF. Por ahora el HTML solo lo muestra o abre si la oficina pega el enlace." : "Este bloque queda registrado en el expediente interno para mantener trazabilidad de decisiones y materiales."}</div>
+                <div class="page-move">${artifactButton}</div>
+              </div>
+              <div class="process-panel internal-only" style="margin-top:12px">
+                <div class="block-title">Alertas y mejoras internas</div>
+                <ul class="alert-list">${step.alerts.map(alert => `<li class="alert-item ${alert.type}">${alert.text}</li>`).join("")}</ul>
+              </div>
+            </div>
+          </div>
+          <div class="page-footer">
+            <div class="handoff"><strong>Traspaso:</strong> ${step.handoff}</div>
+            <div class="page-move">
+              <button class="action-btn internal-only" type="button" onclick="goRelative(-1)" ${index === 0 ? "disabled" : ""}>Anterior</button>
+              <button class="send-btn internal-only" type="button" onclick="openAgent('${step.id}')">Enviar a subagente</button>
+              <button class="action-btn internal-only" type="button" onclick="goRelative(1)" ${finalStep ? "disabled" : ""}>Siguiente</button>
+              <button class="action-btn primary" type="button" onclick="markDoneAndAdvance('${step.id}')">${finalStep ? "Cerrar proceso" : done ? "Ir al siguiente bloque" : step.id === "contacto" ? "PDF correcto · desbloquear siguiente" : "Validar y desbloquear siguiente"}</button>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function syncGateCheck(id, checkbox){
+      if(!checkbox.checked) return;
+      const step = steps.find(item => item.id === id);
+      if(step && step.status === "todo") step.status = "active";
+      persistState();
+      updateKpis();
+    }
+
+    function goPage(id){
+      currentPageId = id;
+      render();
+    }
+
+    function goRelative(delta){
+      const currentIndex = steps.findIndex(step => step.id === currentPageId);
+      const nextIndex = Math.max(0, Math.min(steps.length - 1, currentIndex + delta));
+      currentPageId = steps[nextIndex].id;
+      render();
+    }
+
+    function goFirstPending(){
+      currentPageId = firstPendingStep().id;
+      render();
+    }
+
+    function markDoneAndAdvance(id){
+      const index = steps.findIndex(step => step.id === id);
+      if(index < 0) return;
+      steps[index].status = "done";
+      if(steps[index + 1] && steps[index + 1].status === "todo") steps[index + 1].status = "active";
+      persistState();
+      if(steps[index + 1]) currentPageId = steps[index + 1].id;
+      render();
+      showToast(steps[index + 1] ? "Siguiente bloque desbloqueado" : "Proceso cerrado");
+    }
+
+    function updateKpis(){
+      const done = steps.filter(s => s.status === "done").length;
+      const active = steps.filter(s => s.status === "active").length;
+      const blocked = steps.filter(s => s.status === "blocked").length;
+      const alerts = steps.reduce((sum, step) => sum + step.alerts.length, 0);
+      const pct = Math.round(done / steps.length * 100);
+      document.getElementById("kpiDone").textContent = done;
+      document.getElementById("kpiActive").textContent = active;
+      document.getElementById("kpiBlocked").textContent = blocked;
+      document.getElementById("kpiAlerts").textContent = alerts;
+      document.getElementById("kpiPct").textContent = pct + "%";
+    }
+
+    function renderIncidents(){
+      const target = document.getElementById("incidentList");
+      if(!target) return;
+      const incidents = [];
+      steps.forEach(step => step.alerts.forEach((alert, index) => incidents.push({ ...alert, step })));
+      const order = {critical:0, important:1, premium:2, info:3};
+      incidents.sort((a,b) => (order[a.type] ?? 9) - (order[b.type] ?? 9));
+      target.innerHTML = incidents.map((item, index) => `
+        <div class="incident-row ${item.type}">
+          <strong>${String(index + 1).padStart(2,"0")}</strong>
+          <span>${item.text}</span>
+          <span class="src">${item.step.num} · ${item.step.title}</span>
+        </div>
+      `).join("");
+    }
+
+    function cycleStatus(id){
+      const step = steps.find(s => s.id === id);
+      step.status = nextStatus(step.status);
+      persistState();
+      render();
+    }
+
+    function toggleExpand(id){
+      if(expanded.has(id)) expanded.delete(id);
+      else expanded.add(id);
+      render();
+    }
+
+    function expandAll(){
+      if(expanded.size === steps.length) expanded = new Set();
+      else expanded = new Set(steps.map(step => step.id));
+      render();
+    }
+
+    function setFilter(filter){
+      currentFilter = filter;
+      document.querySelectorAll(".chip").forEach(btn => btn.classList.toggle("active", btn.dataset.filter === filter));
+      render();
+    }
+
+    function resetState(){
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(META_KEY);
+      localStorage.removeItem(PAGE_KEY);
+      localStorage.removeItem(MODE_KEY);
+      steps.forEach((step, index) => step.status = index === 0 ? "active" : "todo");
+      document.getElementById("artistName").value = "Nombre del artista";
+      document.getElementById("artistPack").value = "Básico · 950 €";
+      document.getElementById("ownerName").value = "Equipo AB";
+      document.getElementById("driveFolder").value = "artista_pavoneo.json";
+      document.getElementById("artifactLink").value = "";
+      currentPageId = "contacto";
+      currentMode = "office";
+      expanded = new Set(["contacto","pack","formulario"]);
+      saveMeta();
+      setMode("office");
+      render();
+      showToast("Estado restaurado");
+    }
+
+    function setMode(mode){
+      currentMode = mode;
+      localStorage.setItem(MODE_KEY, mode);
+      document.getElementById("app").classList.toggle("client-mode", mode === "client");
+      document.querySelectorAll(".mode-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.mode === mode));
+      if(mode === "client") currentPageId = clientVisibleStep().id;
+      render();
+    }
+
+    function openAgent(id){
+      const step = steps.find(s => s.id === id);
+      const artist = document.getElementById("artistName").value || "Nombre del artista";
+      const pack = document.getElementById("artistPack").value || "Pack por definir";
+      const owner = document.getElementById("ownerName").value || "Equipo AB";
+      const file = document.getElementById("driveFolder").value || "artista_pavoneo.json";
+      const prompt = [
+        `SUBAGENTE PROPUESTO: ${step.agent}`,
+        `ARTISTA / PROYECTO: ${artist}`,
+        `PACK: ${pack}`,
+        `RESPONSABLE OFICINA: ${owner}`,
+        `EXPEDIENTE: ${file}`,
+        "",
+        `BLOQUE ${step.num}: ${step.title}`,
+        `ESTADO ACTUAL: ${statusLabel(step.status)}`,
+        `TRASPASO: ${step.handoff}`,
+        "",
+        "OBJETIVO:",
+        step.prompt,
+        "",
+        "ACCIONES QUE DEBE REVISAR:",
+        ...step.actions.map(action => `- ${action}`),
+        "",
+        "ALERTAS A RESOLVER O CONFIRMAR:",
+        ...step.alerts.map(alert => `- [${alert.type.toUpperCase()}] ${alert.text}`),
+        "",
+        "SALIDA ESPERADA:",
+        "- Resumen ejecutivo de avance.",
+        "- Campos del expediente que cambian.",
+        "- Bloqueos y decisiones humanas pendientes.",
+        "- Siguiente instrucción recomendada para el proceso Pavoneo.",
+        "",
+        "NOTA: esta instrucción viene de un panel HTML estático. No ejecutes acciones externas sin confirmación humana."
+      ].join("\n");
+      document.getElementById("modalTitle").textContent = `${step.num} · ${step.title}`;
+      document.getElementById("promptBox").value = prompt;
+      document.getElementById("modalBackdrop").classList.add("open");
+    }
+
+    function closeModal(){
+      document.getElementById("modalBackdrop").classList.remove("open");
+    }
+
+    async function copyPrompt(){
+      const text = document.getElementById("promptBox").value;
+      try{
+        await navigator.clipboard.writeText(text);
+      }catch(error){
+        const box = document.getElementById("promptBox");
+        box.focus();
+        box.select();
+        document.execCommand("copy");
+      }
+      showToast("Instrucción copiada");
+    }
+
+    function showToast(message){
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.clearTimeout(showToast.timer);
+      showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 1800);
+    }
+
+    function queryArtistId(){
+      const params = new URLSearchParams(window.location.search);
+      return (params.get("id") || params.get("artist") || "artista-001").toLowerCase().replace(/[^a-z0-9-]/g, "-");
+    }
+
+    function normalizePack(pack){
+      if(!pack) return "Por definir";
+      const value = String(pack).toLowerCase();
+      if(value.includes("premium")) return "Premium · 1.450 €";
+      if(value.includes("basico") || value.includes("básico")) return "Básico · 950 €";
+      return "Por definir";
+    }
+
+    function applyPublishedArtistData(data){
+      if(!data) return;
+      if(data.displayName) document.getElementById("artistName").value = data.displayName;
+      if(data.pack) document.getElementById("artistPack").value = normalizePack(data.pack);
+      if(data.publicLinks && data.publicLinks.artifactCloud) document.getElementById("artifactLink").value = data.publicLinks.artifactCloud;
+      if(data.currentStep && steps.some(step => step.id === data.currentStep)) currentPageId = data.currentStep;
+      if(data.steps){
+        steps.forEach(step => {
+          if(data.steps[step.id] && data.steps[step.id].status) step.status = data.steps[step.id].status;
+        });
+      }
+      syncMeta();
+    }
+
+    async function loadPublishedArtistData(){
+      if(window.location.protocol === "file:") return;
+      const artistId = queryArtistId();
+      try{
+        const response = await fetch(`../data/artistas/${artistId}.json`, { cache:"no-store" });
+        if(!response.ok) return;
+        const data = await response.json();
+        applyPublishedArtistData(data);
+      }catch(error){}
+    }
+
+    function buildCurrentArtistJson(){
+      const artistId = queryArtistId();
+      const pack = document.getElementById("artistPack").value.includes("Premium") ? "premium" : document.getElementById("artistPack").value.includes("Básico") ? "basico" : "por-definir";
+      const stepData = {};
+      steps.forEach(step => {
+        stepData[step.id] = { status: step.status };
+      });
+      return {
+        artistId,
+        displayName: document.getElementById("artistName").value || "Nombre del artista",
+        pack,
+        currentStep: currentPageId,
+        unlockedUntil: firstPendingStep().id,
+        updatedAt: new Date().toISOString().slice(0, 10),
+        publicLinks: {
+          infoMaestra: "",
+          materialesPublicos: "",
+          artifactCloud: document.getElementById("artifactLink").value || ""
+        },
+        steps: stepData
+      };
+    }
+
+    function exportCurrentArtistJson(){
+      const data = buildCurrentArtistJson();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type:"application/json" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `${data.artistId}.json`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+      showToast("JSON exportado");
+    }
+
+    document.addEventListener("keydown", event => {
+      if(event.key === "Escape") closeModal();
+    });
+
+    document.getElementById("modalBackdrop").addEventListener("click", event => {
+      if(event.target.id === "modalBackdrop") closeModal();
+    });
+
+    loadState();
+    loadMeta();
+    loadPublishedArtistData().finally(() => setMode(currentMode));
+  </script>
+</body>
+</html>
