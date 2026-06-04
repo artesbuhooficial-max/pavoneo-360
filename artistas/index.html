@@ -710,6 +710,10 @@
                 <label for="artifactLink">Artefacto Cloud / formulario</label>
                 <input id="artifactLink" value="" placeholder="https://..." oninput="saveMeta()">
               </div>
+              <div class="field" style="grid-column:1 / -1">
+                <label for="infoMaestraLink">Enlace Info Maestra</label>
+                <input id="infoMaestraLink" value="" placeholder="https://..." oninput="saveMeta()">
+              </div>
             </div>
           </div>
         </div>
@@ -888,6 +892,8 @@
         id:"infomaestra",
         num:"05",
         title:"Análisis y relleno de Info Maestra",
+        clientTitle:"Elaboración de Info Maestra",
+        intro:"La oficina recopila los datos del formulario de preconsultoría, la consultoría y la información base del proyecto para elaborar la primera versión de la Info Maestra. Cuando esté lista, aparecerá aquí el enlace para revisarla.",
         owner:"Oficina + Extractor",
         week:"Mes 1",
         pack:"both",
@@ -898,6 +904,12 @@
           "Rellenar únicamente las secciones Pavoneo de la Info Maestra.",
           "Bloquear secciones no Pavoneo: InfraPavoneo, booking y materiales ampliados.",
           "Dejar señales claras de qué partes se desbloquearán en cierre/venta."
+        ],
+        clientActions:[
+          "Recopilamos la información del formulario de preconsultoría y de inscripción al servicio Pavoneo.",
+          "Revisamos la consultoría y los datos base del proyecto para ordenar el relato, materiales y necesidades.",
+          "Elaboramos una primera versión de la Info Maestra dentro de nuestra base de trabajo.",
+          "Cuando esté preparada, podrás abrir el enlace de la Info Maestra desde esta página para revisarla y pedir correcciones."
         ],
         alerts:[
           {type:"critical",text:"Necesaria capa de permisos por sección para no mezclar Pavoneo con otros servicios."},
@@ -1081,7 +1093,7 @@
     function loadMeta(){
       try{
         const meta = JSON.parse(localStorage.getItem(META_KEY) || "{}");
-        ["artistName","artistPack","ownerName","driveFolder","artifactLink"].forEach(id => {
+        ["artistName","artistPack","ownerName","driveFolder","artifactLink","infoMaestraLink"].forEach(id => {
           if(meta[id]) document.getElementById(id).value = meta[id];
         });
       }catch(error){}
@@ -1096,7 +1108,8 @@
         artistPack:document.getElementById("artistPack").value,
         ownerName:document.getElementById("ownerName").value,
         driveFolder:document.getElementById("driveFolder").value,
-        artifactLink:document.getElementById("artifactLink").value
+        artifactLink:document.getElementById("artifactLink").value,
+        infoMaestraLink:document.getElementById("infoMaestraLink").value
       };
       localStorage.setItem(META_KEY, JSON.stringify(meta));
       syncMeta();
@@ -1175,6 +1188,15 @@
           "Datos vinculados con el expediente y la Info Maestra."
         ];
       }
+      if(step.id === "infomaestra"){
+        return [
+          "Formulario de datos e inscripción al servicio Pavoneo rellenado.",
+          "Documento de privacidad / RGPD recibido y archivado fuera del JSON público.",
+          "Datos de consultoría y datos base del proyecto revisados por la oficina.",
+          "Primera versión de la Info Maestra preparada y enlazada.",
+          "Info Maestra vista por el artista y correcciones recogidas."
+        ];
+      }
       if(step.id === "cierre"){
         return [
           "Métricas finales revisadas.",
@@ -1195,6 +1217,11 @@
 
     function artifactHref(){
       const raw = document.getElementById("artifactLink").value.trim();
+      return raw && /^https?:\/\//i.test(raw) ? raw : "";
+    }
+
+    function infoMaestraHref(){
+      const raw = document.getElementById("infoMaestraLink").value.trim();
       return raw && /^https?:\/\//i.test(raw) ? raw : "";
     }
 
@@ -1227,14 +1254,24 @@
       const step = currentStep();
       const index = steps.findIndex(item => item.id === step.id);
       const href = artifactHref();
+      const infoHref = infoMaestraHref();
       const clientCopy = currentMode === "client";
+      const visibleActions = clientCopy && step.clientActions ? step.clientActions : step.actions;
       const next = steps[index + 1];
       const done = step.status === "done";
       const finalStep = index === steps.length - 1;
-      const canOpenArtifact = href && isArtifactStep(step);
-      const artifactButton = canOpenArtifact
+      const artifactTitle = step.id === "infomaestra" ? "Info Maestra del proyecto" : isArtifactStep(step) ? "Artefacto Cloud vinculado" : "Expediente de trabajo";
+      const artifactNote = step.id === "infomaestra"
+        ? "Este enlace abrirá la primera versión de la Info Maestra cuando la oficina la tenga preparada. Ahí se revisa el relato, la información del proyecto y los materiales base."
+        : isArtifactStep(step)
+          ? "Este es el punto que debe conectar con el artefacto para rellenar información y generar el PDF. Por ahora el HTML solo lo muestra o abre si la oficina pega el enlace."
+          : "Este bloque queda registrado en el expediente interno para mantener trazabilidad de decisiones y materiales.";
+      const canOpenArtifact = (href && isArtifactStep(step)) || (infoHref && step.id === "infomaestra");
+      const artifactButton = step.id === "infomaestra" && infoHref
+        ? `<a class="action-btn primary" href="${infoHref}" target="_blank" rel="noopener">Abrir Info Maestra</a>`
+        : canOpenArtifact
         ? `<a class="action-btn primary" href="${href}" target="_blank" rel="noopener">Abrir artefacto Cloud</a>`
-        : `<button class="action-btn" type="button" disabled>${isArtifactStep(step) ? "Artefacto pendiente de enlace" : "Sin artefacto en esta página"}</button>`;
+        : `<button class="action-btn" type="button" disabled>${step.id === "infomaestra" ? "Info Maestra pendiente de enlace" : isArtifactStep(step) ? "Artefacto pendiente de enlace" : "Sin artefacto en esta página"}</button>`;
       shell.innerHTML = `
         <article class="page-card" data-status="${step.status}">
           <div class="page-head">
@@ -1253,7 +1290,7 @@
             <div class="process-panel">
               ${clientCopy ? `<div class="client-note">Ahora solo estás en esta página. Los siguientes pasos aparecerán cuando la oficina valide que este bloque está correcto.</div>` : ""}
               <div class="block-title">${clientCopy ? "Qué haremos ahora" : "Acciones de esta página"}</div>
-              <ul class="todo-list">${step.actions.map(action => `<li>${action}</li>`).join("")}</ul>
+              <ul class="todo-list">${visibleActions.map(action => `<li>${action}</li>`).join("")}</ul>
             </div>
             <div>
               <div class="gate-panel">
@@ -1266,8 +1303,8 @@
                 `).join("")}</ul>
               </div>
               <div class="artifact-panel">
-                <div class="artifact-title">${isArtifactStep(step) ? "Artefacto Cloud vinculado" : "Expediente de trabajo"}</div>
-                <div class="artifact-note">${isArtifactStep(step) ? "Este es el punto que debe conectar con el artefacto para rellenar información y generar el PDF. Por ahora el HTML solo lo muestra o abre si la oficina pega el enlace." : "Este bloque queda registrado en el expediente interno para mantener trazabilidad de decisiones y materiales."}</div>
+                <div class="artifact-title">${artifactTitle}</div>
+                <div class="artifact-note">${artifactNote}</div>
                 <div class="page-move">${artifactButton}</div>
               </div>
               <div class="process-panel internal-only" style="margin-top:12px">
@@ -1390,6 +1427,7 @@
       document.getElementById("ownerName").value = "Equipo AB";
       document.getElementById("driveFolder").value = "artista_pavoneo.json";
       document.getElementById("artifactLink").value = "";
+      document.getElementById("infoMaestraLink").value = "";
       currentPageId = "contacto";
       currentMode = "office";
       expanded = new Set(["contacto","pack","formulario"]);
@@ -1490,6 +1528,7 @@
       if(data.displayName) document.getElementById("artistName").value = data.displayName;
       if(data.pack) document.getElementById("artistPack").value = normalizePack(data.pack);
       if(data.publicLinks && data.publicLinks.artifactCloud) document.getElementById("artifactLink").value = data.publicLinks.artifactCloud;
+      if(data.publicLinks && data.publicLinks.infoMaestra) document.getElementById("infoMaestraLink").value = data.publicLinks.infoMaestra;
       if(data.currentStep && steps.some(step => step.id === data.currentStep)) currentPageId = data.currentStep;
       if(data.steps){
         steps.forEach(step => {
@@ -1525,7 +1564,7 @@
         unlockedUntil: firstPendingStep().id,
         updatedAt: new Date().toISOString().slice(0, 10),
         publicLinks: {
-          infoMaestra: "",
+          infoMaestra: document.getElementById("infoMaestraLink").value || "",
           materialesPublicos: "",
           artifactCloud: document.getElementById("artifactLink").value || ""
         },
