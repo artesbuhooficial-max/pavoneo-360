@@ -12,7 +12,7 @@
       --cream:#f7f2e5;
       --cream-2:#fff8e8;
       --paper:#ffffff;
-      --ink:#071c48;h
+      --ink:#071c48;
       --ink-2:#24406e;
       --muted:#6a7ea6;
       --blue:#0757d8;
@@ -1477,12 +1477,12 @@
     function mixAppHref(){
       return cleanHref(document.getElementById("mixAppLink").value);
     }
-h
+
     function linkButton(href, label, primary = false){
       const safeHref = escapeHtml(href);
       return href
         ? `<a class="action-btn ${primary ? "primary" : ""}" href="${safeHref}" target="_blank" rel="noopener">${label}</a>`
-        : `<button class="action-btn" type="button" disablehd>${label} pendiente</button>`;
+        : `<button class="action-btn" type="button" disabled>${label} pendiente</button>`;
     }
 
     function artifactContent(step, index, href, infoHref, mixHref){
