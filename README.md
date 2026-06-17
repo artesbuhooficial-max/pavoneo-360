@@ -2,116 +2,212 @@
 
 Proyecto maestro para publicar el seguimiento Pavoneo 360 en GitHub Pages.
 
-## Objetivo
+## Estructura del repo
 
-Este repo separa tres capas:
-
-- `oficina/`: vista interna para saltar entre procesos, validar estados y preparar instrucciones.
-- `artistas/`: vista de artista, bloqueada paso a paso.
-- `mezcla/`: app de mezcla/revision con branding Pavoneo, enlazable desde postproduccion.
-- `data/artistas/`: JSON publico y minimo por artista.
-- `private/`: material sensible local. No se publica.
-- `inbox/`: JSON exportados desde oficina antes de sincronizar.
+```
+pavoneo-360/
+├── index.html              Redirección automática a oficina/
+├── oficina/
+│   └── index.html          Panel interno de gestión de expedientes
+├── artistas/
+│   └── index.html          Vista del artista (misma app, modo cliente forzado por URL)
+├── mezcla/
+│   └── index.html          App React de revisión de mezcla / Mix Studio
+├── data/
+│   └── artistas/
+│       └── artista-001.json  JSON público por artista (fuente de verdad publicada)
+├── inbox/                  Staging local — los .json aquí nunca se commitean
+├── private/                Material sensible local — nunca se publica
+└── scripts/
+    ├── Sincronizar_Pavoneo.bat   Lanzador Windows del script de sync
+    └── Sincronizar_Pavoneo.ps1   Script de sincronización (pendiente implementar)
+```
 
 ## URLs en GitHub Pages
 
-Si el repo se llama `pavoneo-360`, la URL de prueba sera:
-
-```text
-https://USUARIO.github.io/pavoneo-360/
-https://USUARIO.github.io/pavoneo-360/oficina/
-https://USUARIO.github.io/pavoneo-360/artistas/?id=artista-001
-https://USUARIO.github.io/pavoneo-360/mezcla/
+```
+https://artesbuhooficial-max.github.io/pavoneo-360/
+https://artesbuhooficial-max.github.io/pavoneo-360/oficina/
+https://artesbuhooficial-max.github.io/pavoneo-360/artistas/?id=artista-001
+https://artesbuhooficial-max.github.io/pavoneo-360/mezcla/
 ```
 
-Si se crea una organizacion o usuario llamado `pavoneo`, podria existir:
+## Clave de acceso a la oficina
 
-```text
-https://pavoneo.github.io/
+```
+pavoneo360
 ```
 
-No existe `pavoneo.github.com` como formato normal de GitHub Pages.
+Se introduce al pulsar el boton "Oficina" en el panel. Es una barrera visual de front-end
+para evitar accesos accidentales. No sustituye permisos reales de servidor — la clave
+esta visible en el codigo fuente.
 
-## Datos publicos
+## Capas del sistema
 
-Cada artista tiene un JSON publico:
+### `oficina/index.html` — Panel interno
 
-```text
-data/artistas/artista-001.json
-data/artistas/epi-brass.json
-data/artistas/luna-roja.json
+Panel de gestion de expedientes de artistas. Dos modos:
+
+- **Modo Oficina** (requiere clave): sidebar con navegacion entre los 8 bloques del proceso,
+  KPIs de progreso, formularios internos, timing editable del dia de grabacion, calendario
+  editorial, alertas y resumen de incidencias.
+- **Modo Artista**: oculta toda la capa interna. El artista ve solo su bloque activo.
+
+Estado persistido en `localStorage` del navegador. No hace fetch a ningun servidor propio.
+
+Boton **Exportar JSON**: descarga el expediente del artista como `.json` para depositarlo
+manualmente en `inbox/`.
+
+Boton **Publicar cambios**: envia el JSON directamente al webhook de n8n via POST.
+Muestra "Publicando...", "Publicado ✓" o "Error al publicar" segun la respuesta.
+Si el webhook no esta configurado, cae de vuelta a la descarga del JSON.
+
+Los 8 bloques del proceso:
+
+| # | id | Titulo | Responsable |
+|---|---|---|---|
+| 01 | contacto | Entrada en Pavoneo | Equipo AB |
+| 02 | formulario | Dashboard, preconsultoria e Info Maestra | Oficina + Cliente |
+| 03 | briefing | Briefing y preproduccion | Oficina + David |
+| 04 | grabacion | Grabacion en estudio | David + Artista |
+| 05 | postproduccion | Postproduccion | David + Miriam |
+| 06 | lanzamiento | Calendario editorial | Miriam |
+| 07 | inversion | Inversion en redes sociales | Miriam + Hector (solo Premium) |
+| 08 | cierre | Consultoria de cierre | Por definir |
+
+### `artistas/index.html` — Vista del artista
+
+Mismo codigo que `oficina/index.html`. La diferencia es que cuando la URL contiene
+`/artistas/`, la constante `ARTIST_ROUTE` es `true` y fuerza modo cliente permanente
+(el toggle de modo queda oculto).
+
+Al cargar, hace `fetch` a `../data/artistas/{id}.json` (donde `{id}` viene del parametro
+`?id=` de la URL). Si el fetch falla o no hay `?id=`, cae de vuelta a `localStorage`
+sin romper nada.
+
+### `mezcla/index.html` — Mix Studio
+
+App React 18 (CDN + Babel standalone, sin build step). Herramienta para la sesion de
+postproduccion:
+
+- Carga audio local y dibuja forma de onda (Web Audio API + Canvas).
+- Marcas de instrumento en el timeline (27 instrumentos en 6 grupos).
+- Tabla de estructura por cancion: secciones, tomas, dinamicas.
+- Formulario de creditos: ISRC, UPC, integrantes, productor, mezcla, mastering.
+- Pestaña Stems: enlace a Moises.ai para separacion de pistas con IA.
+- Guarda/carga sesiones como `_mix.json` local.
+- Boton Enviar: POST a Google Sheets via Apps Script (`no-cors`).
+
+### `data/artistas/{id}.json` — Fuente de verdad publica
+
+JSON minimo por artista. Campos:
+
+```json
+{
+  "artistId": "artista-001",
+  "displayName": "Nombre del artista",
+  "pack": "basico",
+  "currentStep": "contacto",
+  "unlockedUntil": "contacto",
+  "updatedAt": "2026-06-17",
+  "publicLinks": {
+    "infoMaestra": "",
+    "materialesPublicos": "",
+    "artifactCloud": "https://...",
+    "mixApp": "../mezcla/"
+  },
+  "recordingTiming": [ ... ],
+  "editorialCalendar": [ ... ],
+  "steps": {
+    "contacto": { "status": "active" },
+    ...
+  }
+}
 ```
 
-Ese JSON solo debe contener estado operativo:
+No debe contener: RGPD, contratos, DNI/NIE/NIF, direcciones, telefonos,
+emails privados, transcripciones ni PDFs firmados.
 
-- `artistId`
-- nombre publico
-- pack
-- bloque actual
-- bloque desbloqueado
-- enlaces publicos o no sensibles
-- timing publico del dia de grabacion
-- estado por pasos
+## Flujo de sincronizacion (activo)
 
-No debe contener:
+```
+oficina/index.html
+    └── boton "Publicar cambios"
+            └── POST JSON → https://artesbuho.app.n8n.cloud/webhook/pavoneo-sync
+                    └── n8n valida privacidad
+                            └── commit → data/artistas/{id}.json
+                                    └── GitHub Pages publica
+                                            └── artistas/?id={id} lo lee al refrescar
+```
 
-- RGPD
-- contratos
-- DNI/NIE/NIF
-- direcciones
-- telefonos
-- emails privados
-- transcripciones
-- PDFs firmados
+El webhook de n8n es la pieza que sustituye al script `Sincronizar_Pavoneo.ps1`
+(que sigue vacio — puede eliminarse o implementarse como alternativa local).
 
-## Flujo de oficina
+## Flujo alternativo manual (sin webhook)
 
 1. Oficina abre `oficina/`.
-2. Pulsa `Oficina` e introduce la clave provisional `pavoneo360`.
+2. Introduce la clave `pavoneo360`.
 3. Cambia el estado del expediente.
-4. Exporta el JSON del artista.
-5. Deja el JSON en `inbox/`.
-6. Ejecuta `scripts/Sincronizar_Pavoneo.bat`.
-7. El script valida privacidad.
-8. Si todo esta bien, actualiza `data/artistas/ARTISTA.json`.
-9. Hace commit y push.
-10. GitHub Pages publica la version nueva.
+4. Pulsa "Exportar JSON" y descarga el archivo.
+5. Deposita el JSON en `inbox/`.
+6. Ejecuta `scripts/Sincronizar_Pavoneo.bat` (pendiente implementar el `.ps1`).
+7. El script valida privacidad, actualiza `data/artistas/`, hace commit y push.
 
-Nota: esta clave es una barrera visual de front-end para evitar accesos accidentales. No sustituye permisos reales de servidor.
+## Mapa de conexiones
 
-## Accesos necesarios
+```
+index.html (raiz)
+    └── redirect → oficina/index.html
 
-Para que Codex pueda crear/subir el repo necesito una de estas opciones:
+oficina/index.html
+    ├── lee/escribe  → localStorage (estado del panel)
+    ├── POST JSON    → webhook n8n (boton "Publicar cambios")
+    ├── descarga     → inbox/{artista}.json (boton "Exportar JSON")
+    ├── enlaza       → Google Forms (formulario preconsultoria)
+    ├── enlaza       → Google Doc (Info Maestra, campo editable)
+    └── enlaza       → ../mezcla/
 
-### Opcion recomendada
+artistas/index.html
+    ├── fetch        → ../data/artistas/{id}.json (al cargar, segun ?id=)
+    └── fallback     → localStorage (si fetch falla)
 
-GitHub CLI autenticado en este equipo:
+mezcla/index.html
+    ├── lee          → audio local (Web Audio API)
+    ├── lee/escribe  → {proyecto}_mix.json (local)
+    └── POST         → Google Sheets (Apps Script)
 
-```text
-gh auth login
+data/artistas/*.json
+    └── escribe      → n8n webhook (desde oficina)
+    └── lee          → artistas/index.html (al cargar)
+
+private/             ← nunca se publica (.gitignored)
+inbox/*.json         ← nunca se publica (.gitignored)
 ```
 
-Con permisos para crear repo o escribir en un repo existente.
+## Estado del proyecto (junio 2026)
 
-### Opcion alternativa
+| Componente | Estado |
+|---|---|
+| Panel de oficina (8 pasos, KPIs, timing, calendario editorial) | Completo |
+| Vista artista con carga desde JSON publico | Completo |
+| Boton "Publicar cambios" wired a n8n | Completo |
+| Webhook n8n recibe POST y hace commit | Activo |
+| App Mix Studio (mezcla/) | Completa |
+| JSON publico por artista (formato y ejemplo) | Definido |
+| Script Sincronizar_Pavoneo.ps1 (alternativa local) | Pendiente |
 
-Un token fino de GitHub con permisos solo sobre este repo:
+## Git — operaciones con SSL
 
-- Contents: Read and write
-- Metadata: Read
-- Pages: Read and write, solo si vamos a configurar Pages por API
+Este equipo tiene un problema de certificado SSL con GitHub. Usar siempre:
 
-No compartir contrasena de GitHub.
-
-## Primer commit sugerido
-
-```text
-Inicializar proyecto maestro Pavoneo 360
+```bash
+git -c http.sslVerify=false fetch origin
+git -c http.sslVerify=false pull origin main
+git -c http.sslVerify=false push origin main
 ```
 
-## Pendiente siguiente
+Para clonar:
 
-- Conectar `oficina/` para exportar JSON real a `inbox/`.
-- Conectar `artistas/` para cargar `data/artistas/{id}.json`.
-- Ajustar la app `mezcla/` cuando se defina el flujo final de subida/correcciones.
-- Crear el agente Claude Code `gestor-expedientes-pavoneo`.
+```bash
+git -c http.sslVerify=false clone https://github.com/artesbuhooficial-max/pavoneo-360.git
+```
