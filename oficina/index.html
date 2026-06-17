@@ -910,6 +910,7 @@
           <button class="action-btn" type="button" onclick="goRelative(-1)">Página anterior</button>
           <button class="action-btn" type="button" onclick="goRelative(1)">Página siguiente</button>
           <button class="action-btn" type="button" onclick="exportCurrentArtistJson()">Exportar JSON</button>
+          <button class="action-btn primary" type="button" id="publishBtn" onclick="publishChanges()">Publicar cambios</button>
           <button class="action-btn warn" type="button" onclick="resetState()">Restaurar estado</button>
         </div>
 
@@ -977,8 +978,8 @@
     const PRECONSULTORIA_FORM_URL = "https://docs.google.com/forms/d/1DU4ijRq93Lo5yqssmkpXDme8t-3pqkIWsdrnd6Nrip0/edit?usp=drive_web&ouid=103619232809009489616";
     const OFFICE_PASSWORD = "pavoneo360";
     const OFFICE_UNLOCK_KEY = "pavoneo360-office-unlocked";
-    const ARTIST_ROUTE = /\/artistas\//.test(window.location.pathname);
     const SYNC_WEBHOOK_URL = 'https://artesbuho.app.n8n.cloud/webhook/pavoneo-sync';
+    const ARTIST_ROUTE = /\/artistas\//.test(window.location.pathname);
     let currentFilter = "all";
     let currentPageId = "contacto";
     let currentMode = "office";
@@ -2117,6 +2118,28 @@
       link.click();
       URL.revokeObjectURL(link.href);
       showToast("JSON exportado");
+    }
+
+    async function publishChanges(){
+      if(!SYNC_WEBHOOK_URL){
+        exportCurrentArtistJson();
+        showToast("Sin webhook — JSON descargado");
+        return;
+      }
+      const btn = document.getElementById("publishBtn");
+      if(btn){ btn.disabled = true; btn.textContent = "Publicando..."; }
+      try{
+        const res = await fetch(SYNC_WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(buildCurrentArtistJson())
+        });
+        showToast(res.ok ? "Publicado ✓" : "Error al publicar (" + res.status + ")");
+      }catch(err){
+        showToast("Error al publicar");
+      }finally{
+        if(btn){ btn.disabled = false; btn.textContent = "Publicar cambios"; }
+      }
     }
 
     document.addEventListener("keydown", event => {
