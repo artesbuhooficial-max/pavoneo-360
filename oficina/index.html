@@ -2129,12 +2129,25 @@
       const btn = document.getElementById("publishBtn");
       if(btn){ btn.disabled = true; btn.textContent = "Publicando..."; }
       try{
+        const payload = buildCurrentArtistJson();
+        console.log("[Pavoneo] Payload enviado:", JSON.stringify(payload, null, 2));
         const res = await fetch(SYNC_WEBHOOK_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(buildCurrentArtistJson())
+          body: JSON.stringify(payload)
         });
-        showToast(res.ok ? "Publicado ✓" : "Error al publicar (" + res.status + ")");
+        if(res.ok){
+          showToast("Publicado ✓");
+        } else {
+          let detail = "";
+          try{
+            const body = await res.json();
+            const violations = body?.validation?.violations || body?.violations || [];
+            if(violations.length) detail = " — " + violations[0];
+          }catch(_){}
+          console.warn("[Pavoneo] Error publicar:", detail);
+          showToast("Error al publicar (" + res.status + ")" + detail);
+        }
       }catch(err){
         showToast("Error al publicar");
       }finally{
