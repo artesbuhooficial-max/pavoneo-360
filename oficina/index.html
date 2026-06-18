@@ -915,6 +915,10 @@
                 <label for="mixAppLink">App de mezcla / revisiones</label>
                 <input id="mixAppLink" value="../mezcla/" placeholder="https://... o ../mezcla/" oninput="saveMeta()">
               </div>
+              <div class="field internal-only" style="grid-column:1 / -1">
+                <label for="altaLink">Alta / RGPD (enlace interno)</label>
+                <input id="altaLink" value="https://claude.ai/public/artifacts/39625b4a-692b-4e27-885c-29d1f5d0d70f" placeholder="https://..." oninput="saveMeta()">
+              </div>
             </div>
           </div>
         </div>
@@ -1315,7 +1319,7 @@
     function loadMeta(){
       try{
         const meta = JSON.parse(localStorage.getItem(META_KEY) || "{}");
-        ["artistName","artistPack","ownerName","driveFolder","artifactLink","infoMaestraLink","mixAppLink"].forEach(id => {
+        ["artistName","artistPack","ownerName","driveFolder","artifactLink","infoMaestraLink","mixAppLink","altaLink"].forEach(id => {
           if(meta[id]) document.getElementById(id).value = meta[id];
         });
       }catch(error){}
@@ -1333,7 +1337,8 @@
         driveFolder:document.getElementById("driveFolder").value,
         artifactLink:document.getElementById("artifactLink").value,
         infoMaestraLink:document.getElementById("infoMaestraLink").value,
-        mixAppLink:document.getElementById("mixAppLink").value
+        mixAppLink:document.getElementById("mixAppLink").value,
+        altaLink:document.getElementById("altaLink").value
       };
       localStorage.setItem(META_KEY, JSON.stringify(meta));
       syncMeta();
@@ -1517,7 +1522,7 @@
       if(step.id === "contacto"){
         title = "Entrada, contrato y PDF";
         note = "Aqui se vincula el artefacto o documento de alta. El RGPD se guarda fuera del JSON publico y solo queda marcada la validacion.";
-        buttons.push(linkButton("https://claude.ai/public/artifacts/39625b4a-692b-4e27-885c-29d1f5d0d70f", "Abrir alta / PDF", true));
+        buttons.push(linkButton(cleanHref(document.getElementById("altaLink").value), "Abrir alta / PDF", true));
       }else{
         title = "Info Maestra de consulta permanente";
         note = "Desde el paso 2, la Info Maestra acompana el proceso como base viva del proyecto. La oficina pega aqui el enlace cuando este preparada.";
