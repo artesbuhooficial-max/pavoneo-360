@@ -1,0 +1,43 @@
+{
+  "artistId": "mario-cassado",
+  "displayName": "Mario Cassado",
+  "pack": "premium",
+  "currentStep": "contacto",
+  "unlockedUntil": "contacto",
+  "updatedAt": "2026-06-18",
+  "publicLinks": {
+    "infoMaestra": "",
+    "materialesPublicos": "",
+    "artifactCloud": "https://docs.google.com/forms/d/1DU4ijRq93Lo5yqssmkpXDme8t-3pqkIWsdrnd6Nrip0/edit",
+    "mixApp": "../mezcla/"
+  },
+  "recordingTiming": [
+    { "time": "09:30", "block": "Llegada y acogida", "owner": "Oficina + artista", "detail": "Recepcion, repaso del plan del dia, agua/cafe y revision rapida de vestuario." },
+    { "time": "10:00", "block": "Preparacion tecnica", "owner": "David", "detail": "Montaje de microfonia, pruebas de camara, escucha de referencias y ajuste de set." },
+    { "time": "10:45", "block": "Entrevista base", "owner": "David + artista", "detail": "Preguntas principales, relato del proyecto y frases utiles para piezas cortas." },
+    { "time": "12:00", "block": "Live session 1", "owner": "David + artista", "detail": "Grabacion de la primera pieza musical con toma de seguridad." },
+    { "time": "13:15", "block": "Pausa y fotos", "owner": "Oficina", "detail": "Descanso breve, seleccion de fondos y sesion fotografica en estudio." },
+    { "time": "14:15", "block": "Live session 2", "owner": "David + artista", "detail": "Grabacion de la segunda pieza o alternativa definida en briefing." },
+    { "time": "15:30", "block": "Making off y spot prescriptor", "owner": "Oficina + artista", "detail": "Recursos de proceso, planos cortos, testimonio y mensajes para redes." },
+    { "time": "16:30", "block": "Cierre de grabacion", "owner": "David + oficina", "detail": "Confirmar archivos, naming, copia de seguridad y siguientes pasos de postproduccion." }
+  ],
+  "editorialCalendar": [
+    { "week": "1", "day": "Lunes", "type": "Video promocional", "platform": "Instagram", "status": "Pendiente", "note": "Presentacion del proyecto y apertura de narrativa." },
+    { "week": "1", "day": "Miercoles", "type": "Clip live session", "platform": "Instagram", "status": "Pendiente", "note": "Primer fragmento musical de alto impacto." },
+    { "week": "1", "day": "Viernes", "type": "Making off", "platform": "Instagram", "status": "Pendiente", "note": "Proceso creativo y contexto de estudio." },
+    { "week": "2", "day": "Martes", "type": "Entrevista clip", "platform": "Instagram", "status": "Pendiente", "note": "Frase fuerte del artista sobre el proyecto." },
+    { "week": "2", "day": "Jueves", "type": "Live session completa", "platform": "YouTube", "status": "Pendiente", "note": "Publicacion larga para archivo y enlace principal." },
+    { "week": "3", "day": "Lunes", "type": "Carrusel fotos", "platform": "Instagram", "status": "Pendiente", "note": "Material de sesion fotografica y estetica." },
+    { "week": "3", "day": "Miercoles", "type": "Reel / contenido RRSS", "platform": "Instagram", "status": "Pendiente", "note": "Pieza nativa para cierre de campana organica." }
+  ],
+  "steps": {
+    "contacto": { "status": "active" },
+    "formulario": { "status": "todo" },
+    "briefing": { "status": "todo" },
+    "grabacion": { "status": "todo" },
+    "postproduccion": { "status": "todo" },
+    "lanzamiento": { "status": "todo" },
+    "inversion": { "status": "todo" },
+    "cierre": { "status": "todo" }
+  }
+}
