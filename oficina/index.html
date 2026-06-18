@@ -2124,7 +2124,7 @@
         publicLinks: {
           infoMaestra: document.getElementById("infoMaestraLink").value || "",
           materialesPublicos: "",
-          artifactCloud: document.getElementById("artifactLink").value || "",
+          artifactCloud: (()=>{ try{ const u=new URL(document.getElementById("artifactLink").value||""); u.searchParams.delete("ouid"); u.searchParams.delete("usp"); return u.toString(); }catch(_){ return document.getElementById("artifactLink").value||""; } })(),
           mixApp: document.getElementById("mixAppLink").value || ""
         },
         recordingTiming,
