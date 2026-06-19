@@ -1,14 +1,14 @@
 {
   "artistId": "artista-001",
   "displayName": "Nombre del artista",
-  "pack": "basico",
-  "currentStep": "contacto",
-  "unlockedUntil": "contacto",
-  "updatedAt": "2026-06-04",
+  "pack": "premium",
+  "currentStep": "formulario",
+  "unlockedUntil": "formulario",
+  "updatedAt": "2026-06-19",
   "publicLinks": {
     "infoMaestra": "",
     "materialesPublicos": "",
-    "artifactCloud": "https://docs.google.com/forms/d/1DU4ijRq93Lo5yqssmkpXDme8t-3pqkIWsdrnd6Nrip0/edit?usp=drive_web&ouid=103619232809009489616",
+    "artifactCloud": "https://docs.google.com/forms/d/1DU4ijRq93Lo5yqssmkpXDme8t-3pqkIWsdrnd6Nrip0/edit",
     "mixApp": "../mezcla/"
   },
   "recordingTiming": [
@@ -121,23 +121,28 @@
   ],
   "steps": {
     "contacto": {
-      "status": "active",
-      "updatedAt": "2026-06-04",
-      "checks": {
-        "callOk": false,
-        "packChosen": false,
-        "contractReady": false,
-        "rgpdArchived": false,
-        "paymentFormalized": false,
-        "pdfExported": false
-      }
+      "status": "done"
     },
-    "formulario": { "status": "todo" },
-    "briefing": { "status": "todo" },
-    "grabacion": { "status": "todo" },
-    "postproduccion": { "status": "todo" },
-    "lanzamiento": { "status": "todo" },
-    "inversion": { "status": "todo" },
-    "cierre": { "status": "todo" }
+    "formulario": {
+      "status": "active"
+    },
+    "briefing": {
+      "status": "todo"
+    },
+    "grabacion": {
+      "status": "todo"
+    },
+    "postproduccion": {
+      "status": "todo"
+    },
+    "lanzamiento": {
+      "status": "todo"
+    },
+    "inversion": {
+      "status": "todo"
+    },
+    "cierre": {
+      "status": "todo"
+    }
   }
 }
