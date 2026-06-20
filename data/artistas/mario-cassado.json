@@ -3,8 +3,8 @@
   "displayName": "Mario Cassado",
   "pack": "premium",
   "currentStep": "contacto",
-  "unlockedUntil": "contacto",
-  "updatedAt": "2026-06-19",
+  "unlockedUntil": "formulario",
+  "updatedAt": "2026-06-20",
   "publicLinks": {
     "infoMaestra": "",
     "materialesPublicos": "",
@@ -121,10 +121,10 @@
   ],
   "steps": {
     "contacto": {
-      "status": "active"
+      "status": "done"
     },
     "formulario": {
-      "status": "todo"
+      "status": "active"
     },
     "briefing": {
       "status": "todo"
