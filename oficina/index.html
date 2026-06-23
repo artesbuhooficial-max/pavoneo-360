@@ -1859,9 +1859,12 @@
       `;
     }
     function syncGateCheck(id, checkbox, index){
-      if(!stepChecks[id]) stepChecks[id] = [];
-      stepChecks[id][index] = checkbox.checked;
       const step = steps.find(item => item.id === id);
+      if(!stepChecks[id]){
+        const total = step ? gateChecks(step).length : 0;
+        stepChecks[id] = Array(total).fill(step && step.status === "done");
+      }
+      stepChecks[id][index] = checkbox.checked;
       if(step){
         const total = gateChecks(step).length;
         const checked = stepChecks[id].slice(0, total).filter(Boolean).length;
