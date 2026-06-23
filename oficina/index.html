@@ -1332,6 +1332,10 @@
         ["artistName","artistPack","ownerName","driveFolder","artifactLink","infoMaestraLink","mixAppLink","altaLink"].forEach(id => {
           if(meta[id]) document.getElementById(id).value = meta[id];
         });
+        const altaEl = document.getElementById("altaLink");
+        const OLD_ALTA = "https://claude.ai/public/artifacts/39625b4a-692b-4e27-885c-29d1f5d0d70f";
+        const NEW_ALTA = "https://artesbuhooficial-max.github.io/pavoneo-altas/";
+        if(!altaEl.value || altaEl.value === OLD_ALTA) altaEl.value = NEW_ALTA;
       }catch(error){}
       currentPageId = localStorage.getItem(PAGE_KEY) || currentPageId;
       const savedMode = localStorage.getItem(MODE_KEY) || currentMode;
