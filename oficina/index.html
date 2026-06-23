@@ -1019,6 +1019,7 @@
     let currentFilter = "all";
     let currentPageId = "contacto";
     let currentMode = "office";
+    let stepChecks = {};
     let expanded = new Set(["contacto","formulario","briefing"]);
 
     const DEFAULT_TIMING = [
@@ -1279,12 +1280,14 @@
         steps.forEach(step => {
           if(saved[step.id]) step.status = saved[step.id];
         });
+        if(saved._checks) stepChecks = saved._checks;
       }catch(error){}
     }
 
     function persistState(){
       const state = {};
       steps.forEach(step => state[step.id] = step.status);
+      state._checks = stepChecks;
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     }
 
@@ -1820,9 +1823,9 @@
             <div>
               <div class="gate-panel">
                 <div class="block-title">Validacion para desbloquear</div>
-                <ul class="gate-list">${gateChecks(step).map(gate => `
+                <ul class="gate-list">${gateChecks(step).map((gate, gi) => `
                   <li class="gate-row">
-                    <input type="checkbox" ${done ? "checked" : ""} onchange="syncGateCheck('${step.id}', this)">
+                    <input type="checkbox" ${(done || (stepChecks[step.id] && stepChecks[step.id][gi])) ? "checked" : ""} onchange="syncGateCheck('${step.id}', this, ${gi})">
                     <span>${gate}</span>
                   </li>
                 `).join("")}</ul>
@@ -1855,10 +1858,17 @@
         </article>
       `;
     }
-    function syncGateCheck(id, checkbox){
-      if(!checkbox.checked) return;
+    function syncGateCheck(id, checkbox, index){
+      if(!stepChecks[id]) stepChecks[id] = [];
+      stepChecks[id][index] = checkbox.checked;
       const step = steps.find(item => item.id === id);
-      if(step && step.status === "todo") step.status = "active";
+      if(step){
+        const total = gateChecks(step).length;
+        const checked = stepChecks[id].slice(0, total).filter(Boolean).length;
+        if(checked >= total) step.status = "done";
+        else if(step.status === "done") step.status = "active";
+        else if(step.status === "todo" && checked > 0) step.status = "active";
+      }
       persistState();
       updateKpis();
     }
@@ -2111,7 +2121,10 @@
       if(data.currentStep && steps.some(step => step.id === data.currentStep)) currentPageId = data.currentStep;
       if(data.steps){
         steps.forEach(step => {
-          if(data.steps[step.id] && data.steps[step.id].status) step.status = data.steps[step.id].status;
+          if(data.steps[step.id]){
+            if(data.steps[step.id].status) step.status = data.steps[step.id].status;
+            if(Array.isArray(data.steps[step.id].checks)) stepChecks[step.id] = data.steps[step.id].checks;
+          }
         });
       }
       syncMeta();
@@ -2134,6 +2147,7 @@
       const stepData = {};
       steps.forEach(step => {
         stepData[step.id] = { status: step.status };
+        if(stepChecks[step.id]) stepData[step.id].checks = stepChecks[step.id];
       });
       return {
         artistId,
