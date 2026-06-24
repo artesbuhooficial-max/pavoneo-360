@@ -4,7 +4,7 @@
   "pack": "premium",
   "currentStep": "contacto",
   "unlockedUntil": "contacto",
-  "updatedAt": "2026-06-23",
+  "updatedAt": "2026-06-24",
   "publicLinks": {
     "infoMaestra": "",
     "materialesPublicos": "",
@@ -123,11 +123,11 @@
     "contacto": {
       "status": "active",
       "checks": [
+        true,
+        true,
+        true,
         null,
-        null,
-        null,
-        null,
-        null,
+        true,
         false
       ]
     },
