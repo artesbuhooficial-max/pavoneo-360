@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pavoneo 360 · Registro de Enlaces</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:#F7F2E5; --cream2:#FFF8E8; --parchment:#EADDBF;
+  --ink:#071C48; --ink-mid:#24406E; --ink-light:#6A7EA6;
+  --blue:#0757D8; --blue-deep:#043C9F; --blue-soft:#EAF2FF; --teal-l:#3E83FF;
+  --gold:#E8B83E; --gold-pale:#FFF5D7; --terra:#D59A18; --terra-pale:#FFF2CE;
+  --sage:#456C8F; --sage-pale:#EEF5FB;
+  --green:#1E8A5E; --green-pale:#E8F7F1;
+  --violet:#2347A5; --violet-pale:#EDF2FF;
+  --border:#D8E3F5;
+  --sh:0 10px 28px rgba(7,28,72,.07); --sh-md:0 18px 52px rgba(7,28,72,.13);
+  --r:10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,#f8fbff 0%,#fff 44%,#fff8e8 100%);color:var(--ink);font-size:15px;line-height:1.65;min-height:100vh}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+
+.app{display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:262px;min-width:262px;background:linear-gradient(180deg,#0757D8 0%,#054CC2 52%,#03378E 100%);color:#fff;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;z-index:100;scrollbar-width:none;box-shadow:10px 0 34px rgba(7,87,216,.16)}
+.sidebar::-webkit-scrollbar{display:none}
+.sb-head{padding:28px 18px 22px;border-bottom:1px solid rgba(255,255,255,.12)}
+.brand-lockup{display:flex;align-items:center;gap:11px;margin-bottom:14px}
+.brand-mark{width:44px;height:40px;flex:0 0 auto;background:rgba(255,255,255,.15);border-radius:8px;display:grid;place-items:center;font-size:22px}
+.brand-word{font-weight:900;line-height:.82;color:var(--cream2);font-size:18px;letter-spacing:-.05em}
+.brand-word span{display:block}
+.brand-note{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,248,232,.66);font-weight:700;margin-top:5px}
+.sb-badge{display:inline-block;margin-top:12px;background:var(--gold);color:var(--ink);font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:3px 10px;border-radius:20px}
+.sidebar nav{padding:14px 0;flex:1}
+.ng-label{padding:10px 22px 4px;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,248,232,.68);font-weight:700}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 22px;font-size:12.5px;font-weight:400;color:rgba(255,255,255,.82);cursor:pointer;transition:.16s;border-left:2px solid transparent;margin:1px 9px;border-radius:8px;text-decoration:none}
+.ni:hover{color:#fff;background:rgba(255,255,255,.11);border-left-color:rgba(255,248,232,.55);text-decoration:none}
+.ni.active{color:var(--blue-deep);background:var(--cream2);border-left-color:var(--cream2);font-weight:800;box-shadow:0 8px 20px rgba(0,0,0,.14)}
+.ni .ic{width:15px;text-align:center;font-style:normal;flex-shrink:0;opacity:.65}
+.sb-foot{padding:16px 22px;border-top:1px solid rgba(255,255,255,.12);font-size:11px;color:rgba(255,255,255,.72);line-height:1.5}
+.sb-foot strong{color:#fff}
+
+/* MAIN */
+.main{flex:1;min-width:0;padding:28px 40px 80px}
+
+/* MASTHEAD */
+.masthead{background:linear-gradient(135deg,#071C48 0%,#0B3E9A 60%,#0757D8 100%);color:#fff;padding:36px 46px 28px;border-radius:18px;margin-bottom:32px;position:relative;overflow:hidden;box-shadow:var(--sh-md)}
+.masthead::before{content:'🔗';position:absolute;right:48px;top:50%;transform:translateY(-50%);font-size:80px;opacity:.08}
+.mh-eye{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);font-weight:800;margin-bottom:10px}
+.mh-title{font-family:'DM Sans',sans-serif;font-size:38px;font-weight:900;line-height:1;margin-bottom:8px;letter-spacing:-.04em}
+.mh-title em{color:var(--gold);font-style:normal}
+.mh-sub{font-size:13px;color:rgba(255,255,255,.6)}
+
+/* GROUP */
+.group{margin-bottom:36px}
+.group-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:2px solid var(--border)}
+.group-ico{width:36px;height:36px;border-radius:8px;display:grid;place-items:center;font-size:18px;flex-shrink:0}
+.group-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--ink)}
+.group-sub{font-size:11px;color:var(--ink-light);margin-top:1px}
+.group-count{margin-left:auto;background:var(--blue-soft);color:var(--blue);font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.06em}
+
+/* LINK CARD */
+.link-card{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:0;margin-bottom:10px;box-shadow:var(--sh);overflow:hidden;transition:box-shadow .18s}
+.link-card:hover{box-shadow:var(--sh-md)}
+.lc-head{display:flex;align-items:center;gap:14px;padding:16px 20px}
+.lc-tag{flex-shrink:0;padding:3px 10px;border-radius:6px;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;min-width:80px;text-align:center}
+.lc-tag.sistema{background:var(--blue-soft);color:var(--blue)}
+.lc-tag.artista{background:var(--green-pale);color:var(--green)}
+.lc-tag.herramienta{background:var(--gold-pale);color:var(--terra)}
+.lc-tag.formulario{background:var(--violet-pale);color:var(--violet)}
+.lc-tag.dashboard{background:var(--sage-pale);color:var(--sage)}
+.lc-info{flex:1;min-width:0}
+.lc-name{font-weight:700;font-size:14px;color:var(--ink);margin-bottom:2px}
+.lc-desc{font-size:11.5px;color:var(--ink-light);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lc-actions{display:flex;gap:8px;align-items:center;flex-shrink:0}
+.btn-open{display:inline-flex;align-items:center;gap:5px;background:var(--blue);color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;transition:.14s}
+.btn-open:hover{background:var(--blue-deep);color:#fff;text-decoration:none}
+.btn-copy{display:inline-flex;align-items:center;gap:5px;background:#fff;color:var(--ink-light);border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.14s}
+.btn-copy:hover{background:var(--blue-soft);color:var(--blue);border-color:var(--teal-l)}
+.btn-copy.ok{background:var(--green-pale);color:var(--green);border-color:var(--green)}
+.lc-url{background:var(--cream2);border-top:1px solid var(--border);padding:10px 20px;font-family:'DM Mono',monospace;font-size:11px;color:var(--ink-light);word-break:break-all;display:flex;align-items:center;gap:10px}
+.lc-url-text{flex:1}
+.lc-date{font-size:10px;color:var(--ink-light);flex-shrink:0;white-space:nowrap}
+
+/* RESPONSIVE */
+@media(max-width:760px){
+  .app{display:block}.sidebar{position:relative;width:100%;height:auto;min-width:0}.main{padding:18px 16px 60px}
+  .masthead{padding:28px 24px}.mh-title{font-size:28px}
+  .lc-head{flex-wrap:wrap;gap:10px}.lc-actions{width:100%}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-head">
+    <div class="brand-lockup">
+      <div class="brand-mark">🦉</div>
+      <div>
+        <div class="brand-word"><span>Pavoneo</span><span>360</span></div>
+        <div class="brand-note">Artes Buho Management</div>
+      </div>
+    </div>
+    <div class="sb-badge">🔗 Registro de enlaces</div>
+  </div>
+  <nav>
+    <div class="ng-label">Filtrar por</div>
+    <div class="ni active" onclick="filter('all',this)"><i class="ic">◈</i> Todos los enlaces</div>
+    <div class="ni" onclick="filter('sistema',this)"><i class="ic">◉</i> Sistema Pavoneo</div>
+    <div class="ni" onclick="filter('artista',this)"><i class="ic">◎</i> Artistas</div>
+    <div class="ni" onclick="filter('herramienta',this)"><i class="ic">◐</i> Herramientas</div>
+    <div class="ni" onclick="filter('dashboard',this)"><i class="ic">◑</i> Dashboards & Datos</div>
+    <div class="ng-label" style="margin-top:8px">Artistas</div>
+    <div class="ni" onclick="filter('epiybrass',this)"><i class="ic">✦</i> Epi&amp;Brass</div>
+    <div class="ni" onclick="filter('mario-cassado',this)"><i class="ic">✦</i> Mario Cassado</div>
+    <div class="ng-label" style="margin-top:8px">Ir a</div>
+    <a class="ni" href="index.html"><i class="ic">⌂</i> Portal principal</a>
+    <a class="ni" href="artistas/"><i class="ic">◉</i> Panel de artistas</a>
+  </nav>
+  <div class="sb-foot">
+    <strong>Artes Búho</strong><br>
+    artesbuho.oficial@gmail.com<br>
+    Repo: pavoneo-360 · main
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+<div class="masthead">
+  <div class="mh-eye">Sistema de referencia · Artes Búho · Pavoneo 360°</div>
+  <div class="mh-title">Registro de <em>enlaces</em></div>
+  <div class="mh-sub">Todos los documentos, paneles y herramientas publicadas en GitHub Pages — organizados por nombre y función.</div>
+</div>
+
+<!-- ── GRUPO: SISTEMA PAVONEO ── -->
+<div class="group" data-group="sistema">
+  <div class="group-head">
+    <div class="group-ico" style="background:var(--blue-soft)">🏠</div>
+    <div><div class="group-name">Sistema Pavoneo</div><div class="group-sub">Portal principal y secciones internas de la plataforma</div></div>
+    <span class="group-count">3 enlaces</span>
+  </div>
+
+  <div class="link-card" data-tags="sistema">
+    <div class="lc-head">
+      <span class="lc-tag sistema">Sistema</span>
+      <div class="lc-info">
+        <div class="lc-name">Portal Pavoneo 360°</div>
+        <div class="lc-desc">Página de inicio del sistema — acceso a todos los paneles y artistas</div>
+      </div>
+      <div class="lc-actions">
+        <a class="btn-open" href="https://artesbuhooficial-max.github.io/pavoneo-360/" target="_blank">↗ Abrir</a>
+        <button class="btn-copy" onclick="cp(this,'https://artesbuhooficial-max.github.io/pavoneo-360/')">⎘ Copiar</button>
+      </div>
+    </div>
+    <div class="lc-url">
+      <span class="lc-url-text">https://artesbuhooficial-max.github.io/pavoneo-360/</span>
+      <span class="lc-date">Jun 2026</span>
+    </div>
+  </div>
+
+  <div class="link-card" data-tags="sistema">
+    <div class="lc-head">
+      <span class="lc-tag sistema">Sistema</span>
+      <div class="lc-info">
+        <div class="lc-name">Panel de Artistas · Panel de Proceso</div>
+        <div class="lc-desc">Seguimiento del proceso de producción por artista — fases, tareas y estado</div>
+      </div>
+      <div class="lc-actions">
+        <a class="btn-open" href="https://artesbuhooficial-max.github.io/pavoneo-360/artistas/" target="_blank">↗ Abrir</a>
+        <button class="btn-copy" onclick="cp(this,'https://artesbuhooficial-max.github.io/pavoneo-360/artistas/')">⎘ Copiar</button>
+      </div>
+    </div>
+    <div class="lc-url">
+      <span class="lc-url-text">https://artesbuhooficial-max.github.io/pavoneo-360/artistas/</span>
+      <span class="lc-date">Jun 2026</span>
+    </div>
+  </div>
+
+  <div class="link-card" data-tags="sistema">
+    <div class="lc-head">
+      <span class="lc-tag sistema">Sistema</span>
+      <div class="lc-info">
+        <div class="lc-name">Oficina · Panel interno</div>
+        <div class="lc-desc">Panel de gestión interna de Artes Búho</div>
+      </div>
+      <div class="lc-actions">
+        <a class="btn-open" href="https://artesbuhooficial-max.github.io/pavoneo-360/oficina/" target="_blank">↗ Abrir</a>
+        <button class="btn-copy" onclick="cp(this,'https://artesbuhooficial-max.github.io/pavoneo-360/oficina/')">⎘ Copiar</button>
+      </div>
+    </div>
+    <div class="lc-url">
+      <span class="lc-url-text">https://artesbuhooficial-max.github.io/pavoneo-360/oficina/</span>
+      <span class="lc-date">Jun 2026</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── GRUPO: HERRAMIENTAS ── -->
+<div class="group" data-group="herramienta">
+  <div class="group-head">
+    <div class="group-ico" style="background:var(--gold-pale)">🎛️</div>
+    <div><div class="group-name">Herramientas</div><div class="group-sub">Aplicaciones y utilidades del sistema Pavoneo</div></div>
+    <span class="group-count">1 enlace</span>
+  </div>
+
+  <div class="link-card" data-tags="herramienta">
+    <div class="lc-head">
+      <span class="lc-tag herramienta">Herramienta</span>
+      <div class="lc-info">
+        <div class="lc-name">Mix Studio · Herramienta de mezcla</div>
+        <div class="lc-desc">Aplicación de edición y mezcla de audio para sesiones de grabación</div>
+      </div>
+      <div class="lc-actions">
+        <a class="btn-open" href="https://artesbuhooficial-max.github.io/pavoneo-360/mezcla/" target="_blank">↗ Abrir</a>
+        <button class="btn-copy" onclick="cp(this,'https://artesbuhooficial-max.github.io/pavoneo-360/mezcla/')">⎘ Copiar</button>
+      </div>
+    </div>
+    <div class="lc-url">
+      <span class="lc-url-text">https://artesbuhooficial-max.github.io/pavoneo-360/mezcla/</span>
+      <span class="lc-date">Jun 2026</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── GRUPO: EPI&BRASS ── -->
+<div class="group" data-group="artista epiybrass">
+  <div class="group-head">
+    <div class="group-ico" style="background:var(--green-pale)">🎺</div>
+    <div><div class="group-name">Epi&amp;Brass</div><div class="group-sub">Brass House · Madrid · Pack Pavoneo 2026</div></div>
+    <span class="group-count">1 enlace</span>
+  </div>
+
+  <div class="link-card" data-tags="artista dashboard epiybrass">
+    <div class="lc-head">
+      <span class="lc-tag dashboard">Dashboard</span>
+      <div class="lc-info">
+        <div class="lc-name">Epi&amp;Brass · Dashboard Inversión en Redes</div>
+        <div class="lc-desc">Análisis Meta Ads Jun 2026 — impresiones, interacciones, retención de vídeo y eficiencia</div>
+      </div>
+      <div class="lc-actions">
+        <a class="btn-open" href="https://artesbuhooficial-max.github.io/pavoneo-360/artistas/epiybrass/dashboard-redes.html" target="_blank">↗ Abrir</a>
+        <button class="btn-copy" onclick="cp(this,'https://artesbuhooficial-max.github.io/pavoneo-360/artistas/epiybrass/dashboard-redes.html')">⎘ Copiar</button>
+      </div>
+    </div>
+    <div class="lc-url">
+      <span class="lc-url-text">https://artesbuhooficial-max.github.io/pavoneo-360/artistas/epiybrass/dashboard-redes.html</span>
+      <span class="lc-date">01 Jul 2026</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── GRUPO: MARIO CASSADO (placeholder) ── -->
+<div class="group" data-group="artista mario-cassado">
+  <div class="group-head">
+    <div class="group-ico" style="background:var(--violet-pale)">🎵</div>
+    <div><div class="group-name">Mario Cassado</div><div class="group-sub">Pack Premium · En proceso de producción</div></div>
+    <span class="group-count">0 enlaces</span>
+  </div>
+
+  <div style="background:var(--cream2);border:1px dashed var(--border);border-radius:var(--r);padding:18px 22px;font-size:13px;color:var(--ink-light);display:flex;align-items:center;gap:10px">
+    <span style="font-size:20px">📋</span>
+    <span>Sin documentos publicados aún. Los enlaces de Info Maestra y materiales aparecerán aquí cuando estén disponibles.</span>
+  </div>
+</div>
+
+<!-- ── GRUPO: FORMULARIOS ── -->
+<div class="group" data-group="formulario">
+  <div class="group-head">
+    <div class="group-ico" style="background:var(--violet-pale)">📝</div>
+    <div><div class="group-name">Formularios</div><div class="group-sub">Formularios de captación y onboarding de artistas</div></div>
+    <span class="group-count">1 enlace</span>
+  </div>
+
+  <div class="link-card" data-tags="formulario">
+    <div class="lc-head">
+      <span class="lc-tag formulario">Formulario</span>
+      <div class="lc-info">
+        <div class="lc-name">Formulario de captación · Artes Búho</div>
+        <div class="lc-desc">Formulario inicial para nuevos artistas — Google Forms (acceso interno)</div>
+      </div>
+      <div class="lc-actions">
+        <a class="btn-open" href="https://docs.google.com/forms/d/1DU4ijRq93Lo5yqssmkpXDme8t-3pqkIWsdrnd6Nrip0/edit" target="_blank">↗ Abrir</a>
+        <button class="btn-copy" onclick="cp(this,'https://docs.google.com/forms/d/1DU4ijRq93Lo5yqssmkpXDme8t-3pqkIWsdrnd6Nrip0/edit')">⎘ Copiar</button>
+      </div>
+    </div>
+    <div class="lc-url">
+      <span class="lc-url-text">https://docs.google.com/forms/d/1DU4ijRq93Lo5yqssmkpXDme8t-3pqkIWsdrnd6Nrip0/edit</span>
+      <span class="lc-date">Jun 2026</span>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+function cp(btn, url) {
+  navigator.clipboard.writeText(url).then(() => {
+    const orig = btn.innerHTML;
+    btn.innerHTML = '✓ Copiado';
+    btn.classList.add('ok');
+    setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('ok'); }, 1800);
+  });
+}
+
+function filter(tag, el) {
+  document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+
+  if (tag === 'all') {
+    document.querySelectorAll('.link-card').forEach(c => c.style.display = '');
+    document.querySelectorAll('.group').forEach(g => g.style.display = '');
+    return;
+  }
+
+  document.querySelectorAll('.link-card').forEach(c => {
+    const tags = (c.dataset.tags || '').split(' ');
+    c.style.display = tags.includes(tag) ? '' : 'none';
+  });
+
+  document.querySelectorAll('.group').forEach(g => {
+    const visible = [...g.querySelectorAll('.link-card')].some(c => c.style.display !== 'none');
+    g.style.display = visible ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>
