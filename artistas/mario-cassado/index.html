@@ -1670,10 +1670,75 @@ function initPaletteInputs(){
 }
 function togglePalette(){var panel=document.getElementById('palette-panel');if(panel.style.display==='none'){initPaletteInputs();panel.style.display='block';}else{panel.style.display='none';}}
 
+function initSwatchEditors(){
+  var SWATCH_KEY='pavoneo-swatches:'+(window.PAVONEO_CONFIG&&window.PAVONEO_CONFIG.artistSlug?window.PAVONEO_CONFIG.artistSlug:location.pathname.replace(/\W/g,'-'));
+  var swatches=document.querySelectorAll('.palette .sw');
+  if(!swatches.length)return;
+  var st=document.createElement('style');
+  st.textContent='.swc-wrap{position:relative;display:block;cursor:pointer}.swc-picker{position:absolute;opacity:0;inset:0;width:100%;height:100%;cursor:pointer;border:none;padding:0}.swl-hex{display:block;font-size:11px;font-weight:700;font-family:monospace;letter-spacing:.02em}.swl-name{display:block;font-size:10px;outline:none;border-bottom:1px dashed rgba(0,0,0,.18);cursor:text;padding:0}.swl-name:focus{border-bottom-color:rgba(0,0,0,.5);background:rgba(0,0,0,.04)}';
+  document.head.appendChild(st);
+  var saved={};
+  try{var raw=localStorage.getItem(SWATCH_KEY);if(raw)saved=JSON.parse(raw);}catch(e){}
+  function saveAll(){
+    var d={};
+    swatches.forEach(function(sw,i){
+      var pk=sw.querySelector('.swc-picker');
+      var ns=sw.querySelector('.swl-name');
+      if(pk&&ns)d[i]={hex:pk.value,name:ns.textContent.trim()};
+    });
+    localStorage.setItem(SWATCH_KEY,JSON.stringify(d));
+  }
+  swatches.forEach(function(sw,i){
+    var swc=sw.querySelector('.swc');
+    var swl=sw.querySelector('.swl');
+    if(!swc||!swl)return;
+    var rawHtml=swl.innerHTML;
+    var brIdx=rawHtml.indexOf('<br>');
+    var hexPart=brIdx>-1?rawHtml.substring(0,brIdx):rawHtml;
+    var namePart=brIdx>-1?rawHtml.substring(brIdx+4):'';
+    hexPart=hexPart.replace(/<[^>]*>/g,'').trim();
+    namePart=namePart.replace(/<[^>]*>/g,'').trim();
+    if(saved[i]){
+      if(saved[i].hex){hexPart=saved[i].hex;swc.style.background=hexPart;}
+      if(saved[i].name)namePart=saved[i].name;
+    }
+    var hexVal=hexPart.toLowerCase();
+    if(hexVal[0]!=='#')hexVal='#'+hexVal;
+    var label=document.createElement('label');
+    label.className='swc-wrap';
+    label.title='Clic para cambiar color';
+    var picker=document.createElement('input');
+    picker.type='color';
+    picker.className='swc-picker';
+    try{picker.value=hexVal;}catch(e){picker.value='#000000';}
+    swc.parentNode.insertBefore(label,swc);
+    label.appendChild(swc);
+    label.appendChild(picker);
+    var hexSpan=document.createElement('span');
+    hexSpan.className='swl-hex';
+    hexSpan.textContent=hexPart.toUpperCase();
+    var nameSpan=document.createElement('span');
+    nameSpan.className='swl-name';
+    nameSpan.contentEditable='true';
+    nameSpan.spellcheck=false;
+    nameSpan.textContent=namePart;
+    swl.innerHTML='';
+    swl.appendChild(hexSpan);
+    swl.appendChild(nameSpan);
+    picker.addEventListener('input',function(){
+      swc.style.background=picker.value;
+      hexSpan.textContent=picker.value.toUpperCase();
+      saveAll();
+    });
+    nameSpan.addEventListener('blur',saveAll);
+    nameSpan.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();nameSpan.blur();}});
+  });
+}
 /* ── INIT ── */
 document.addEventListener('DOMContentLoaded',()=>{
   applyLocks();
   restorePalette();
+  initSwatchEditors();
   initTraits();
   loadPhaseState();
   updateProgress();
