@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mario Cassado · INFO MAESTRA</title>
+<script src="config.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:      #F7F2E5;
+  --cream2:     #FFF8E8;
+  --parchment:  #EADDBF;
+  --paper:      #FFFFFF;
+  --ink:        #1A0308;
+  --ink-mid:    #4A1520;
+  --ink-light:  #9A6070;
+  --blue:       #D72638;
+  --blue-2:     #E83A4C;
+  --blue-soft:  #FDEAEC;
+  --blue-deep:  #8B1E2D;
+  --teal:       #D72638;
+  --teal-l:     #E83A4C;
+  --teal-pale:  #FDEAEC;
+  --terra:      #D59A18;
+  --terra-pale: #FFF2CE;
+  --gold:       #E8B83E;
+  --gold-pale:  #FFF5D7;
+  --sage:       #456C8F;
+  --sage-pale:  #EEF5FB;
+  --violet:     #2347A5;
+  --violet-pale:#EDF2FF;
+  --border:     #F0D5D8;
+  --sh:         0 10px 28px rgba(139,30,45,.07);
+  --sh-md:      0 18px 52px rgba(139,30,45,.13);
+  --r:          10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,#fff8f8 0%,#fff 44%,#fff8e8 100%);color:var(--ink);font-size:15px;line-height:1.65;min-height:100vh}
+a{color:var(--teal);text-decoration:none}
+a:hover{text-decoration:underline}
+::selection{background:var(--teal-pale);color:var(--teal)}
+.app{display:flex;min-height:100vh}
+.sidebar{width:262px;min-width:262px;background:linear-gradient(180deg,#D72638 0%,#B52030 52%,#8B1E2D 100%);color:#fff;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;z-index:100;scrollbar-width:none;box-shadow:10px 0 34px rgba(139,30,45,.22)}
+.sidebar::-webkit-scrollbar{display:none}
+.sb-head{padding:28px 18px 22px;border-bottom:1px solid rgba(255,255,255,.12)}
+.brand-lockup{display:flex;align-items:center;gap:11px;margin-bottom:14px}
+.brand-mark{position:relative;width:64px;height:58px;flex:0 0 auto;filter:drop-shadow(0 10px 16px rgba(0,0,0,.12))}
+.brand-mark img{display:none}
+.brand-mark::before,.brand-mark::after{content:'';position:absolute;background:rgba(255,255,255,.93);border-radius:18px 18px 8px 8px;transform-origin:center bottom}
+.brand-mark::before{width:25px;height:48px;left:7px;top:2px;transform:skew(-12deg) rotate(2deg)}
+.brand-mark::after{width:33px;height:48px;right:3px;top:2px;border-radius:18px 22px 20px 8px;transform:rotate(-43deg)}
+.brand-word{font-weight:900;line-height:.82;color:var(--cream2);font-size:18px;letter-spacing:-.05em}
+.brand-word span{display:block}
+.brand-note{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,248,232,.66);font-weight:700;margin-top:5px}
+.sb-project{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:10px;padding:12px 13px}
+.sb-logo{font-family:'DM Sans',sans-serif;font-size:16px;font-weight:900;color:#fff;margin-bottom:3px;line-height:1.2}
+.sb-sub{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.38);font-weight:500;margin-top:2px}
+.sb-badge{display:inline-block;margin-top:10px;background:var(--cream2);color:var(--blue-deep);font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:3px 10px;border-radius:20px}
+.sb-badge.violet{background:var(--violet)}
+.sb-head-links{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.sb-link{font-size:10px;color:rgba(255,255,255,.72);display:flex;align-items:center;gap:4px;transition:.15s}
+.sb-link:hover{color:#ffd0d4;text-decoration:none}
+.sb-link .dot{width:5px;height:5px;border-radius:50%;background:currentColor;display:inline-block}
+.sidebar nav{padding:14px 0;flex:1}
+.ng-label{padding:10px 22px 4px;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,248,232,.68);font-weight:700}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 22px;font-size:12.5px;font-weight:400;color:rgba(255,255,255,.82);cursor:pointer;transition:.16s;border-left:2px solid transparent;margin:1px 9px;border-radius:8px}
+.ni:hover{color:#fff;background:rgba(255,255,255,.11);border-left-color:rgba(255,248,232,.55)}
+.ni.active{color:var(--blue-deep);background:var(--cream2);border-left-color:var(--cream2);font-weight:800;box-shadow:0 8px 20px rgba(0,0,0,.14)}
+.ni.pavoneo{color:rgba(180,160,220,.7)}
+.ni.pavoneo:hover,.ni.pavoneo.active{color:#fff;background:rgba(107,76,138,.25);border-left-color:#9B7ACC}
+.ni .ic{width:15px;text-align:center;font-style:normal;flex-shrink:0;opacity:.65}
+.sb-foot{padding:16px 22px;border-top:1px solid rgba(255,255,255,.12);font-size:11px;color:rgba(255,255,255,.72);line-height:1.5}
+.sb-foot strong{color:#fff}
+.main{flex:1;min-width:0;padding:28px 34px 92px;position:relative}
+.masthead{background:linear-gradient(135deg,#fff 0%,#fff 58%,#fdeaec 100%);color:var(--ink);padding:40px 46px 30px;position:relative;overflow:hidden;border:1px solid rgba(240,213,216,.95);border-radius:18px;box-shadow:var(--sh-md)}
+.masthead::before{content:'';position:absolute;right:-74px;top:-112px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle at 44% 42%,#fdeaec 0%,#fad0d4 56%,#e8a0a8 100%);box-shadow:inset 18px -18px 0 rgba(139,30,45,.05),0 24px 60px rgba(215,38,56,.10);pointer-events:none}
+.masthead::after{content:'Artes\A Buho';white-space:pre;position:absolute;right:58px;top:43px;font-size:25px;font-weight:900;letter-spacing:-.08em;line-height:.82;color:var(--blue);transform:rotate(-5deg);pointer-events:none}
+.mh-eye{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--blue);font-weight:800;margin-bottom:10px}
+.mh-title{font-family:'DM Sans',sans-serif;font-size:56px;font-weight:900;line-height:.95;margin-bottom:11px;letter-spacing:-.045em;max-width:620px}
+.mh-title em{color:var(--blue);font-style:italic;font-weight:900}
+.mh-tag{font-size:15px;color:var(--ink-mid);font-weight:600;margin-bottom:26px}
+.mh-meta{display:flex;gap:10px;flex-wrap:wrap;padding-top:0;border-top:none;max-width:960px}
+.mi{font-size:11.5px;background:#fff;border:1px solid var(--border);border-radius:999px;padding:8px 13px;box-shadow:0 8px 18px rgba(139,30,45,.06)}
+.mi-l{color:var(--blue);font-size:8.5px;letter-spacing:.15em;text-transform:uppercase;display:block;margin-bottom:0;font-weight:800}
+.mi-v{color:var(--ink);font-weight:700}
+.mi-v a{color:var(--ink)}
+.sec{padding:28px 0 0;display:none;animation:fu .28s ease both}
+.sec.active{display:block}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.sh{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.sh-eye{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--teal);font-weight:600;margin-bottom:5px}
+.sh-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--ink);line-height:1.1}
+.sh-title.violet{color:var(--violet)}
+.card{background:rgba(255,255,255,.92);border:1px solid var(--border);border-radius:var(--r);padding:24px 28px;margin-bottom:14px;box-shadow:var(--sh);transition:box-shadow .18s;position:relative}
+.card:hover{box-shadow:var(--sh-md)}
+.cl{font-size:9px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;margin-bottom:8px}
+.cl.teal{color:var(--teal)}.cl.terra{color:var(--terra)}.cl.gold{color:var(--gold)}.cl.sage{color:var(--sage)}.cl.violet{color:var(--violet)}
+.ct{font-family:'Playfair Display',serif;font-size:17px;font-weight:600;margin-bottom:10px;color:var(--ink)}
+.card p{color:var(--ink-mid);line-height:1.72;font-size:14px}
+.overview-board{display:grid;grid-template-columns:1.25fr .9fr .9fr 1.2fr;gap:14px;align-items:stretch}
+.overview-board .card{margin-bottom:0;min-height:100%;overflow:hidden}
+.span2{grid-column:span 2}
+.span-row2{grid-row:span 2}
+.hero-card{min-height:288px;border:1px solid rgba(255,255,255,.45);color:#fff;background:linear-gradient(180deg,rgba(100,0,10,.02) 0%,rgba(139,30,45,.74) 63%,rgba(80,0,15,.95) 100%),radial-gradient(circle at 72% 20%,rgba(215,38,56,.7),transparent 34%),linear-gradient(135deg,#8B1E2D,#350A11);display:flex;flex-direction:column;justify-content:flex-end;text-align:right}
+.hero-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 92%,rgba(255,255,255,.42) 0 2%,transparent 3%),radial-gradient(ellipse at 46% 82%,rgba(255,255,255,.35) 0 2%,transparent 3%),radial-gradient(ellipse at 62% 92%,rgba(255,255,255,.38) 0 2%,transparent 3%);opacity:.55}
+.hero-card .cl,.hero-card .ct,.hero-card p,.hero-card button{position:relative;z-index:1}
+.hero-card .cl{color:#fff}
+.hero-card .ct{color:#fff;font-family:'DM Sans',sans-serif;font-size:26px;font-weight:900;letter-spacing:-.03em}
+.hero-card p{color:rgba(255,255,255,.82)}
+.read-more{align-self:flex-end;margin-top:22px;background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.45);border-radius:999px;padding:9px 18px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:800;cursor:pointer}
+.read-more:hover{background:#fff;color:var(--blue-deep)}
+.blue-card{background:linear-gradient(135deg,#D72638 0%,#8B1E2D 100%);color:#fff;border-color:rgba(255,255,255,.18)}
+.blue-card .cl,.blue-card .ct,.blue-card p{color:#fff}
+.blue-card p{opacity:.86}
+.cream-card{background:linear-gradient(135deg,#fff 0%,#fff6dc 100%)}
+.quote-tile{display:flex;align-items:center;justify-content:center;text-align:center;padding:28px;background:linear-gradient(135deg,#8B1E2D 0%,#D72638 100%);color:#fff}
+.quote-tile p{font-family:'Playfair Display',serif;font-style:italic;font-size:18px;line-height:1.45;color:#fff}
+.quick-links{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px}
+.quick-link{width:68px;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:10px;color:var(--ink);font-weight:700}
+.quick-ico{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#fff;border:1px solid var(--border);color:var(--blue);font-weight:900;box-shadow:0 8px 18px rgba(139,30,45,.09)}
+.bio-list{display:grid;gap:10px}
+.bio-line{display:flex;align-items:center;gap:10px;color:var(--ink-mid);font-size:12.5px;font-weight:700}
+.bio-line span:first-child{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--blue-soft);color:var(--blue);font-size:12px}
+.soundcheck{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:15px}
+.meter{display:grid;gap:6px;text-align:center;font-size:10.5px;color:var(--ink-mid);font-weight:700}
+.ring{--pct:40;width:56px;height:56px;margin:auto;border-radius:50%;background:conic-gradient(var(--blue) calc(var(--pct)*1%),#E7EAF1 0);display:grid;place-items:center;color:var(--blue);font-weight:900}
+.ring::before{content:attr(data-pct);width:40px;height:40px;border-radius:50%;background:#fff;display:grid;place-items:center}
+.press-strip{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-top:14px}
+.press-logo{font-size:17px;color:var(--blue-deep);font-weight:900;letter-spacing:-.04em}
+.page-contact{position:fixed;left:262px;right:0;bottom:0;z-index:95;display:grid;grid-template-columns:1fr 1.25fr auto 1fr;gap:18px;align-items:center;padding:12px 34px;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-top:1px solid var(--border);box-shadow:0 -12px 32px rgba(139,30,45,.08);color:var(--ink);font-weight:800}
+.page-contact .pill{justify-self:center;background:var(--cream2);border:1px solid var(--parchment);color:var(--blue-deep);padding:10px 28px;border-radius:8px}
+@media(max-width:1180px){.overview-board{grid-template-columns:1fr 1fr}.span2{grid-column:span 2}.span-row2{grid-row:auto}.page-contact{grid-template-columns:1fr 1fr;left:0}}
+@media(max-width:760px){.app{display:block}.sidebar{position:relative;width:100%;height:auto;min-width:0}.main{padding:18px 16px 110px}.masthead{padding:30px 24px}.masthead::before,.masthead::after{display:none}.mh-title{font-size:40px}.overview-board{grid-template-columns:1fr}.span2{grid-column:auto}.page-contact{display:none}}
+.cb{position:absolute;top:16px;right:16px;background:var(--cream2);border:1px solid var(--border);border-radius:6px;padding:4px 11px;font-size:10.5px;font-weight:500;color:var(--ink-light);cursor:pointer;transition:.14s;font-family:'DM Sans',sans-serif}
+.cb:hover{background:var(--teal-pale);color:var(--teal);border-color:var(--teal-l)}
+.cb.ok{background:var(--sage-pale);color:var(--sage);border-color:var(--sage)}
+.cb-inline{display:inline-flex;align-items:center;gap:5px;margin-top:10px;background:var(--cream2);border:1px solid var(--border);border-radius:6px;padding:4px 11px;font-size:10.5px;font-weight:500;color:var(--ink-light);cursor:pointer;transition:.14s;font-family:'DM Sans',sans-serif}
+.cb-inline:hover{background:var(--teal-pale);color:var(--teal);border-color:var(--teal-l)}
+.cb-inline.ok{background:var(--sage-pale);color:var(--sage);border-color:var(--sage)}
+.editable-block{position:relative}
+.edit-tools{position:absolute;top:14px;right:16px;z-index:12;display:flex;gap:6px;align-items:center}
+.editable-block.has-copy>.edit-tools{right:92px}
+.edit-btn,.add-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;background:#fff;border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:10.5px;font-weight:700;color:var(--blue);cursor:pointer;transition:.14s;font-family:'DM Sans',sans-serif}
+.edit-btn:hover,.add-btn:hover{background:var(--blue-soft);border-color:var(--teal-l);text-decoration:none}
+.edit-tools .edit-btn:first-child{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 8px 18px rgba(215,38,56,.18)}
+.edit-btn.save{background:var(--blue);border-color:var(--blue);color:#fff}
+.edit-btn.cancel{color:var(--ink-light)}
+.editing{outline:2px solid rgba(215,38,56,.42);outline-offset:3px}
+.editing [contenteditable="true"]{background:rgba(255,245,215,.78);box-shadow:0 0 0 1px rgba(215,38,56,.25);border-radius:4px;padding:1px 3px}
+.editing a{cursor:text}
+.add-bar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.field-hint{font-size:11px;color:var(--ink-light);margin-top:6px}
+.trait-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:15px}
+.trait{background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px;display:grid;gap:8px;min-height:128px}
+.trait.off{opacity:.45}
+.trait-head{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:800;color:var(--ink)}
+.trait-check,.tone-check{accent-color:var(--blue)}
+.trait-body{display:grid;grid-template-columns:58px 1fr 52px;gap:10px;align-items:center}
+.trait-range{width:100%;accent-color:var(--blue)}
+.trait-number{width:52px;border:1px solid var(--border);border-radius:6px;padding:5px;font:700 11px 'DM Sans',sans-serif;color:var(--ink);text-align:center}
+.tone-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:4px}
+.tone-pill{border:1px solid var(--border);border-radius:8px;background:#fff;padding:10px;display:grid;gap:5px}
+.tone-pill.off{opacity:.45}
+.tone-title{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:800;color:var(--ink)}
+.tone-desc{font-size:11.5px;color:var(--ink-mid);line-height:1.45}
+.mockup-box{border:2px dashed var(--border);border-radius:8px;background:var(--cream2);padding:18px;display:grid;gap:12px;justify-items:start}
+.mockup-preview{width:min(100%,420px);max-height:260px;object-fit:contain;border:1px solid var(--border);border-radius:8px;background:#fff;display:none}
+.mockup-preview[src]:not([src=""]){display:block}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+@media(max-width:860px){.g2,.g3{grid-template-columns:1fr}}
+.pcard{background:#fff;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}
+.ph{padding:20px 24px 16px;background:linear-gradient(135deg,#8B1E2D 0%,#D72638 100%);color:#fff}
+.pn{font-family:'Playfair Display',serif;font-size:18px;font-weight:700}
+.pr{font-size:10px;color:rgba(255,255,255,.55);letter-spacing:.09em;text-transform:uppercase;margin-top:2px}
+.po{font-size:11px;color:rgba(255,208,212,.85);margin-top:5px;font-style:italic}
+.pb{padding:18px 24px;position:relative}
+.pb p{font-size:13.5px;line-height:1.7;color:var(--ink-mid);margin-bottom:8px}
+.icard{background:#fff;border:1px solid var(--border);border-radius:var(--r);margin-bottom:12px;box-shadow:var(--sh);overflow:hidden}
+.iq{padding:16px 20px;background:linear-gradient(90deg,var(--teal-pale),#fff);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;gap:12px}
+.iq-t{font-weight:600;font-size:13.5px;color:var(--ink);flex:1}
+.iq-i{color:var(--teal);font-size:18px;transition:transform .2s;flex-shrink:0}
+.icard.open .iq-i{transform:rotate(45deg)}
+.ia{padding:0 20px;max-height:0;overflow:hidden;transition:max-height .32s ease,padding .2s ease}
+.icard.open .ia{max-height:700px;padding:18px 20px}
+.ia-t{font-size:13.5px;line-height:1.75;color:var(--ink-mid);font-style:italic;border-left:3px solid var(--teal-pale);padding-left:16px;margin-bottom:12px}
+.srow{display:flex;align-items:center;gap:14px;padding:14px 18px;background:#fff;border:1px solid var(--border);border-radius:var(--r);margin-bottom:9px;box-shadow:var(--sh);transition:box-shadow .14s;position:relative}
+.srow:hover{box-shadow:var(--sh-md)}
+.snum{font-family:'DM Mono',monospace;font-size:11px;color:var(--ink-light);width:22px;flex-shrink:0}
+.si{flex:1}
+.st{font-weight:600;font-size:14.5px;color:var(--ink)}
+.sm{font-size:11.5px;color:var(--ink-light);margin-top:2px}
+.slinks{display:flex;gap:5px;flex-wrap:wrap}
+.sl{padding:3px 11px;border-radius:14px;font-size:10.5px;font-weight:500;border:1px solid var(--border);color:var(--teal);background:var(--teal-pale);transition:.14s;display:flex;align-items:center;gap:3px}
+.sl:hover{background:var(--teal);color:#fff;border-color:var(--teal);text-decoration:none}
+.sl.ph{color:var(--ink-light);background:var(--cream);border-style:dashed;cursor:default}
+.palette{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.sw{display:flex;flex-direction:column;align-items:center;gap:5px}
+.swc{width:58px;height:58px;border-radius:8px;border:1px solid rgba(0,0,0,.08);box-shadow:0 2px 6px rgba(0,0,0,.09)}
+.swl{font-size:9px;font-family:'DM Mono',monospace;color:var(--ink-light);text-align:center}
+.tc{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.tag{padding:4px 12px;border-radius:18px;font-size:11.5px;font-weight:500;border:1px solid var(--border);background:var(--cream2);color:var(--ink-mid)}
+.tag.t{background:var(--teal-pale);color:var(--teal);border-color:var(--teal-l)}
+.tag.g{background:var(--gold-pale);color:#7a6010;border-color:#cca840}
+.tag.r{background:var(--terra-pale);color:var(--terra);border-color:#c87055}
+.tag.s{background:var(--sage-pale);color:var(--sage);border-color:#8eaa7a}
+.tag.v{background:var(--violet-pale);color:var(--violet);border-color:#9a74b8}
+.fr{display:flex;align-items:baseline;gap:10px;padding:11px 0;border-bottom:1px solid var(--border)}
+.fr:last-child{border-bottom:none}
+.fk{font-size:10.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-light);min-width:175px;flex-shrink:0}
+.fv{font-size:13.5px;color:var(--ink)}
+.fv.ph2{color:var(--terra);font-style:italic;font-size:12.5px}
+.fv a{color:var(--teal)}
+.qb{border-left:4px solid var(--teal);padding:14px 20px;background:var(--teal-pale);border-radius:0 7px 7px 0;margin:13px 0;font-style:italic;font-family:'Playfair Display',serif;font-size:15px;line-height:1.55;color:var(--ink)}
+.qa{margin-top:7px;font-size:11.5px;font-style:normal;font-family:'DM Sans',sans-serif;color:var(--ink-light)}
+.slogan{background:linear-gradient(135deg,#1A0308 0%,#3D0A15 100%);color:#fff;border-radius:var(--r);padding:28px 32px;margin-bottom:13px;position:relative;overflow:hidden}
+.slogan::before{content:'"';position:absolute;right:16px;top:-12px;font-family:'Playfair Display',serif;font-size:110px;color:rgba(255,255,255,.04);line-height:1}
+.slogan-t{font-family:'Playfair Display',serif;font-size:20px;font-style:italic;line-height:1.4;margin-bottom:8px}
+.slogan-c{font-size:10px;color:rgba(255,255,255,.38);letter-spacing:.12em;text-transform:uppercase}
+.fcard{background:#fff;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}
+.fch{padding:14px 18px;background:var(--ink);color:#fff}
+.fcn{font-weight:700;font-size:14px}
+.fcd{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px}
+.fcb{padding:16px 18px}
+.fcr{display:flex;gap:7px;align-items:flex-start;margin-bottom:7px}
+.fci{color:var(--teal);flex-shrink:0;margin-top:1px}
+.fct{font-size:12.5px;color:var(--ink-mid)}
+.ph-banner{background:var(--terra-pale);border:1px dashed var(--terra);border-radius:8px;padding:10px 16px;font-size:12.5px;color:var(--terra);display:flex;align-items:center;gap:9px;margin-bottom:12px}
+.ni-lock{margin-left:auto;font-size:11px;opacity:.55;flex-shrink:0}
+.sec.is-locked{position:relative;min-height:480px;overflow:hidden}
+.sec.is-locked > *:not(.lock-overlay){filter:blur(6px);pointer-events:none;user-select:none}
+.lock-overlay{position:absolute;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(247,242,229,.55) 0%,rgba(247,242,229,.93) 38%,rgba(247,242,229,.99) 100%)}
+.lock-card{max-width:420px;text-align:center;padding:36px 34px 30px;background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--sh-md)}
+.lock-icon{width:54px;height:54px;border-radius:50%;margin:0 auto 16px;background:linear-gradient(135deg,var(--violet),#6B4C8A);display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;box-shadow:0 10px 24px rgba(35,71,165,.28)}
+.lock-title{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:var(--ink);margin-bottom:10px}
+.lock-body{font-size:13px;color:var(--ink-mid);line-height:1.6;margin-bottom:20px}
+.lock-cta{display:inline-flex;align-items:center;gap:7px;background:var(--violet);color:#fff;border:none;border-radius:999px;padding:11px 24px;font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;transition:.16s;text-decoration:none}
+.lock-cta:hover{background:var(--blue-deep);text-decoration:none}
+.lock-badge{display:inline-block;margin-top:14px;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-light);font-weight:600}
+.drive-card{background:linear-gradient(135deg,#1A0308 0%,#3D0A15 100%);color:#fff;border-radius:var(--r);padding:26px 28px;margin-bottom:14px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.drive-card .drive-ico{width:48px;height:48px;border-radius:50%;flex-shrink:0;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:21px}
+.drive-card .drive-text{flex:1;min-width:200px}
+.drive-card .drive-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:4px}
+.drive-card .drive-sub{font-size:12.5px;color:rgba(255,255,255,.7);line-height:1.5}
+.drive-cta{display:inline-flex;align-items:center;gap:7px;flex-shrink:0;background:var(--gold);color:var(--ink);border:none;border-radius:999px;padding:11px 22px;font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:800;cursor:pointer;transition:.16s;text-decoration:none}
+.drive-cta:hover{background:#fff;text-decoration:none}
+.press-outlet{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--terra);margin-bottom:5px;display:flex;align-items:center;gap:7px}
+.press-outlet::after{content:'';flex:1;height:1px;background:var(--terra-pale)}
+.pt{display:inline-block;padding:2px 7px;border-radius:3px;font-size:8.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;margin-left:5px}
+.pt.tv{background:#e6eeff;color:#2a58e0}
+.pt.radio{background:var(--gold-pale);color:#7a6010}
+.pt.dig{background:var(--sage-pale);color:var(--sage)}
+.pt.mag{background:var(--terra-pale);color:var(--terra)}
+.pav-hero{background:linear-gradient(135deg,#1a1030 0%,#2a1060 50%,#162828 100%);color:#fff;border-radius:var(--r);padding:32px 36px;margin-bottom:24px;position:relative;overflow:hidden}
+.pav-hero::before{content:'360°';position:absolute;right:20px;top:50%;transform:translateY(-50%);font-family:'Playfair Display',serif;font-size:100px;font-weight:700;color:rgba(255,255,255,.04);pointer-events:none}
+.pav-hero-eye{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:#9B7ACC;font-weight:600;margin-bottom:8px}
+.pav-hero-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;line-height:1.1;margin-bottom:6px}
+.pav-hero-sub{font-size:13px;color:rgba(255,255,255,.45);font-style:italic;margin-bottom:24px}
+.pav-kpis{display:flex;gap:32px;flex-wrap:wrap;padding-top:20px;border-top:1px solid rgba(255,255,255,.1)}
+.pav-kpi-val{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:#9B7ACC}
+.pav-kpi-label{font-size:10px;color:rgba(255,255,255,.38);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
+.timeline{position:relative;margin-top:8px}
+.timeline::before{content:'';position:absolute;left:28px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--violet),var(--teal),var(--sage));border-radius:1px}
+.phase-block{margin-bottom:8px}
+.phase-head{display:flex;align-items:center;gap:14px;padding:16px 20px 16px 52px;background:#fff;border:1px solid var(--border);border-radius:var(--r);cursor:pointer;box-shadow:var(--sh);transition:.18s;position:relative;margin-left:14px}
+.phase-head:hover{box-shadow:var(--sh-md)}
+.phase-dot{position:absolute;left:-26px;top:50%;transform:translateY(-50%);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0}
+.phase-dot.p1{background:var(--violet)}
+.phase-dot.p2{background:var(--teal)}
+.phase-dot.p3{background:var(--terra)}
+.phase-dot.p4{background:var(--sage)}
+.phase-label{font-size:8.5px;letter-spacing:.15em;text-transform:uppercase;font-weight:700;margin-bottom:2px}
+.p1 .phase-label,.phase-head.p1 .phase-label{color:var(--violet)}
+.p2 .phase-label,.phase-head.p2 .phase-label{color:var(--teal)}
+.p3 .phase-label,.phase-head.p3 .phase-label{color:var(--terra)}
+.p4 .phase-label,.phase-head.p4 .phase-label{color:var(--sage)}
+.phase-name{font-weight:600;font-size:15px;color:var(--ink)}
+.phase-dates{font-size:11px;color:var(--ink-light);margin-top:1px}
+.phase-toggle{margin-left:auto;color:var(--ink-light);font-size:18px;transition:transform .2s;flex-shrink:0}
+.phase-block.open .phase-toggle{transform:rotate(45deg)}
+.phase-body{margin-left:14px;max-height:0;overflow:hidden;transition:max-height .38s ease,padding .2s}
+.phase-block.open .phase-body{max-height:2000px;padding-top:6px}
+.phase-inner{background:#fff;border:1px solid var(--border);border-radius:0 0 var(--r) var(--r);border-top:none;padding:0 0 16px;box-shadow:var(--sh)}
+.obj-strip{background:var(--cream2);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.obj-strip-label{font-size:9px;letter-spacing:.15em;text-transform:uppercase;font-weight:600;color:var(--ink-light);margin-right:4px;flex-shrink:0}
+.obj-chip{padding:3px 10px;border-radius:14px;font-size:11px;font-weight:500;background:#fff;border:1px solid var(--border);color:var(--ink-mid)}
+.weeks{padding:16px 20px 4px}
+.week-row{display:grid;grid-template-columns:80px 1fr auto;gap:12px;align-items:start;margin-bottom:16px}
+.week-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-light);padding-top:6px;flex-shrink:0}
+.week-items{display:flex;flex-direction:column;gap:6px}
+.item{display:flex;align-items:flex-start;gap:10px;padding:9px 14px;background:var(--cream);border:1px solid var(--border);border-radius:8px;transition:.14s;cursor:pointer}
+.item:hover{background:var(--cream2)}
+.item.done{opacity:.55}
+.item.done .item-text{text-decoration:line-through;color:var(--ink-light)}
+.item-check{width:17px;height:17px;border-radius:4px;border:2px solid var(--border);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:.14s;background:#fff}
+.item.done .item-check{background:var(--sage);border-color:var(--sage);color:#fff}
+.item-text{font-size:12.5px;color:var(--ink-mid);line-height:1.45;flex:1}
+.item-tag{flex-shrink:0;padding:2px 8px;border-radius:10px;font-size:9.5px;font-weight:600;letter-spacing:.06em}
+.it-an{background:var(--violet-pale);color:var(--violet)}
+.it-co{background:var(--teal-pale);color:var(--teal)}
+.it-re{background:var(--terra-pale);color:var(--terra)}
+.it-ci{background:var(--sage-pale);color:var(--sage)}
+.prog-wrap{margin:0 20px 14px;background:var(--cream2);border-radius:4px;height:6px;overflow:hidden}
+.prog-bar{height:100%;border-radius:4px;transition:width .4s ease}
+.prog-bar.p1{background:linear-gradient(90deg,var(--violet),#9B7ACC)}
+.prog-bar.p2{background:linear-gradient(90deg,var(--teal),var(--teal-l))}
+.prog-bar.p3{background:linear-gradient(90deg,var(--terra),#d07050)}
+.prog-bar.p4{background:linear-gradient(90deg,var(--sage),#8aaa70)}
+.prog-label{padding:6px 20px 12px;font-size:10.5px;color:var(--ink-light);display:flex;justify-content:space-between}
+.summ-table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}
+.summ-table th{text-align:left;padding:8px 14px;background:var(--cream2);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-light);font-weight:600;border-bottom:1px solid var(--border)}
+.summ-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--ink-mid);vertical-align:top}
+.summ-table tr:last-child td{border-bottom:none}
+.status-pill{display:inline-block;padding:2px 10px;border-radius:10px;font-size:9.5px;font-weight:600;letter-spacing:.06em}
+.sp-todo{background:var(--cream2);color:var(--ink-light);border:1px solid var(--border)}
+.sp-active{background:#fff3cd;color:#856404;border:1px solid #ffc107}
+.sp-done{background:var(--sage-pale);color:var(--sage);border:1px solid #8aaa70}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-head">
+    <div class="brand-lockup" aria-label="Artes Buho">
+      <div class="brand-mark" aria-hidden="true"><img alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIoAAACUCAYAAABMW7GPAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAACxMAAAsTAQCanBgAABEbSURBVHhe7d15VBRXvgfw2whxiYQYxxiJSoLvzDMm4/MlxpfMOL6ZZDLOzMlmfDoZz2R52U5Ocl48SUwUqKYFem8aGhAU2d1YxA2MK4KCoig6gHsIMSCWoCwqiKz1e38oTdWvWRqsrq7G+zmnz6G/dau6uu+vq25XVxeEUBRFURRFURRFURRFURRFURRFURRFURRFURRFURRFuSwFDqihSdOse66+vfbXxGNMxx+nzC6c8cF/1eM2rszlCyVaFfnOrc5mlafX2JmenmNJXV0j6WzryH7MY4zhU9VXR3B7sZiUhuA5v31eOe8vf8KTrDpuNBKzOab+T489850Xv1l4FU+nHIyLv+6ZnrAB7GEOMQOe/34YGP12/Bj2OLR7H0AWjMHLoxxEy2hv4E6wh45Rn8bLGoxMVdL0rltDemgBg1KXipdNiezEwcP4dR+UEwcPD2nrEqo0aPGy7sfGuJQhrQdlh8P78vDrPSSV888PqpPCGdNyvAwx7EzbOqj1oOygDRD1DQ27Nm+zq5PWq2JewvOKKTuDFouo8Asshvggy6v4cTBob8WziW7XlixaLGK4dPYcfm1F0Xyttt8OijJE4Fkc5ofMHf2uCzWAqGDzu/hFFVOmKmk6fsxuuK2jbd2YQYtlqPCLKTYdo67Bj0kIIVqVdhduKwU6ZhkCbYC6A7+QYivKze+1Y+qrqnBTydAxyyDAJRiFX0BHuFNf12un4HZS25m2pdf1opCivAL82jkMfuzKmLJxuI0zyG3M4oYDZ9tgXDtrzh/m4lgyJ2pPTsSZMyxYsohkJKfKqlhkBdrb8JvLofDjbzCunYXbOJOOUZfidXQGWW1RdIH6g8TjIRxLqqudc8eZM60ICZhZGVM2DudSk1WhrAha/t84owgZOX9sA86kJptCoccQ+jbR92mSqIz5Pc6lJItC2aRJnvn6ogU4pnge9vXKx5mUZFEob332N1kM2ORs8Yf/wJGknF4oJqXeMuZXE3BM2VCQQ6F7puBUKk4vlGXBy5fijOrdiZYz7+NMKk4tlORV8XQAOwjtbW3+OJOK0wql0Jz+5Adffoxjqh/uHu5OO4vfaYUyaf5z1TiTWuetmzii+uCUQjEHmr976dkZOJZce3sHjmQNumAdzqTilEL5JmhZKM6ogfmM8jbhTCqSF4o+UEsHsEP0bsD7Z3AmFUkL5UTY7knLg/xwTNnh+EGnHpiVtlDcXvRicUbZ51jByU9xJiXJCiUiOOKj5+e+jGPKHneaydLAb+JxLCXJCuWrZR8n4Iyyz7qwjS/iTGqSFIqOCTlPRj+MY8oO2zdsJh8wnxfjXGoOLxTIgjErQpg+f2hF9a3p6lWy4L3FsrjYkcMLJVex9zbOKPuc2HjqKZw5i0MLJVod/cYrr8/HMWUHY6Bhw6vfvV6J82GpqaYGn1QuK7evX7c5+JeiXjMbt5NayZGjNuvlbA7bougYXf7YibL4iYxraWsls373sizGJXwOK5QVISucejKwq0rSJM3DmRw4pFC2pW6W3abTFegCNK0fhXxRgHM5EL1QktRrX3r73f/BMTUAtqKC+GuZ0TiXC9EL5Y335h/FGTWwzn0tj+FMTkQtFEOgYf34qVNxTNlh3NuPO/3XgP0RtVC+D1r2T5xR9vGcNJGwFRWyHduJVihxEbEg4uIeSJN8fUnDlSuyLBZRerbMkjPxk68+w7HsAZFfn4zz9iZdTU2yWzFRCuXR+ZN7vWieK/LocP4J125jx5KaS5WyKpb7LhST0hA8Zfq/49h1PeTZjiNnmPjUVFmNWe67UJYFfaPEmauou277v5dGkK5OnDnLJF9f0nz9miyK5b4KRR+oBaKQ1QWKBqWrw7YmRhA3DmfO9PCvJpCmAa6yLYUhFwoAuNEz6qUxdsLj5MpPzt0NDblQzp881YUzynG8p/mSukrnDXCHVCjR6ug3nnnheRxTDjZ+6lTSefOGU4plSIXyxbL/zcIZJY0Rj3iRusuXJS+WQReKjtH8QkbK9kvOB8L4yZMlH7MMulBWhPj74I0+3OXiX4p6zWzcTmolR47arJezOWyLoiN0+WMnyvYnIsaWtpJZv3tZFuMSPocVyoqQFU49GdhVJWmS5uFMDhxSKNtSt8puU+aqJCgLNK0fhXxRgHM5EL1QktRrX3r73f/BMTUAtqKC+GuZ0TiXC9EL5Y335h/FGTWwzn0tj+FMTkQtFEOgYf34qVNxTNlh3NuPO/3XgP0RtVC+D1r2T5xR9vGcNJGwFRWyHduJVihxEbEg4uIeSJN8fUnDlSuyLBZRerbMkjPxk68+w7HsAZFfn4zz9iZdTU2yWzFRCuXR+ZN7vWieK/LocP4J125jx5KaS5WyKpb7LhST0hA8Zfq/49h1PeTZjiNnmPjUVFmNWe67UJYFfaPEmauou277v5dGkK5OnDnLJF9f0nz9miyK5b4KRR+oBaKQ1QWKBqWrw7YmRhA3DmfO9PCvJpCmAa6yLYUhFwoAuNEz6qUxdsLj5MpPzt0NDblQzp881YUzynG8p/mSukrnDXCHVCjR6ug3nnnheRxTDjZ+6lTSefOGU4plSIXyxbL/zcIZJY0Rj3iRusuXJS+WQReKjtH8QkbK9kvOB8L4yZMlH7MMulBWhPj74I0+3OXiX4p6zWzcTmolR47arJezOWyLoiN0+WMnyvYnIsaWtpJZv3tZFuMSPocVyoqQFU49GdhVJWmS5uFMDhxSKNtSt8puU+aqJCgLNK0fhXxRgHM5EL1QktRrX3r73f/BMTUAtqKC+GuZ0TiXC9EL5Y335h/FGTWwzn0tj+FMTkQtFEOgYf34qVNxTNlh3NuPO/3XgP0RtVC+D1r2T5xR9vGcNJGwFRWyHduJVihxEbEg4uIeSJN8fUnDlSuyLBZRerbMkjPxk68+w7HsAZFfn4zz9iZdTU2yWzFRCuXR+ZN7vWieK/LocP4J125jx5KaS5WyKpb7LhST0hA8Zfq/49h1PeTZjiNnmPjUVFmNWe67UJYFfaPEmauou277v5dGkK5OnDnLJF9f0nz9miyK5b4KRR+oBaKQ1QWKBqWrw7YmRhA3DmfO9PCvJpCmAa6yLYUhFwoAuNEz6qUxdsLj5MpPzt0NDblQzp881YUzynG8p/mSukrnDXCHVCjR6ug3nnnheRxTDjZ+6lTSefOGU4plSIXyxbL/zcIZJY0Rj3iRusuXJS+WQReKjtH8QkbK9kvOB8L4yZMlH7MMulBWhPj74I0+3OXiX4p6zWzcTmolR47arJezOWyLoiN0+WMnyvYnIsaWtpJZv3tZFuMSPocVyoqQFU49GdhVJWmS5uFMDhxSKNtSt8puU+aqJCgLNK0fhXxRgHM5EL1QktRrX3r73f/BMTUAtqKC+GuZ0TiXC9EL5Y335h/FGTWwzn0tj+FMTkQtFEOgYf34qVNxTNlh3NuPO/3XgP0RtVC+D1r2T5xR9vGcNJGwFRWyHduJVihxEbEg4uIeSJN8fUnDlSuyLBZRerbMkjPxk68+w7HsAZFfn4zz9iZdTU2yWzFRCuXR+ZN7vWieK/LocP4J125jx5KaS5WyKpb7LhST0hA8Zfq/49h1PeTZjiNnmPjUVFmNWe67UJYFfaPEmauou277v5dGkK5OnDnLJF9f0nz9miyK5b4KRR+oBaKQ1QWKBqWrw7YmRhA3DmfO9PCvJpCmAa6yLYUhFwoAuNEz6qUxdsLj5MpPzt0NDblQzp881YUzynG8p/mSukrnDXCHVCjR6ug3nnnheRxTDjZ+6lTSefOGU4plSIXyxbL/zcIZJY0Rj3iRusuXJS+WQReKjtH8QkbK9kvOB8L4yZMlH7MMulBWhPj74I0+3OXiX4p6zWzcTmolR47arJezOWyLoiN0+WMnyvYnIsaWtpJZv3tZFuMSPocVyoqQFU49GdhVJWmS5uFMDhxSKNtSt8puU+aqJCgLNK0fhXxRgHM5EL1QktRrX3r73f/BMTUAtqKC+GuZ0TiXC9EL5Y335h/FGTWwzn0tj+FMTkQtFEOgYf34qVNxTNlh3NuPO/3XgP0RtVC+D1r2T5xR9vGcNJGwFRWyHduJVihxEbEg4uIeSJN8fUnDlSuyLBZRerbMkjPxk68+w7HsAZFfn4zz9iZdTU2yWzFRCuXR+ZN7vWieK/LocP4J125jx5KaS5WyKpb7LhST0hA8Zfq/49h1PeTZjiNnmPjUVFmNWe67UJYFfaPEmauou277v5dGkK5OnDnLJF9f0nz9miyK5b4KRR+oBaKQ1QWKBqWrw7YmRhA3DmfO9PCvJpCmAa6yLYUhFwoAuNEz6qUxdsLj5MpPzt0NDblQzp881YUzynG8p/mSukrnDXCHVCjR6ug3nnnheRxTDjZ+6lTSefOGU4plSIXyxbL/zcIZJY0Rj3iRusuXJS+WQReKjtH8QkbK9kvOB8L4yZMlH7MMulBWhPj74I0+3OXiX4p6zWzcTmolR47arJezOWyLoiN0+WMnyvYnIsaWtpJZv3tZFuMSPocVyoqQFU49GdhVJWmS5uFMDhxSKNtSt8puU+aqJCgLNA=="></div>
+      <div>
+        <div class="brand-word"><span>Pavoneo</span><span>360</span></div>
+        <div class="brand-note">Artes Buho Management</div>
+      </div>
+    </div>
+    <div class="sb-project">
+      <div class="sb-logo" id="sb-project-name">Mario Cassado</div>
+      <div class="sb-sub">Pop Bailable · Showman · Madrid</div>
+      <div class="sb-badge" id="sb-tier-badge">INFO MAESTRA</div>
+      <div class="sb-head-links">
+        <a href="https://www.instagram.com/mariocassado/" target="_blank" class="sb-link"><span class="dot"></span> Instagram</a>
+        <a href="https://www.tiktok.com/@mariocassado" target="_blank" class="sb-link"><span class="dot"></span> TikTok</a>
+        <a href="https://www.youtube.com/@MarioCassado" target="_blank" class="sb-link"><span class="dot"></span> YouTube</a>
+      </div>
+    </div>
+  </div>
+  <nav>
+    <div class="ng-label">Identidad</div>
+    <div class="ni active" onclick="show('overview',this)"><i class="ic">◈</i> Resumen del Proyecto</div>
+    <div class="ni" onclick="show('bios',this)"><i class="ic">◉</i> Biografía</div>
+    <div class="ni" onclick="show('comunicacion',this)"><i class="ic">◎</i> Estilo de Comunicación</div>
+    <div class="ni" onclick="show('estetica',this)"><i class="ic">◐</i> Estética e Identidad</div>
+    <div class="ng-label" style="margin-top:6px">Contenido</div>
+    <div class="ni" onclick="show('espectaculo',this)"><i class="ic">▷</i> El Espectáculo</div>
+    <div class="ni" onclick="show('discografia',this)"><i class="ic">◑</i> Discografía & Singles</div>
+    <div class="ni" onclick="show('entrevistas',this)"><i class="ic">◒</i> Tarjetas de Entrevista</div>
+    <div class="ng-label" style="margin-top:6px">Prensa & Materiales</div>
+    <div class="ni" data-nav-id="prensa" onclick="show('prensa',this)"><i class="ic">◇</i> Notas de Prensa & Medios<span class="ni-lock" data-lock-icon="prensa"></span></div>
+    <div class="ni" data-nav-id="rider" onclick="show('rider',this)"><i class="ic">▸</i> Rider Técnico & Formatos<span class="ni-lock" data-lock-icon="rider"></span></div>
+    <div class="ni" data-nav-id="ficha" onclick="show('ficha',this)"><i class="ic">◈</i> Ficha Artística<span class="ni-lock" data-lock-icon="ficha"></span></div>
+    <div class="ni" onclick="show('fotos',this)"><i class="ic">◻</i> Fotos & Material Gráfico</div>
+    <div class="ng-label" style="margin-top:6px">Gestión</div>
+    <div class="ni" onclick="show('contacto',this)"><i class="ic">◌</i> Datos & Contacto</div>
+    <div class="ni" onclick="show('links',this)"><i class="ic">⊕</i> Links de Interés</div>
+    <div class="ng-label" style="margin-top:8px">Estrategia</div>
+    <div class="ni pavoneo" onclick="show('pavoneo',this)"><i class="ic">✦</i> Pavoneo 360°</div>
+  </nav>
+  <div class="sb-foot">
+    <strong>Oficina del Artista</strong><br>
+    artesbuho.oficial@gmail.com<br>
+    Actualización: Junio 2026
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div class="mh-eye">Documento de referencia central · Consultoría Artes Búho 2026</div>
+  <div class="mh-title">Mario <em>Cassado</em></div>
+  <div class="mh-tag">Pop Bailable · Caribe Mix · Showman · Madrid · Barcelona · Valencia</div>
+  <div class="mh-meta">
+    <div class="mi"><span class="mi-l">Proyecto</span><span class="mi-v">Mario Cassado</span></div>
+    <div class="mi"><span class="mi-l">Instagram</span><span class="mi-v"><a href="https://www.instagram.com/mariocassado/" target="_blank">@mariocassado</a></span></div>
+    <div class="mi"><span class="mi-l">TikTok</span><span class="mi-v"><a href="https://www.tiktok.com/@mariocassado" target="_blank">@mariocassado</a></span></div>
+    <div class="mi"><span class="mi-l">YouTube</span><span class="mi-v"><a href="https://www.youtube.com/@MarioCassado" target="_blank">@MarioCassado</a></span></div>
+    <div class="mi"><span class="mi-l">Spotify</span><span class="mi-v"><a href="https://open.spotify.com/intl-es/artist/7mdRYzgaAAPKzJ1WDysKdn" target="_blank">Mario Cassado ↗</a></span></div>
+    <div class="mi"><span class="mi-l">Próximo concierto</span><span class="mi-v">Siroco · 24 Septiembre 2026</span></div>
+  </div>
+</div>
+
+<!-- ██ OVERVIEW ██ -->
+<section class="sec active" id="overview">
+  <div class="sh"><div><div class="sh-eye">Resumen del Proyecto</div><div class="sh-title">Quién es Mario Cassado</div></div></div>
+
+  <div class="overview-board">
+    <div class="card cream-card span2">
+      <div class="cl teal">Definición principal</div>
+      <div class="ct">Un showman de pop bailable que devuelve el color a un mundo gris</div>
+      <p>Mario Cassado es un artista solista de pop bailable que lleva a su público de un mundo ficticio gris al <strong>Caribe Mix</strong>: euforia, alegría y ganas de vivir. Su propuesta combina dos ejes: pop electrónico con sabor Eurovisión y tendencias latinas y urbanas (reggaeton, afrobeat, merengue) con melodías pegadizas que nunca pierden su sello pop. No cambia la voz, cambia el fondo. Lo que nunca cambia es la energía en escena, el espectáculo de voz y baile, y una actitud de showman que muy pocos artistas masculinos tienen en España.</p>
+      <button class="cb" onclick="cp(this)">Copiar</button>
+    </div>
+
+    <div class="card">
+      <div class="cl teal">Narrativa del disco</div>
+      <div class="ct">Del mundo gris al color rojo</div>
+      <p>En un mundo gris donde sonreír está prohibido, un chico vestido de rojo irrumpe para devolver el color. Solo los valientes llevan ese color —el de la pasión, el amor y España— y solo ellos pueden ver las cadenas del resto. Él nunca volverá a ocultar su luz.</p>
+      <button class="cb" onclick="cp(this)">Copiar</button>
+    </div>
+
+    <div class="card">
+      <div class="cl teal">Conceptual</div>
+      <div class="ct">El claim que lo resume todo</div>
+      <p style="font-family:'Playfair Display',serif;font-size:15px;font-style:italic;color:var(--ink)">"¿Puede un chico vestido de rojo devolverle el color a un mundo gris?"</p>
+      <p style="margin-top:8px">Esta pregunta es la columna vertebral del proyecto. Cada canción, cada actuación, cada pieza de contenido responde a ella.</p>
+      <button class="cb" onclick="cp(this)">Copiar</button>
+    </div>
+
+    <div class="card hero-card span-row2">
+      <div class="cl gold">Propuesta de valor</div>
+      <div class="ct">Showman pop: un hueco que casi nadie ocupa</div>
+      <p>Muy pocos hombres en España ofrecen lo que Mario ofrece: voz, baile, cambios de ropa, humor y energía desbordante en escena. Eso es una ventana abierta.</p>
+      <button class="read-more" onclick="show('espectaculo',document.querySelector('[onclick*=espectaculo]'))">Ver el espectáculo →</button>
+    </div>
+
+    <div class="card blue-card">
+      <div class="cl">Género / estilo</div>
+      <div class="ct">Pop Bailable · Caribe Mix</div>
+      <div class="tc">
+        <span class="tag" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.28)">Pop electrónico</span>
+        <span class="tag" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.28)">Eurovisión</span>
+        <span class="tag" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.28)">Reggaeton</span>
+        <span class="tag" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.28)">Afrobeat</span>
+        <span class="tag" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.28)">Merengue</span>
+      </div>
+    </div>
+
+    <div class="card cream-card">
+      <div class="cl teal">Bio express</div>
+      <div class="bio-list">
+        <div class="bio-line"><span>◎</span> Solista · artista y compositor</div>
+        <div class="bio-line"><span>⌖</span> Madrid · Barcelona · Valencia</div>
+        <div class="bio-line"><span>✦</span> 14 canciones publicadas</div>
+        <div class="bio-line"><span>↗</span> Público: 25–34 · 55–62% mujeres</div>
+        <div class="bio-line"><span>⚡</span> Mood: Alegría · Euforia · Amor</div>
+      </div>
+    </div>
+
+    <div class="card blue-card">
+      <div class="cl">Hitos clave</div>
+      <p>☆ 14 canciones en Spotify · Mastering Abbey Road</p>
+      <p>☆ TV · Teatros · Hoteles · Cruceros (España e internacional)</p>
+      <p>☆ 10K Instagram · videos hasta 100K visualizaciones</p>
+      <p>☆ Próximo concierto propio: Siroco 24 Sep 2026</p>
+      <p>☆ Consultoría estratégica Artes Búho (2026)</p>
+    </div>
+
+    <div class="card cream-card span2">
+      <div class="cl teal">Soundcheck — Rasgos del proyecto</div>
+      <div class="soundcheck trait-grid">
+        <div class="trait" data-trait>
+          <div class="trait-head"><input class="trait-check" type="checkbox" checked><span class="trait-label">Energía en vivo</span></div>
+          <div class="trait-body"><div class="ring" style="--pct:98" data-pct="98%"></div><input class="trait-range" type="range" min="0" max="100" value="98"><input class="trait-number" type="number" min="0" max="100" value="98"></div>
+        </div>
+        <div class="trait" data-trait>
+          <div class="trait-head"><input class="trait-check" type="checkbox" checked><span class="trait-label">Espectáculo visual</span></div>
+          <div class="trait-body"><div class="ring" style="--pct:95" data-pct="95%"></div><input class="trait-range" type="range" min="0" max="100" value="95"><input class="trait-number" type="number" min="0" max="100" value="95"></div>
+        </div>
+        <div class="trait" data-trait>
+          <div class="trait-head"><input class="trait-check" type="checkbox" checked><span class="trait-label">Melancolía / baladas</span></div>
+          <div class="trait-body"><div class="ring" style="--pct:35" data-pct="35%"></div><input class="trait-range" type="range" min="0" max="100" value="35"><input class="trait-number" type="number" min="0" max="100" value="35"></div>
+        </div>
+        <div class="trait" data-trait>
+          <div class="trait-head"><input class="trait-check" type="checkbox" checked><span class="trait-label">Identidad visual</span></div>
+          <div class="trait-body"><div class="ring" style="--pct:82" data-pct="82%"></div><input class="trait-range" type="range" min="0" max="100" value="82"><input class="trait-number" type="number" min="0" max="100" value="82"></div>
+        </div>
+        <div class="trait" data-trait>
+          <div class="trait-head"><input class="trait-check" type="checkbox" checked><span class="trait-label">Interacción público</span></div>
+          <div class="trait-body"><div class="ring" style="--pct:96" data-pct="96%"></div><input class="trait-range" type="range" min="0" max="100" value="96"><input class="trait-number" type="number" min="0" max="100" value="96"></div>
+        </div>
+        <div class="trait" data-trait>
+          <div class="trait-head"><input class="trait-check" type="checkbox" checked><span class="trait-label">Presencia digital</span></div>
+          <div class="trait-body"><div class="ring" style="--pct:40" data-pct="40%"></div><input class="trait-range" type="range" min="0" max="100" value="40"><input class="trait-number" type="number" min="0" max="100" value="40"></div>
+        </div>
+        <div class="trait" data-trait>
+          <div class="trait-head"><input class="trait-check" type="checkbox" checked><span class="trait-label">Versatilidad sonora</span></div>
+          <div class="trait-body"><div class="ring" style="--pct:80" data-pct="80%"></div><input class="trait-range" type="range" min="0" max="100" value="80"><input class="trait-number" type="number" min="0" max="100" value="80"></div>
+        </div>
+        <div class="trait" data-trait>
+          <div class="trait-head"><input class="trait-check" type="checkbox" checked><span class="trait-label">Capacidad de trabajo</span></div>
+          <div class="trait-body"><div class="ring" style="--pct:99" data-pct="99%"></div><input class="trait-range" type="range" min="0" max="100" value="99"><input class="trait-number" type="number" min="0" max="100" value="99"></div>
+        </div>
+        <div class="trait" data-trait>
+          <div class="trait-head"><input class="trait-check" type="checkbox"><span class="trait-label">Profundidad lírica</span></div>
+          <div class="trait-body"><div class="ring" style="--pct:0" data-pct="0%"></div><input class="trait-range" type="range" min="0" max="100" value="0"><input class="trait-number" type="number" min="0" max="100" value="0"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card span2">
+      <div class="cl teal">Links rápidos</div>
+      <div class="quick-links">
+        <a class="quick-link" href="https://www.instagram.com/mariocassado/" target="_blank"><span class="quick-ico">◎</span>Instagram</a>
+        <a class="quick-link" href="https://www.tiktok.com/@mariocassado" target="_blank"><span class="quick-ico">↗</span>TikTok</a>
+        <a class="quick-link" href="https://www.youtube.com/@MarioCassado" target="_blank"><span class="quick-ico">▶</span>YouTube</a>
+        <a class="quick-link" href="https://open.spotify.com/intl-es/artist/7mdRYzgaAAPKzJ1WDysKdn" target="_blank"><span class="quick-ico">♬</span>Spotify</a>
+        <a class="quick-link" href="https://soundcloud.com/mariocassado-music" target="_blank"><span class="quick-ico">◑</span>SoundCloud</a>
+        <a class="quick-link" href="https://drive.google.com/file/d/1UW1fO_xBCcmxmqsKjw84uUre-H5jYQNp/view" target="_blank"><span class="quick-ico">□</span>Dossier</a>
+      </div>
+    </div>
+
+    <div class="card quote-tile">
+      <p>"¿Puede un chico vestido de rojo devolverle el color a un mundo gris?"</p>
+    </div>
+
+    <div class="card span2 cream-card">
+      <div class="cl teal">Festivales & convocatorias objetivo</div>
+      <div class="press-strip" id="featured-press-strip">
+        <span class="press-logo">Benidorm Fest</span>
+        <span class="press-logo">Brava Madrid</span>
+        <span class="press-logo">Coca-Cola Music Experience</span>
+        <span class="press-logo">Big Sound Festival</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ██ BIOS ██ -->
+<section class="sec" id="bios">
+  <div class="sh"><div><div class="sh-eye">El artista</div><div class="sh-title">Biografía</div></div></div>
+
+  <div class="card project-bio" style="border-left:4px solid var(--teal)">
+    <div class="cl teal">Biografía del proyecto — versión larga</div>
+    <div class="ct">Mario Cassado — Pop Bailable desde Madrid</div>
+    <p>Mario Cassado es un artista solista de pop bailable afincado en Madrid con proyección en Barcelona y Valencia. Su música lleva a la gente de un mundo ficticio gris al <strong>Caribe Mix</strong>: un universo de euforia, alegría y ganas de vivir que él construye canción a canción. Su propuesta oscila entre el pop electrónico de corte europeo —sintetizadores, aire de Eurovisión, melodías que no se van de la cabeza— y las tendencias latinas y urbanas que siente como suyas: reggaeton, afrobeat, merengue. La voz de Mario es el hilo conductor; lo que cambia es el paisaje sonoro.</p>
+    <p style="margin-top:8px">Con 14 canciones publicadas y el mastering de sus temas realizado en <strong>Abbey Road</strong>, Mario gestiona su carrera de forma totalmente independiente: es el artista, el compositor, y el productor ejecutivo de su proyecto. Trabaja a distancia con su productor y su mezclador, pagando por canción. Trabaja todos los días —canciones, redes, formación— y compagina su carrera artística propia con trabajo freelance como intérprete de versiones para empresas del entretenimiento.</p>
+    <p style="margin-top:8px">Ha actuado en televisión, teatros, hoteles y cruceros dentro y fuera de España. Su próximo concierto propio es en la Sala Siroco de Madrid el 24 de septiembre de 2026, con el objetivo de escalar después a salas de 200–300 personas. En redes, cuenta con 10.000 seguidores en Instagram y vídeos que superan las 100.000 visualizaciones. Su público objetivo son mujeres y hombres gays de 25 a 34 años.</p>
+    <button class="cb" onclick="cp(this)">Copiar</button>
+  </div>
+
+  <div class="card" style="border-left:4px solid var(--gold)">
+    <div class="cl gold">Biografía corta — versión press</div>
+    <p>Mario Cassado (Madrid) es un artista de pop bailable que hace del espectáculo su razón de ser. Con 14 canciones en plataformas —mastering en Abbey Road— y una trayectoria que incluye televisión, teatros, hoteles y cruceros en España e internacional, su propuesta mezcla pop electrónico y tendencias latinas bajo una narrativa visual potente: transformar un mundo gris en Caribe Mix. Un showman completo: voz, baile, cambios de ropa y la energía de quien sabe que su mejor escenario está siempre por llegar.</p>
+    <button class="cb" onclick="cp(this)">Copiar</button>
+  </div>
+
+  <div class="card">
+    <div class="cl sage">Estructura del proyecto</div>
+    <div class="fr"><span class="fk">Artista & compositor</span><span class="fv">Mario Cassado — decisor único del proyecto</span></div>
+    <div class="fr"><span class="fk">Producción musical</span><span class="fv">Productor externo (trabajo a distancia) · pago por canción</span></div>
+    <div class="fr"><span class="fk">Mezcla</span><span class="fv">Mezclador externo (trabajo a distancia)</span></div>
+    <div class="fr"><span class="fk">Mastering</span><span class="fv">Abbey Road Studios</span></div>
+    <div class="fr"><span class="fk">Diseño gráfico</span><span class="fv">Canva (actualmente) — pendiente de profesionalizar</span></div>
+    <div class="fr"><span class="fk">Management</span><span class="fv ph2">[ Pendiente — objetivo a medio plazo ]</span></div>
+    <div class="fr"><span class="fk">Comunicación & estrategia</span><span class="fv">Artes Búho Management · 2026</span></div>
+    <button class="cb-inline" onclick="cpEl(this)" style="margin-top:8px">Copiar estructura</button>
+  </div>
+</section>
+
+<!-- ██ COMUNICACIÓN ██ -->
+<section class="sec" id="comunicacion">
+  <div class="sh"><div><div class="sh-eye">Identidad verbal</div><div class="sh-title">Estilo de Comunicación</div></div></div>
+
+  <div class="slogan" style="position:relative">
+    <div class="slogan-t">"¿Puede un chico vestido de rojo devolverle el color a un mundo gris?"</div>
+    <div class="slogan-c">Claim principal · Mario Cassado</div>
+    <button class="cb-inline" style="position:absolute;top:16px;right:16px;margin:0" onclick="cpEl(this)">Copiar</button>
+  </div>
+
+  <div class="slogan" style="background:linear-gradient(135deg,#8B1E2D 0%,#D72638 100%);position:relative">
+    <div class="slogan-t">"Del mundo gris al Caribe Mix."</div>
+    <div class="slogan-c">Claim alternativo · Mario Cassado</div>
+    <button class="cb-inline" style="position:absolute;top:16px;right:16px;margin:0" onclick="cpEl(this)">Copiar</button>
+  </div>
+
+  <div class="slogan" style="background:linear-gradient(135deg,#1A0308 0%,#8B1E2D 100%);position:relative">
+    <div class="slogan-t">"Alegría, amor, ganas de vivir. Hacia arriba, hacia adelante."</div>
+    <div class="slogan-c">Mantra del proyecto · Mario Cassado</div>
+    <button class="cb-inline" style="position:absolute;top:16px;right:16px;margin:0" onclick="cpEl(this)">Copiar</button>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="cl teal">Narrativa subliminal del disco</div>
+      <div class="qb">En un mundo gris, de edificios pesados y rectangulares. No existen líneas curvas, ni por supuesto, la curva de la sonrisa. Sonreír, mirar hacia arriba, cantar o bailar están prohibidos.<div class="qa">El punto de partida — el mundo del que Mario rescata a su público</div></div>
+      <div class="qb" style="margin-top:10px">Solo los más valientes se visten del color prohibido, el color rojo, el color de la pasión, de la sangre, del amor, de España.<div class="qa">El rojo como acto de rebeldía y de vida</div></div>
+      <div class="qb" style="margin-top:10px">Cada crítica o risa de la gente gris hace crecer la bola de la discoteca que lleva sobre su cabeza. Nunca volverá a ocultar su luz.<div class="qa">La resistencia que refuerza, no que detiene</div></div>
+      <button class="cb-inline" onclick="cpEl(this)">Copiar narrativa</button>
+    </div>
+    <div class="card">
+      <div class="cl terra">Tono de comunicación</div>
+      <div class="tone-grid">
+        <div class="tone-pill"><div class="tone-title"><input class="tone-check" type="checkbox" checked><span>Cercano</span></div><div class="tone-desc">Habla como hablaría en persona: sin distancia, sin pose. La gente debe sentir que lo conoce.</div></div>
+        <div class="tone-pill"><div class="tone-title"><input class="tone-check" type="checkbox" checked><span>Positivo</span></div><div class="tone-desc">Su música sube el estado de ánimo. Su comunicación también. Energía hacia arriba siempre.</div></div>
+        <div class="tone-pill"><div class="tone-title"><input class="tone-check" type="checkbox" checked><span>Con humor</span></div><div class="tone-desc">"Soy una payasete." El humor es parte de su ADN y debe aparecer en redes y en directo.</div></div>
+        <div class="tone-pill"><div class="tone-title"><input class="tone-check" type="checkbox" checked><span>Eufórico</span></div><div class="tone-desc">La emoción predominante es la euforia. El contenido debe transmitir que algo emocionante está pasando.</div></div>
+        <div class="tone-pill"><div class="tone-title"><input class="tone-check" type="checkbox"><span>Profundo</span></div><div class="tone-desc">Reservado para momentos contados. La narrativa del disco tiene profundidad, pero el tono habitual es luminoso.</div></div>
+        <div class="tone-pill"><div class="tone-title"><input class="tone-check" type="checkbox"><span>Polémico</span></div><div class="tone-desc">No es su registro. Mario no provoca, invita. La puerta siempre está abierta.</div></div>
+      </div>
+      <button class="cb-inline" onclick="cpEl(this)" style="margin-top:12px">Copiar tono</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cl gold">Referentes artísticos — comunicación y posicionamiento</div>
+    <div class="g2" style="margin-top:8px">
+      <div>
+        <p style="font-size:13px"><strong>🔴 Jennifer Lopez + Enrique Iglesias</strong><br>La combinación de estos dos artistas define la esencia de lo que Mario quiere hacer: espectáculo, glamour pop, ritmos latinos, carisma escénico desbordante. Son el norte estético y artístico del proyecto.</p>
+        <p style="font-size:13px;margin-top:10px"><strong>🤝 The Citizen</strong> — <a href="https://www.instagram.com/citizen_theartist/" target="_blank">@citizen_theartist</a><br>Mario trabaja actualmente con este artista produciendo contenido de ese estilo. Referente activo en el día a día del proyecto.</p>
+      </div>
+      <div>
+        <p style="font-size:13px"><strong>🇪🇸 Referentes nacionales</strong></p>
+        <p style="font-size:13px;margin-top:6px">• <a href="https://www.instagram.com/danifdezmusic" target="_blank">Dani Fernández</a> — @danifdezmusic<br>• <a href="https://www.instagram.com/aitana" target="_blank">Aitana</a> — @aitana<br>• <a href="https://www.instagram.com/abrahammateo" target="_blank">Abraham Mateo</a> — @abrahammateo</p>
+        <p style="font-size:13px;margin-top:10px">Pop español de éxito con raíces latinas, personalidad marcada y fuerte presencia en redes. El escalón al que Mario apunta en el mercado nacional.</p>
+      </div>
+    </div>
+    <button class="cb" onclick="cp(this)">Copiar</button>
+  </div>
+
+  <div class="card">
+    <div class="cl sage">Temas recurrentes en la comunicación</div>
+    <div class="g2" style="margin-top:8px">
+      <div>
+        <p style="font-size:13px"><strong>🔴 El rojo como bandera</strong><br>El color rojo no es un detalle estético: es el símbolo central del proyecto. Comunicarlo de forma consistente refuerza la narrativa y la identidad de marca.</p><br>
+        <p style="font-size:13px"><strong>💃 El showman que España necesita</strong><br>Muy pocos hombres hacen lo que hace Mario en escena. Comunicar ese hueco sin soberbia pero con convicción.</p><br>
+        <p style="font-size:13px"><strong>☀️ Alegría como propósito</strong><br>Mario no hace música para que la gente piense. La hace para que la gente viva. Esa intención debe estar en cada post, reels y entrevista.</p>
+      </div>
+      <div>
+        <p style="font-size:13px"><strong>🎭 La transformación gris→color</strong><br>La narrativa del disco es un recurso storytelling potente. Aplicarlo a piezas de contenido sin que se vuelva repetitivo ni críptico.</p><br>
+        <p style="font-size:13px"><strong>🏋️ El trabajo diario</strong><br>Mario trabaja todos los días en su proyecto. Mostrar ese proceso —sin victimismo— genera credibilidad y comunidad.</p><br>
+        <p style="font-size:13px"><strong>🌍 Escena española vs. artista español</strong><br>El mercado español escucha música urbana de fuera. Mario es pop español con sabor latino, y eso puede ser su diferencial si se comunica bien.</p><br>
+        <p style="font-size:13px"><strong>🎤 Apalancamiento de versiones</strong><br>Los bolos de versiones (público cautivo) son una palanca para derivar tráfico al proyecto propio. CTA al final de cada actuación: "sígueme en IG/Spotify como Mario Cassado". Sin romper contratos, convirtiendo trabajo freelance en crecimiento orgánico.</p>
+      </div>
+    </div>
+    <button class="cb" onclick="cp(this)">Copiar</button>
+  </div>
+</section>
+
+<!-- ██ ESTÉTICA ██ -->
+<section class="sec" id="estetica">
+  <div class="sh"><div><div class="sh-eye">Branding & Visual</div><div class="sh-title">Estética e Identidad Gráfica</div></div></div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="cl teal">Paleta de colores oficial</div>
+      <div class="palette">
+        <div class="sw"><div class="swc" style="background:#D72638"></div><div class="swl">#D72638<br>Rojo Mario</div></div>
+        <div class="sw"><div class="swc" style="background:#8B1E2D"></div><div class="swl">#8B1E2D<br>Rojo oscuro</div></div>
+        <div class="sw"><div class="swc" style="background:#FFFFFF;border:1px solid #ddd"></div><div class="swl">#FFFFFF<br>Blanco puro</div></div>
+        <div class="sw"><div class="swc" style="background:#D9D9D9"></div><div class="swl">#D9D9D9<br>Gris mundo</div></div>
+        <div class="sw"><div class="swc" style="background:#333333"></div><div class="swl">#333333<br>Gris oscuro</div></div>
+      </div>
+      <p style="font-size:12px;color:var(--ink-light);margin-top:6px">Paleta definitiva. El rojo representa la vida, la pasión y la ruptura con el mundo gris. El contraste rojo-gris es el eje narrativo visual del proyecto.</p>
+      <button class="cb" onclick="cp(this)">Copiar descripción</button>
+    </div>
+    <div class="card">
+      <div class="cl terra">Universo estético</div>
+      <div class="tc" style="margin-top:6px">
+        <span class="tag t">Pop · Rojo · Colorido</span>
+        <span class="tag t">Brillo · Lentejuelas</span>
+        <span class="tag g">Ropa llamativa</span>
+        <span class="tag g">Cambios de vestuario</span>
+        <span class="tag r">Vivo · Energético</span>
+        <span class="tag r">Caribe Mix</span>
+        <span class="tag s">Jennifer Lopez (referente)</span>
+        <span class="tag s">Enrique Iglesias (referente)</span>
+        <span class="tag">NO: oscuro, borroso</span>
+        <span class="tag">NO: gris, apagado</span>
+      </div>
+      <p style="font-size:13px;color:var(--ink-mid);margin-top:12px">La estética es la antítesis del mundo gris que describe su narrativa. Todo lo que rodea a Mario visualmente debe transmitir color, vida y espectáculo. Nada sombrío, nada minimalista en exceso.</p>
+      <button class="cb" onclick="cp(this)">Copiar</button>
+    </div>
+  </div>
+
+  <div class="card" style="border-left:4px solid var(--teal)">
+    <div class="cl teal">Identidad narrativa visual del disco</div>
+    <p>La dualidad <strong>gris vs. rojo</strong> es el motor estético de todo el proyecto. El gris representa el mundo sin emoción, sin color, sin vida. El rojo es Mario: pasión, disrupción, alegría. Esta dualidad debe reflejarse en:</p>
+    <div class="g2" style="margin-top:12px">
+      <div>
+        <p style="font-size:13px"><strong>Vestuario en directo:</strong> Ropa llamativa, lentejuelas, colores vivos. Cambios de ropa como parte del show. El rojo es el color protagonista pero no el único.</p>
+        <p style="font-size:13px;margin-top:8px"><strong>Vídeos y contenido:</strong> Estética pop luminosa, planos limpios y coloridos. La "bola de discoteca sobre su cabeza" es un elemento visual a explorar.</p>
+      </div>
+      <div>
+        <p style="font-size:13px"><strong>Gráfica y redes:</strong> Contraste rojo-blanco como base. Tipografías limpias y potentes. Nada que recuerde al mundo gris en el que no quiere vivir.</p>
+        <p style="font-size:13px;margin-top:8px"><strong>Fotografía:</strong> Fondos que permitan que el color de Mario destaque. Luz abundante. Energía y movimiento siempre presentes.</p>
+      </div>
+    </div>
+    <button class="cb" onclick="cp(this)">Copiar</button>
+  </div>
+
+  <div class="card">
+    <div class="cl sage">Equipo creativo visual</div>
+    <div class="fr"><span class="fk">Diseño gráfico actual</span><span class="fv">Canva — Mario gestiona actualmente su propio diseño</span></div>
+    <div class="fr"><span class="fk">Fotografía</span><span class="fv ph2">[ Pendiente — le apasiona la fotografía y el cine, no la parte técnica ]</span></div>
+    <div class="fr"><span class="fk">Vídeo / contenido</span><span class="fv">Trabaja con The Citizen (@citizen_theartist) en contenido de estilo JLo / Enrique</span></div>
+    <div class="fr"><span class="fk">Vestuario</span><span class="fv">Mario define el concepto — ropa llamativa, cambios de ropa en el show</span></div>
+    <div class="fr"><span class="fk">Dossier actual</span><span class="fv"><a href="https://www.canva.com/design/DAGixSttyCw/EGZHTtl4oC3oKKFFA3CYqw/edit" target="_blank">Ver en Canva ↗</a></span></div>
+    <button class="cb-inline" onclick="cpEl(this)" style="margin-top:8px">Copiar créditos</button>
+  </div>
+
+  <div class="g3">
+    <div class="card" style="border:2px dashed var(--border);box-shadow:none;text-align:center;padding:28px 16px">
+      <div style="font-size:36px;margin-bottom:7px">🖼</div>
+      <div style="font-size:12px;color:var(--ink-light)">Logo principal<br><span style="color:var(--terra)">[ Pendiente ]</span></div>
+    </div>
+    <div class="card" style="border:2px dashed var(--border);box-shadow:none;text-align:center;padding:28px 16px">
+      <div style="font-size:36px;margin-bottom:7px">📸</div>
+      <div style="font-size:12px;color:var(--ink-light)">Fotos de prensa<br><span style="color:var(--terra)">[ Pendiente ]</span></div>
+    </div>
+    <div class="card" style="border:2px dashed var(--border);box-shadow:none;text-align:center;padding:28px 16px">
+      <div style="font-size:36px;margin-bottom:7px">🎨</div>
+      <div style="font-size:12px;color:var(--ink-light)">Material gráfico profesional<br><span style="color:var(--terra)">[ Pendiente ]</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ██ ESPECTÁCULO ██ -->
+<section class="sec" id="espectaculo">
+  <div class="sh"><div><div class="sh-eye">En vivo</div><div class="sh-title">El Espectáculo</div></div></div>
+
+  <div class="card" style="border-left:4px solid var(--teal)">
+    <div class="cl teal">Texto de presentación del show</div>
+    <p>Un concierto de Mario Cassado no es un recital. Es un espectáculo. Desde el primer segundo hay baile, hay cambios de ropa, hay bromas con el público y hay una energía que no da respiro. Mario domina el escenario como pocos artistas masculinos lo hacen en España: sabe cantar, sabe bailar, sabe ser cómico y sabe bajar el ritmo para defender una balada antes de volver a explotar.</p>
+    <br>
+    <p>Su objetivo sobre el escenario es simple: no aburrir. Entretener. Y lo consigue con el único arma que no se puede fingir —la energía física real de un showman que trabaja todos los días para estar a la altura de su mejor versión.</p>
+    <br>
+    <p>"Lo mejor que yo hago es estar en el escenario. Yo lo domino. Soy un showman. Muy pocos hombres hacen lo que yo hago. Creo que tengo un hueco ahí."</p>
+    <button class="cb" onclick="cp(this)">Copiar</button>
+  </div>
+
+  <div style="margin:20px 0 10px">
+    <span class="cl teal" style="font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;font-weight:600">Formatos de contratación</span>
+  </div>
+
+  <div class="add-bar">
+    <button class="add-btn" type="button" onclick="addFormat()">+ Añadir formato</button>
+  </div>
+
+  <div class="g3">
+    <div class="fcard">
+      <div class="fch"><div class="fcn">Show Completo</div><div class="fcd">60–90 min</div></div>
+      <div class="fcb">
+        <div class="fcr"><span class="fci">▸</span><span class="fct">Salas de conciertos, teatros, festivales</span></div>
+        <div class="fcr"><span class="fci">▸</span><span class="fct">Voz + baile + cambios de ropa en escena</span></div>
+        <div class="fcr"><span class="fci">▸</span><span class="fct">Interacción con el público, humor, baladas</span></div>
+      </div>
+    </div>
+    <div class="fcard">
+      <div class="fch"><div class="fcn">Show Reducido / Evento</div><div class="fcd">30–45 min</div></div>
+      <div class="fcb">
+        <div class="fcr"><span class="fci">▸</span><span class="fct">Hoteles, cruceros, eventos privados, corporativos</span></div>
+        <div class="fcr"><span class="fci">▸</span><span class="fct">Formato adaptable en duración y repertorio</span></div>
+        <div class="fcr"><span class="fci">▸</span><span class="fct">Experiencia probada en este tipo de contextos</span></div>
+      </div>
+    </div>
+    <div class="fcard">
+      <div class="fch"><div class="fcn">Versiones / Freelance</div><div class="fcd">Variable</div></div>
+      <div class="fcb">
+        <div class="fcr"><span class="fci">▸</span><span class="fct">Cantante de versiones para empresas del entretenimiento</span></div>
+        <div class="fcr"><span class="fci">▸</span><span class="fct">Amplio repertorio de artistas conocidos</span></div>
+        <div class="fcr"><span class="fci">▸</span><span class="fct">Actividad paralela que financia el proyecto propio</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <div class="cl sage">Historial de actuaciones destacadas</div>
+    <div class="fr"><span class="fk">Televisión</span><span class="fv">Apariciones en TV (España)</span></div>
+    <div class="fr"><span class="fk">Teatros</span><span class="fv">Actuaciones en teatros España</span></div>
+    <div class="fr"><span class="fk">Hoteles & Cruceros</span><span class="fv">España e internacional</span></div>
+    <div class="fr"><span class="fk">Próximo concierto propio</span><span class="fv"><strong>Sala Siroco · Madrid · 24 de Septiembre 2026</strong></span></div>
+    <div class="fr"><span class="fk">Objetivo post-Siroco</span><span class="fv">Sala 200–300 personas</span></div>
+    <div class="fr"><span class="fk">Referencia antigua (reggaeton)</span><span class="fv"><a href="https://www.youtube.com/watch?v=66mJ3kR3Do0" target="_blank">Ver en YouTube ↗</a> · Era anterior al proyecto actual</span></div>
+    <button class="cb-inline" onclick="cpEl(this)" style="margin-top:8px">Copiar historial</button>
+  </div>
+</section>
+
+<!-- ██ DISCOGRAFÍA ██ -->
+<section class="sec" id="discografia">
+  <div class="sh"><div><div class="sh-eye">Música</div><div class="sh-title">Discografía & Singles</div></div></div>
+
+  <div class="add-bar">
+    <button class="add-btn" type="button" onclick="addSong()">+ Añadir canción / próximo single</button>
+  </div>
+
+  <div class="card" style="border-left:4px solid var(--gold);margin-bottom:20px">
+    <div class="cl gold">Estrategia discográfica</div>
+    <div class="ct">Artista independiente · Abbey Road · 14 canciones publicadas</div>
+    <p>Mario gestiona su discografía de forma 100% independiente. Paga por canción a su productor y mezclador, y el mastering lo realiza Abbey Road Studios. Ha publicado 14 canciones y está a punto de lanzar la número 15. Su catálogo está en Spotify, SoundCloud y demás plataformas.</p>
+    <p style="margin-top:8px">El cuello de botella identificado: crecer en Spotify sin tracción en redes sociales es casi imposible. Por eso la estrategia de redes es prioritaria: primero impactar al público objetivo, luego iterar qué estilo de canción conecta mejor.</p>
+    <div class="fr" style="margin-top:10px"><span class="fk">Spotify</span><span class="fv"><a href="https://open.spotify.com/intl-es/artist/7mdRYzgaAAPKzJ1WDysKdn" target="_blank">Ver perfil ↗</a></span></div>
+    <div class="fr"><span class="fk">SoundCloud</span><span class="fv"><a href="https://soundcloud.com/mariocassado-music" target="_blank">Ver perfil ↗</a></span></div>
+    <div class="fr"><span class="fk">Dossier Drive</span><span class="fv"><a href="https://drive.google.com/file/d/1UW1fO_xBCcmxmqsKjw84uUre-H5jYQNp/view" target="_blank">Ver en Drive ↗</a></span></div>
+    <button class="cb" onclick="cp(this)">Copiar</button>
+  </div>
+
+  <div class="srow" style="border:2px dashed var(--border);background:var(--cream2)">
+    <div class="snum" style="color:var(--terra)">↻</div>
+    <div class="si"><div class="st" style="color:var(--terra)">Canción #15 — próximo lanzamiento <span style="font-size:11px;font-weight:400">(en producción)</span></div><div class="sm">Demo de voz y letra no definitiva disponible · Mastering en Abbey Road</div></div>
+    <div class="slinks"><a class="sl" href="https://samply.app/p/85oD5bqeFQmF0fbBUZ6H" target="_blank">Escuchar demo ↗</a><span class="sl ph">Pendiente fecha</span></div>
+  </div>
+
+  <div class="srow">
+    <div class="snum">01–14</div>
+    <div class="si"><div class="st">Catálogo publicado · 14 canciones</div><div class="sm">Pop electrónico + tendencias latinas · Narrativa "mundo gris → Caribe Mix" · Mastering Abbey Road</div></div>
+    <div class="slinks"><a class="sl" href="https://open.spotify.com/intl-es/artist/7mdRYzgaAAPKzJ1WDysKdn" target="_blank">Spotify ↗</a><a class="sl" href="https://soundcloud.com/mariocassado-music" target="_blank">SoundCloud ↗</a></div>
+  </div>
+
+  <div class="card" style="margin-top:14px;background:var(--teal-pale);border-color:var(--teal-l)">
+    <div class="cl teal">💡 Nota estratégica — Discografía</div>
+    <p style="font-size:13px;color:var(--ink-mid)">Mario ha publicado 4 canciones dentro de la narrativa del disco. Completar los títulos individuales y añadir una fila por cada single cuando se tenga el listado actualizado. Usar el botón "+ Añadir canción" arriba.</p>
+  </div>
+</section>
+
+<!-- ██ ENTREVISTAS ██ -->
+<section class="sec" id="entrevistas">
+  <div class="sh"><div><div class="sh-eye">Recursos de comunicación</div><div class="sh-title">Tarjetas de Entrevista</div></div></div>
+
+  <div class="add-bar">
+    <button class="add-btn" type="button" onclick="addInterview()">+ Añadir pregunta / respuesta</button>
+  </div>
+
+  <div class="card" style="background:var(--teal-pale);border-color:var(--teal-l);margin-bottom:20px">
+    <p style="font-size:13px;color:var(--teal)">💡 <strong>Cómo usar estas tarjetas:</strong> Respuestas tipo para entrevistas, pitchings, convocatorias y redes. Expandir para ver y copiar.</p>
+  </div>
+
+  <div class="icard open">
+    <div class="iq" onclick="tgl(this)"><span class="iq-t">¿Cómo defines tu música?</span><span class="iq-i">+</span></div>
+    <div class="ia">
+      <div class="ia-t">Hago pop bailable con la intención de alegrar, de subir el estado de ánimo. Llevo a la gente de un mundo ficticio gris al Caribe Mix. Dentro de eso hay dos registros: un pop electrónico con sabor europeo, Eurovisión, sintetizadores; y tendencias latinas y urbanas que siento como mías: reggaeton, afrobeat, merengue. En todas hay melodías pegadizas pop. Mi voz no cambia tanto. Lo que cambia es el fondo.</div>
+      <button class="cb-inline" onclick="cpEl(this)">Copiar respuesta</button>
+    </div>
+  </div>
+
+  <div class="icard">
+    <div class="iq" onclick="tgl(this)"><span class="iq-t">¿Qué es el "mundo gris" y qué tiene que ver con tu música?</span><span class="iq-i">+</span></div>
+    <div class="ia">
+      <div class="ia-t">Es la narrativa central de mi disco. Un mundo en el que sonreír, bailar o mirar hacia arriba está prohibido. Todo el mundo es neutro, gris. Solo los más valientes se visten del color prohibido: el rojo. Y ese chico de rojo, que soy yo, intenta devolver el color a todo lo que le rodea. Cada canción es un paso más en ese camino.</div>
+      <button class="cb-inline" onclick="cpEl(this)">Copiar respuesta</button>
+    </div>
+  </div>
+
+  <div class="icard">
+    <div class="iq" onclick="tgl(this)"><span class="iq-t">¿Qué hace especial un directo tuyo?</span><span class="iq-i">+</span></div>
+    <div class="ia">
+      <div class="ia-t">Que no es un concierto, es un espectáculo. Hay baile, cambios de ropa, humor, interacción con el público... y canciones. Mi objetivo es no aburrir. Lo que yo hago mejor es estar en el escenario: lo domino. Soy un showman, y muy pocos hombres hacen lo que yo hago en España. Creo que hay un hueco ahí y lo voy a ocupar.</div>
+      <button class="cb-inline" onclick="cpEl(this)">Copiar respuesta</button>
+    </div>
+  </div>
+
+  <div class="icard">
+    <div class="iq" onclick="tgl(this)"><span class="iq-t">¿Qué emociones quieres transmitir?</span><span class="iq-i">+</span></div>
+    <div class="ia">
+      <div class="ia-t">Mayoritariamente: alegría, expansión, euforia. Amor, ganas de vivir, confianza. Hacia arriba, hacia adelante. Pero también hay canciones de nostalgia o melancolía, porque si todos los días hace sol no se valora tanto como si hay días que también llueve. El disco necesita esos momentos para que la alegría tenga más peso.</div>
+      <button class="cb-inline" onclick="cpEl(this)">Copiar respuesta</button>
+    </div>
+  </div>
+
+  <div class="icard">
+    <div class="iq" onclick="tgl(this)"><span class="iq-t">¿A quién va dirigida tu música?</span><span class="iq-i">+</span></div>
+    <div class="ia">
+      <div class="ia-t">Principalmente a mujeres de 25 a 34 años, y también a hombres gays. En Spotify el 55% son mujeres y en Instagram el 62%. Es un público que aprecia el espectáculo, la energía y la actitud. Gente que quiere pasárselo bien y que conecta con la alegría como estado de ánimo.</div>
+      <button class="cb-inline" onclick="cpEl(this)">Copiar respuesta</button>
+    </div>
+  </div>
+
+  <div class="icard">
+    <div class="iq" onclick="tgl(this)"><span class="iq-t">¿Cuáles son tus referentes?</span><span class="iq-i">+</span></div>
+    <div class="ia">
+      <div class="ia-t">Si juntas a Jennifer Lopez y a Enrique Iglesias puedes entender lo que me gusta y lo que quiero hacer. El espectáculo, el glamour, el pop con raíces latinas, la capacidad de llenar un estadio y de hacer bailar a todo el mundo. En España miro mucho a Aitana, a Abraham Mateo, a Dani Fernández. Y en el ámbito de colaboraciones, trabajo actualmente con The Citizen produciendo contenido de ese estilo.</div>
+      <button class="cb-inline" onclick="cpEl(this)">Copiar respuesta</button>
+    </div>
+  </div>
+
+  <div class="icard">
+    <div class="iq" onclick="tgl(this)"><span class="iq-t">¿Qué te diferencia de otros artistas de pop en España?</span><span class="iq-i">+</span></div>
+    <div class="ia">
+      <div class="ia-t">Lo mejor que yo hago es estar en el escenario. El conjunto de la voz, el espectáculo y la energía física. Soy un showman y muy pocos hombres hacen eso en España. Las canciones que se escuchan aquí son mayoritariamente urbanas y de artistas de fuera. Yo soy pop español con sabor latino, y si hay tendencias que encajan conmigo, me subo a ellas. Eso puede ser una fortaleza si se comunica bien.</div>
+      <button class="cb-inline" onclick="cpEl(this)">Copiar respuesta</button>
+    </div>
+  </div>
+
+  <div class="icard">
+    <div class="iq" onclick="tgl(this)"><span class="iq-t">¿Cuáles son tus objetivos artísticos?</span><span class="iq-i">+</span></div>
+    <div class="ia">
+      <div class="ia-t">A corto plazo, presentarme al Benidorm Fest y hacer crecer las redes a 50.000 seguidores con contenido viral que estamos preparando. Después del concierto de Siroco en septiembre, ir a una sala más grande de 200-300 personas. A medio plazo, superar los 100.000 seguidores en Instagram y los 100.000 oyentes mensuales en Spotify. Y a largo plazo, una gira grande por España, los grandes festivales, y representar a España en Eurovisión si se da la oportunidad.</div>
+      <button class="cb-inline" onclick="cpEl(this)">Copiar respuesta</button>
+    </div>
+  </div>
+</section>
+
+<!-- ██ PRENSA ██ -->
+<section class="sec" id="prensa">
+  <div class="sh"><div><div class="sh-eye">Medios & Comunicación</div><div class="sh-title">Notas de Prensa & Apariciones</div></div></div>
+
+  <div class="add-bar">
+    <button class="add-btn" type="button" onclick="addPressAppearance()">+ Añadir aparición en medios</button>
+    <button class="add-btn" type="button" onclick="addPressNote()">+ Añadir nota de prensa</button>
+  </div>
+
+  <div class="card" style="margin-bottom:20px">
+    <div class="cl terra">Apariciones en medios</div>
+    <div data-press-source style="padding:10px 0;border-bottom:1px solid var(--border)">
+      <div class="press-outlet">Televisión <span class="pt tv">TV</span></div>
+      <p style="font-size:13px;color:var(--ink-mid)">Apariciones en televisión española — [ Completar con programas y cadenas específicas ]</p>
+    </div>
+    <div data-press-source style="padding:10px 0;border-bottom:1px solid var(--border)">
+      <div class="press-outlet">Teatros <span class="pt mag">Teatro</span></div>
+      <p style="font-size:13px;color:var(--ink-mid)">Actuaciones en teatros dentro y fuera de España — [ Completar con nombres de salas y fechas ]</p>
+    </div>
+    <div data-press-source style="padding:10px 0;border-bottom:1px solid var(--border)">
+      <div class="press-outlet">Hoteles & Cruceros <span class="pt dig">Eventos</span></div>
+      <p style="font-size:13px;color:var(--ink-mid)">Shows en hoteles y cruceros — experiencia internacional acreditada</p>
+    </div>
+    <div data-press-source style="padding:10px 0">
+      <div class="press-outlet">Redes Sociales <span class="pt dig">Digital</span></div>
+      <p style="font-size:13px;color:var(--ink-mid)">Instagram @mariocassado (10K seguidores · vídeos hasta 100K visualizaciones) · TikTok @mariocassado · YouTube @MarioCassado</p>
+    </div>
+    <button class="cb" onclick="cp(this)">Copiar</button>
+  </div>
+
+  <div class="card" style="position:relative">
+    <div class="cl teal">Texto de presentación para medios — Mario Cassado</div>
+    <div class="ct">Texto base para notas de prensa y convocatorias</div>
+    <p>Mario Cassado es un artista solista de pop bailable afincado en Madrid con una propuesta que mezcla pop electrónico de corte europeo y tendencias latinas y urbanas bajo una identidad visual y narrativa muy definida: el color rojo como bandera contra el mundo gris. Con 14 canciones publicadas —mastering en Abbey Road— y una trayectoria que incluye televisión, teatros, hoteles y cruceros dentro y fuera de España, Mario es un showman completo: voz, baile, cambios de ropa y energía desbordante sobre el escenario.</p>
+    <br><p>Disponible para festivales, salas de conciertos y eventos. Próxima actuación propia: Sala Siroco, Madrid, 24 de septiembre de 2026. Contacto: artesbuho.oficial@gmail.com</p>
+    <button class="cb" onclick="cp(this)">Copiar</button>
+  </div>
+</section>
+
+<!-- ██ RIDER ██ -->
+<section class="sec" id="rider">
+  <div class="sh"><div><div class="sh-eye">Técnica</div><div class="sh-title">Rider Técnico & Formatos</div></div></div>
+  <div class="ph-banner">⚠ <span>Añadir enlace al PDF del rider técnico cuando esté disponible. Rider técnico a elaborar.</span></div>
+  <div class="card">
+    <div class="cl teal">Contacto técnico</div>
+    <div class="fr"><span class="fk">Artista</span><span class="fv">Mario Cassado</span></div>
+    <div class="fr"><span class="fk">Formación</span><span class="fv">Artista solista · voz + baile (posible backing track / DJ set)</span></div>
+    <div class="fr"><span class="fk">Email</span><span class="fv"><a href="mailto:artesbuho.oficial@gmail.com">artesbuho.oficial@gmail.com</a></span></div>
+    <div class="fr"><span class="fk">Rider PDF</span><span class="fv ph2">[ Pendiente — elaborar y subir a Drive ]</span></div>
+    <button class="cb-inline" onclick="cpEl(this)" style="margin-top:8px">Copiar contacto</button>
+  </div>
+  <div class="g2" style="margin-top:14px">
+    <div class="fcard">
+      <div class="fch"><div class="fcn">Show Completo — Sala</div><div class="fcd">60–90 min</div></div>
+      <div class="fcb">
+        <div class="fcr"><span class="fci">▸</span><span class="fct">Sistema de PA + monitor de escenario</span></div>
+        <div class="fcr"><span class="fci">▸</span><span class="fct">Espacio escénico para baile y movimiento</span></div>
+        <div class="fcr"><span class="fci">▸</span><span class="fct">Iluminación de espectáculo (no solo luz plana)</span></div>
+        <div class="fcr"><span class="fci">▸</span><span class="fct">Camerino con espacio para cambios de ropa</span></div>
+      </div>
+    </div>
+    <div class="fcard">
+      <div class="fch"><div class="fcn">Show Reducido — Evento</div><div class="fcd">30–45 min</div></div>
+      <div class="fcb">
+        <div class="fcr"><span class="fci">▸</span><span class="fct">PA básico o sistema de evento</span></div>
+        <div class="fcr"><span class="fci">▸</span><span class="fct">Suelo libre para movimiento</span></div>
+        <div class="fcr"><span class="fci">▸</span><span class="fct">Espacio para cambio de vestuario</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ██ FICHA ARTÍSTICA ██ -->
+<section class="sec" id="ficha">
+  <div class="sh"><div><div class="sh-eye">Créditos completos</div><div class="sh-title">Ficha Artística</div></div></div>
+  <div class="card" style="position:relative">
+    <div class="cl teal">Mario Cassado — Ficha del proyecto (2026)</div>
+    <div class="fr"><span class="fk">Artista</span><span class="fv">Mario Cassado</span></div>
+    <div class="fr"><span class="fk">Género</span><span class="fv">Pop Bailable · Pop Electrónico · Tendencias latinas/urbanas</span></div>
+    <div class="fr"><span class="fk">Compositor</span><span class="fv">Mario Cassado</span></div>
+    <div class="fr"><span class="fk">Producción musical</span><span class="fv">Productor externo — trabajo a distancia · pago por canción</span></div>
+    <div class="fr"><span class="fk">Mezcla</span><span class="fv">Mezclador externo — trabajo a distancia</span></div>
+    <div class="fr"><span class="fk">Mastering</span><span class="fv">Abbey Road Studios</span></div>
+    <div class="fr"><span class="fk">Distribución digital</span><span class="fv ph2">[ Completar — distribuidora actual ]</span></div>
+    <div class="fr"><span class="fk">Editorial / SGAE</span><span class="fv ph2">[ Pendiente — registrar derechos de autor ]</span></div>
+    <div class="fr"><span class="fk">Diseño gráfico</span><span class="fv">Mario Cassado (Canva) — a profesionalizar</span></div>
+    <div class="fr"><span class="fk">Contenido audiovisual</span><span class="fv">The Citizen (@citizen_theartist) — colaboración activa</span></div>
+    <div class="fr"><span class="fk">Comunicación & estrategia</span><span class="fv">Artes Búho Management · 2026</span></div>
+    <div class="fr"><span class="fk">Management</span><span class="fv ph2">[ Pendiente — objetivo a medio plazo ]</span></div>
+    <button class="cb" onclick="cp(this)">Copiar ficha completa</button>
+  </div>
+</section>
+
+<!-- ██ FOTOS ██ -->
+<section class="sec" id="fotos">
+  <div class="sh"><div><div class="sh-eye">Material visual</div><div class="sh-title">Fotos & Material Gráfico</div></div></div>
+  <div class="ph-banner">⚠ <span>Añadir enlaces a carpetas de Drive con material fotográfico y gráfico actualizado.</span></div>
+  <div class="card">
+    <div class="cl teal">Fotografía profesional</div>
+    <div class="fr"><span class="fk">Fotógrafo/a</span><span class="fv ph2">[ Pendiente — le apasiona la fotografía, buscar colaboración ]</span></div>
+    <div class="fr"><span class="fk">Fotos de prensa actuales</span><span class="fv ph2">[ Pendiente ]</span></div>
+    <div class="fr"><span class="fk">Fotos live</span><span class="fv ph2">[ Pendiente — grabar en Siroco 24/09 ]</span></div>
+    <div class="fr"><span class="fk">Vídeo contenido</span><span class="fv">The Citizen (@citizen_theartist) — en producción</span></div>
+  </div>
+  <div class="card">
+    <div class="cl gold">Material gráfico</div>
+    <div class="fr"><span class="fk">Diseñador/a</span><span class="fv">Mario Cassado — Canva (en proceso de profesionalizar)</span></div>
+    <div class="fr"><span class="fk">Dossier actual</span><span class="fv"><a href="https://drive.google.com/file/d/1UW1fO_xBCcmxmqsKjw84uUre-H5jYQNp/view" target="_blank">Drive ↗</a> · <a href="https://www.canva.com/design/DAGixSttyCw/EGZHTtl4oC3oKKFFA3CYqw/edit" target="_blank">Canva ↗</a></span></div>
+    <div class="fr"><span class="fk">Assets para RRSS</span><span class="fv ph2">[ En desarrollo ]</span></div>
+    <div class="fr"><span class="fk">Logo alta resolución</span><span class="fv ph2">[ Pendiente ]</span></div>
+  </div>
+</section>
+
+<!-- ██ CONTACTO ██ -->
+<section class="sec" id="contacto">
+  <div class="sh"><div><div class="sh-eye">Gestión interna</div><div class="sh-title">Datos & Contacto</div></div></div>
+
+  <div class="drive-card">
+    <div class="drive-ico">🔐</div>
+    <div class="drive-text">
+      <div class="drive-title">Tus datos privados de facturación</div>
+      <div class="drive-sub">DNI/NIF y dirección de facturación, en un documento compartido únicamente con tu email. Útil para inscripciones, festivales y contratos.</div>
+    </div>
+    <a class="drive-cta" href="https://drive.google.com/REEMPLAZAR-CON-ENLACE-MARIO-CASSADO" target="_blank" rel="noopener">Ver mis datos privados →</a>
+  </div>
+
+  <div class="card" style="background:var(--terra-pale);border-color:#c87055">
+    <div style="font-size:13px;color:var(--terra)">🔒 <strong>Información sensible.</strong> Este apartado no debe compartirse externamente sin consentimiento explícito del artista.</div>
+  </div>
+  <div class="card" style="margin-top:12px">
+    <div class="cl teal">Titular del proyecto — Facturación</div>
+    <div class="fr"><span class="fk">Nombre completo</span><span class="fv">Mario Cassado</span></div>
+    <div class="fr"><span class="fk">Teléfono</span><span class="fv ph2">[ Archivado en CRM interno Artes Búho ]</span></div>
+    <div class="fr"><span class="fk">Email</span><span class="fv"><a href="mailto:artesbuho.oficial@gmail.com">artesbuho.oficial@gmail.com</a></span></div>
+    <div class="fr"><span class="fk">DNI / NIF</span><span class="fv ph2">[ Archivado en CRM interno Artes Búho ]</span></div>
+    <div class="fr"><span class="fk">Dirección de facturación</span><span class="fv ph2">[ Archivado en CRM interno Artes Búho ]</span></div>
+  </div>
+  <div class="card">
+    <div class="cl sage">Contacto del proyecto</div>
+    <div class="fr"><span class="fk">Email oficial</span><span class="fv"><a href="mailto:artesbuho.oficial@gmail.com">artesbuho.oficial@gmail.com</a></span></div>
+    <div class="fr"><span class="fk">Instagram</span><span class="fv"><a href="https://www.instagram.com/mariocassado/" target="_blank">@mariocassado ↗</a></span></div>
+    <div class="fr"><span class="fk">Comunicación & Estrategia</span><span class="fv">Artes Búho Management</span></div>
+    <div class="fr"><span class="fk">Management</span><span class="fv ph2">[ Pendiente — objetivo subcontratar a medio plazo ]</span></div>
+    <div class="fr"><span class="fk">Booking</span><span class="fv ph2">[ Pendiente ]</span></div>
+  </div>
+</section>
+
+<!-- ██ LINKS ██ -->
+<section class="sec" id="links">
+  <div class="sh"><div><div class="sh-eye">Presencia digital</div><div class="sh-title">Links de Interés</div></div></div>
+  <div class="g2">
+    <div class="card">
+      <div class="cl teal">Redes sociales</div>
+      <div class="fr"><span class="fk">Instagram</span><span class="fv"><a href="https://www.instagram.com/mariocassado/" target="_blank">@mariocassado ↗</a> · 10K seguidores</span></div>
+      <div class="fr"><span class="fk">TikTok</span><span class="fv"><a href="https://www.tiktok.com/@mariocassado" target="_blank">@mariocassado ↗</a> · nota: cuenta con historial viral no musical — valorar cuenta nueva</span></div>
+      <div class="fr"><span class="fk">YouTube</span><span class="fv"><a href="https://www.youtube.com/@MarioCassado" target="_blank">@MarioCassado ↗</a></span></div>
+    </div>
+    <div class="card">
+      <div class="cl terra">Plataformas de música</div>
+      <div class="fr"><span class="fk">Spotify</span><span class="fv"><a href="https://open.spotify.com/intl-es/artist/7mdRYzgaAAPKzJ1WDysKdn" target="_blank">Ver perfil ↗</a> · 55% audiencia mujeres</span></div>
+      <div class="fr"><span class="fk">SoundCloud</span><span class="fv"><a href="https://soundcloud.com/mariocassado-music" target="_blank">mariocassado-music ↗</a></span></div>
+      <div class="fr"><span class="fk">Demo próxima canción</span><span class="fv"><a href="https://samply.app/p/85oD5bqeFQmF0fbBUZ6H" target="_blank">Escuchar en Samply ↗</a></span></div>
+    </div>
+    <div class="card">
+      <div class="cl gold">Documentos clave</div>
+      <div class="fr"><span class="fk">Dossier Drive</span><span class="fv"><a href="https://drive.google.com/file/d/1UW1fO_xBCcmxmqsKjw84uUre-H5jYQNp/view" target="_blank">Drive ↗</a></span></div>
+      <div class="fr"><span class="fk">Dossier Canva</span><span class="fv"><a href="https://www.canva.com/design/DAGixSttyCw/EGZHTtl4oC3oKKFFA3CYqw/edit" target="_blank">Canva ↗</a></span></div>
+      <div class="fr"><span class="fk">Rider técnico</span><span class="fv ph2">[ Pendiente ]</span></div>
+    </div>
+    <div class="card">
+      <div class="cl sage">Artes Búho</div>
+      <div class="fr"><span class="fk">Web Artes Búho</span><span class="fv"><a href="https://www.artesbuho.com" target="_blank">artesbuho.com ↗</a></span></div>
+      <div class="fr"><span class="fk">Contacto</span><span class="fv">contratacion@artesbuho.com</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ██ PAVONEO 360° ██ -->
+<section class="sec" id="pavoneo">
+  <div class="sh">
+    <div>
+      <div class="sh-eye" style="color:var(--violet)">Estrategia · Artes Búho</div>
+      <div class="sh-title violet">Pavoneo 360°</div>
+    </div>
+  </div>
+
+  <div class="pav-hero">
+    <div class="pav-hero-eye">Estrategia de Comunicación Digital · Mario Cassado 2026–2027</div>
+    <div class="pav-hero-title">Plan Pavoneo 360°</div>
+    <div class="pav-hero-sub">Candidatura → Siroco → 50K → 100K → Eurovisión</div>
+    <div class="pav-kpis">
+      <div class="pav-kpi"><div class="pav-kpi-val">4</div><div class="pav-kpi-label">Fases</div></div>
+      <div class="pav-kpi"><div class="pav-kpi-val" id="total-weeks">16</div><div class="pav-kpi-label">Semanas</div></div>
+      <div class="pav-kpi"><div class="pav-kpi-val" id="total-items">0</div><div class="pav-kpi-label">Acciones totales</div></div>
+      <div class="pav-kpi"><div class="pav-kpi-val" id="done-items">0</div><div class="pav-kpi-label">Completadas</div></div>
+      <div class="pav-kpi"><div class="pav-kpi-val" id="pct-done">0%</div><div class="pav-kpi-label">Progreso global</div></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:20px;overflow-x:auto">
+    <div class="cl violet">Resumen del plan estratégico</div>
+    <table class="summ-table">
+      <thead>
+        <tr><th>Fase</th><th>Período</th><th>Objetivo principal</th><th>Entregable clave</th><th>Estado</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:var(--violet)">F1 · Candidatura</strong></td>
+          <td>Jul–Ago 2026</td>
+          <td>Videos de calidad para Benidorm Fest + auditoría de perfiles digitales</td>
+          <td>Candidatura enviada · Pack de vídeos de calidad</td>
+          <td><span class="status-pill sp-active">En curso</span></td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--teal)">F2 · Siroco & Viral</strong></td>
+          <td>Sep–Oct 2026</td>
+          <td>Concierto Siroco 24/09 + lanzamiento canción #15 + pack contenido viral</td>
+          <td>Show grabado · Canción #15 publicada · Pack viral listo</td>
+          <td><span class="status-pill sp-todo">Pendiente</span></td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--terra)">F3 · Captación → 50K</strong></td>
+          <td>Nov 2026–Feb 2027</td>
+          <td>Meta Ads con mejor contenido + booking social 1:1 + sala 200–300</td>
+          <td>50K seguidores · Sala grande cerrada · Festivales contactados</td>
+          <td><span class="status-pill sp-todo">Pendiente</span></td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--sage)">F4 · 100K & Escala</strong></td>
+          <td>Mar–Dic 2027</td>
+          <td>100K Instagram + 100K Spotify + gira + Eurovisión</td>
+          <td>100K seguidores · Grandes festivales · Candidatura Eurovisión</td>
+          <td><span class="status-pill sp-todo">Pendiente</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- BENIDORM FEST — DETALLES ESPECÍFICOS -->
+  <div class="card" style="border-left:4px solid var(--teal);margin-bottom:14px">
+    <div class="cl teal">🎤 Benidorm Fest — Canción & estrategia de candidatura</div>
+    <div class="ct">"Voy a bailar" — Versión 16 recomendada por Artes Búho</div>
+    <div class="fr"><span class="fk">Canción elegida</span><span class="fv"><strong>"Voy a bailar"</strong> — candidatura Benidorm Fest</span></div>
+    <div class="fr"><span class="fk">Versión recomendada</span><span class="fv"><strong>v16</strong> — mejor estructura, mezcla y duración para TV · Mario prefería v14 y v20</span></div>
+    <div class="fr"><span class="fk">Ajuste de duración</span><span class="fv">Recortar a ~<strong>2:52</strong> para incluir coreografía final en el show</span></div>
+    <div class="fr"><span class="fk">Diferencial candidatura</span><span class="fv">Enviar <strong>vídeo con coreografía</strong> en estudio (temática roja) — la mayoría solo manda audio</span></div>
+    <div class="fr"><span class="fk">Actitud</span><span class="fv" style="font-family:'Playfair Display',serif;font-style:italic">"Me presento al Benidorm Fest y lo voy a ganar."</span></div>
+    <div class="fr"><span class="fk">Demo próximo single</span><span class="fv"><a href="https://samply.app/p/85oD5bqeFQmF0fbBUZ6H" target="_blank">Escuchar en Samply ↗</a></span></div>
+    <button class="cb" onclick="cp(this)">Copiar</button>
+  </div>
+
+  <!-- INDUSTRIA & NEGOCIO -->
+  <div class="card" style="border-left:4px solid var(--terra);margin-bottom:14px">
+    <div class="cl terra">💼 Industria & Negocio — Claves estratégicas</div>
+    <div class="fr"><span class="fk">Distribuidora actual</span><span class="fv">Retrasos de publicación en YouTube → <strong>buscar alternativa</strong> que confíe en el potencial y no sature el catálogo con perfiles idénticos · ⚠️ Verificar tipo de contrato y contacto A&R</span></div>
+    <div class="fr"><span class="fk">Inversión publicitaria</span><span class="fv">Mario plantea ~<strong>3.000 €</strong> · Estándar en proyectos que despegan: <strong>15.000–20.000 €</strong> · Los Ads amplifican el orgánico, no lo sustituyen</span></div>
+    <div class="fr"><span class="fk">Historial Ads</span><span class="fv">Probó TikTok/IG Ads y sintió que "quemaba dinero" → <strong>delegar a expertos</strong> con embudos claros (ej. captación entradas Siroco)</span></div>
+    <div class="fr"><span class="fk">Apertura de puertas</span><span class="fv">Artes Búho se ofrece a enviar material a <strong>Celia</strong> (mánager de Chanel) para abrir contactos en la industria</span></div>
+    <button class="cb" onclick="cp(this)">Copiar</button>
+  </div>
+
+  <!-- TAREAS ABIERTAS -->
+  <div class="card" style="margin-bottom:20px;overflow-x:auto">
+    <div class="cl violet">📋 Tareas abiertas — Seguimiento sesión consultoría · 30/06/2026</div>
+    <table class="summ-table">
+      <thead><tr><th>#</th><th>Tarea / Pregunta</th><th>Responsable</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1</strong></td><td>Definir <strong>frase corta</strong> del eslogan ⚠️ por definir</td><td>Mario + Artes Búho</td></tr>
+        <tr><td><strong>2</strong></td><td>Cerrar <strong>v16</strong> de "Voy a bailar" y recorte a ~2:52</td><td>Mario</td></tr>
+        <tr><td><strong>3</strong></td><td>Grabar y enviar <strong>vídeo coreografía roja</strong> para candidatura Benidorm Fest</td><td>Mario / Artes Búho</td></tr>
+        <tr><td><strong>4</strong></td><td>Enviar material a <strong>Celia</strong> (mánager de Chanel)</td><td>Artes Búho</td></tr>
+        <tr><td><strong>5</strong></td><td>Aterrizar <strong>inversión real</strong> disponible (vs. estándar 15–20k €)</td><td>Mario</td></tr>
+        <tr><td><strong>6</strong></td><td>Decidir <strong>distribuidora</strong> nueva y revisar contrato/A&R actual</td><td>Mario</td></tr>
+        <tr><td><strong>7</strong></td><td>Montar <strong>comunidad privada</strong> (WhatsApp/Telegram) para superfans</td><td>Artes Búho</td></tr>
+        <tr><td><strong>8</strong></td><td>Definir embudo para <strong>Sold Out Siroco</strong> (aforo y entradas vendidas hoy)</td><td>Artes Búho</td></tr>
+        <tr><td><strong>9</strong></td><td>Decidir estrategia <strong>TikTok</strong>: reactivar cuenta viral vs. cuenta nueva limpia</td><td>Mario</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="timeline">
+
+    <!-- FASE 1 -->
+    <div class="phase-block open" id="ph1">
+      <div class="phase-head p1" onclick="tglPhase('ph1')">
+        <div class="phase-dot p1">1</div>
+        <div>
+          <div class="phase-label">Fase 1</div>
+          <div class="phase-name">Candidatura Benidorm Fest & Videos de Calidad</div>
+          <div class="phase-dates">Semanas 1–4 · Julio–Agosto 2026</div>
+        </div>
+        <span class="phase-toggle">+</span>
+      </div>
+      <div class="phase-body">
+        <div class="phase-inner">
+          <div class="obj-strip">
+            <span class="obj-strip-label">Objetivos</span>
+            <span class="obj-chip">Candidatura Benidorm Fest enviada</span>
+            <span class="obj-chip">Pack vídeos de calidad grabados</span>
+            <span class="obj-chip">Auditoría perfiles digitales</span>
+            <span class="obj-chip">Estrategia contenido viral definida</span>
+            <span class="obj-chip">Concierto Siroco preparado</span>
+          </div>
+          <div class="prog-wrap"><div class="prog-bar p1" id="prog1" style="width:0%"></div></div>
+          <div class="prog-label"><span id="prog1-label">0 / 0 acciones completadas</span><span id="prog1-pct">0%</span></div>
+          <div class="weeks">
+            <div class="week-row">
+              <div class="week-label">Semana 1</div>
+              <div class="week-items">
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Auditoría completa de perfiles: Instagram, TikTok, YouTube, Spotify — métricas, contenido top, qué funciona y qué no</span><span class="item-tag it-an">Análisis</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Revisar bases de candidatura al Benidorm Fest — plazos, requisitos de vídeo, formato de presentación</span><span class="item-tag it-an">Candidatura</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Definir qué contenido viral queremos preparar: tipo de vídeo, concepto, estética, duración</span><span class="item-tag it-an">Estrategia</span></div>
+              </div>
+            </div>
+            <div class="week-row">
+              <div class="week-label">Semana 2–3</div>
+              <div class="week-items">
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Grabar pack de vídeos de calidad específicamente para la candidatura al Benidorm Fest</span><span class="item-tag it-co">Grabación</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Coordinación con The Citizen (@citizen_theartist) para producir contenido al estilo JLo / Enrique Iglesias</span><span class="item-tag it-co">Contenido</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Preparar 5–7 vídeos de contenido viral para Instagram/TikTok en paralelo a los vídeos de candidatura</span><span class="item-tag it-co">Contenido</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Editar y montar todos los vídeos — asegurarse de que la estética (rojo, lentejuelas, color) esté 100% definida antes de publicar</span><span class="item-tag it-co">Contenido</span></div>
+              </div>
+            </div>
+            <div class="week-row">
+              <div class="week-label">Semana 4</div>
+              <div class="week-items">
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Enviar candidatura al Benidorm Fest con el pack de vídeos — diferenciarse de artistas que no envían vídeo</span><span class="item-tag it-re">Candidatura</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Preparar logística del concierto Siroco (24/09): setlist, vestuario, ensayos, producción técnica</span><span class="item-tag it-re">Concierto</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Candidaturas: Brava Madrid, Bombastic — revisar plazos y enviar dossier</span><span class="item-tag it-re">Candidatura</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FASE 2 -->
+    <div class="phase-block" id="ph2">
+      <div class="phase-head p2" onclick="tglPhase('ph2')">
+        <div class="phase-dot p2">2</div>
+        <div>
+          <div class="phase-label">Fase 2</div>
+          <div class="phase-name">Siroco & Contenido Viral</div>
+          <div class="phase-dates">Semanas 5–9 · Septiembre–Octubre 2026</div>
+        </div>
+        <span class="phase-toggle">+</span>
+      </div>
+      <div class="phase-body">
+        <div class="phase-inner">
+          <div class="obj-strip">
+            <span class="obj-strip-label">Objetivos</span>
+            <span class="obj-chip">Concierto Siroco 24/09 grabado</span>
+            <span class="obj-chip">Canción #15 publicada</span>
+            <span class="obj-chip">Pack viral publicado en redes</span>
+            <span class="obj-chip">Primeros ads activos</span>
+            <span class="obj-chip">25K seguidores (meta intermedia)</span>
+          </div>
+          <div class="prog-wrap"><div class="prog-bar p2" id="prog2" style="width:0%"></div></div>
+          <div class="prog-label"><span id="prog2-label">0 / 0 acciones completadas</span><span id="prog2-pct">0%</span></div>
+          <div class="weeks">
+            <div class="week-row">
+              <div class="week-label">Semana 5–6</div>
+              <div class="week-items">
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Concierto en Sala Siroco — 24 de Septiembre 2026. Grabar el show completo para contenido de redes y portfolio</span><span class="item-tag it-co">Concierto</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Publicar los 5–7 vídeos del pack viral de forma escalonada (1–2 por semana) en Instagram y TikTok</span><span class="item-tag it-co">Contenido</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Publicar canción #15 en plataformas — coordinar con distribuidor</span><span class="item-tag it-co">Lanzamiento</span></div>
+              </div>
+            </div>
+            <div class="week-row">
+              <div class="week-label">Semana 7–8</div>
+              <div class="week-items">
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Editar y publicar highlights del concierto Siroco para alimentar las redes con contenido live de calidad</span><span class="item-tag it-co">Contenido</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Candidatura Coca-Cola Music Experience — revisar plazos y enviar material actualizado</span><span class="item-tag it-re">Candidatura</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Activar Meta Ads en Instagram con el vídeo del pack viral que mejor esté funcionando orgánicamente</span><span class="item-tag it-re">Ads</span></div>
+              </div>
+            </div>
+            <div class="week-row">
+              <div class="week-label">Semana 9</div>
+              <div class="week-items">
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Revisar métricas de los primeros ads: parar los que no funcionan, doblar inversión en el ganador</span><span class="item-tag it-re">Ads</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Grabar "Día de contenido #2": pack de 5–7 vídeos nuevos para mantener frecuencia de publicación</span><span class="item-tag it-co">Contenido</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Reportar métricas y resultados a Artes Búho para ajustar la estrategia de cara a la fase 3</span><span class="item-tag it-re">Reporting</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FASE 3 -->
+    <div class="phase-block" id="ph3">
+      <div class="phase-head p3" onclick="tglPhase('ph3')">
+        <div class="phase-dot p3">3</div>
+        <div>
+          <div class="phase-label">Fase 3</div>
+          <div class="phase-name">Captación Digital → 50K seguidores</div>
+          <div class="phase-dates">Semanas 10–16 · Noviembre 2026–Febrero 2027</div>
+        </div>
+        <span class="phase-toggle">+</span>
+      </div>
+      <div class="phase-body">
+        <div class="phase-inner">
+          <div class="obj-strip">
+            <span class="obj-strip-label">Objetivos</span>
+            <span class="obj-chip">50K seguidores Instagram</span>
+            <span class="obj-chip">Booking social 1:1</span>
+            <span class="obj-chip">Sala 200–300 personas cerrada</span>
+            <span class="obj-chip">Streams Spotify creciendo</span>
+            <span class="obj-chip">Big Sound Festival contactado</span>
+          </div>
+          <div class="prog-wrap"><div class="prog-bar p3" id="prog3" style="width:0%"></div></div>
+          <div class="prog-label"><span id="prog3-label">0 / 0 acciones completadas</span><span id="prog3-pct">0%</span></div>
+          <div class="weeks">
+            <div class="week-row">
+              <div class="week-label">Sem 10–11</div>
+              <div class="week-items">
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Escalar inversión publicitaria en el vídeo ganador — segmentar por España, Madrid/Barcelona/Valencia, mujeres 25–34</span><span class="item-tag it-re">Ads</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Booking social 1:1: contactar nuevos seguidores vía DM — presentación natural, oferta de concierto o colaboración</span><span class="item-tag it-re">Booking</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Contactar salas de 200–300 personas en Madrid con el dossier + vídeo del Siroco para cerrar siguiente concierto</span><span class="item-tag it-re">Booking</span></div>
+              </div>
+            </div>
+            <div class="week-row">
+              <div class="week-label">Sem 12–14</div>
+              <div class="week-items">
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Enviar dossier al Big Sound Festival y otros festivales del circuito pop español con el nuevo material</span><span class="item-tag it-ci">Booking</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Nuevo "Día de contenido #3" — mantener frecuencia de publicación sin bajar el ritmo</span><span class="item-tag it-co">Contenido</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Revisar retorno de inversión publicitaria: ¿cuántos seguidores y streams por euro invertido?</span><span class="item-tag it-re">Ads</span></div>
+              </div>
+            </div>
+            <div class="week-row">
+              <div class="week-label">Sem 15–16</div>
+              <div class="week-items">
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Evaluar si abrir nueva cuenta de TikTok si la actual no se reactiva musicalmente (base actual es viral no musical)</span><span class="item-tag it-an">Estrategia</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Registrar derechos de autor en SGAE a través de Artes Búho — catálogo completo de 14+ canciones</span><span class="item-tag it-ci">Editorial</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Reunión de cierre con Artes Búho: revisar métricas globales, ajustar estrategia para fase 4</span><span class="item-tag it-ci">Estrategia</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FASE 4 -->
+    <div class="phase-block" id="ph4">
+      <div class="phase-head p4" onclick="tglPhase('ph4')">
+        <div class="phase-dot p4">✓</div>
+        <div>
+          <div class="phase-label">Fase 4</div>
+          <div class="phase-name">100K, Gira & Eurovisión</div>
+          <div class="phase-dates">Meses 6–18 · 2027</div>
+        </div>
+        <span class="phase-toggle">+</span>
+      </div>
+      <div class="phase-body">
+        <div class="phase-inner">
+          <div class="obj-strip">
+            <span class="obj-strip-label">Objetivos</span>
+            <span class="obj-chip">100K Instagram</span>
+            <span class="obj-chip">100K oyentes Spotify</span>
+            <span class="obj-chip">Grandes festivales</span>
+            <span class="obj-chip">Gira España</span>
+            <span class="obj-chip">Candidatura Eurovisión</span>
+          </div>
+          <div class="prog-wrap"><div class="prog-bar p4" id="prog4" style="width:0%"></div></div>
+          <div class="prog-label"><span id="prog4-label">0 / 0 acciones completadas</span><span id="prog4-pct">0%</span></div>
+          <div class="weeks">
+            <div class="week-row">
+              <div class="week-label">Q1 2027</div>
+              <div class="week-items">
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Superar 100.000 seguidores en Instagram — hito que desbloquea oportunidades de colaboración con marcas y festivales</span><span class="item-tag it-ci">Redes</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Alcanzar 100.000 oyentes mensuales en Spotify — validar qué estilo (pop electrónico vs. latinas) conecta más</span><span class="item-tag it-ci">Streaming</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Evaluar subcontratar management o booking externo según el volumen de actividad</span><span class="item-tag it-ci">Gestión</span></div>
+              </div>
+            </div>
+            <div class="week-row">
+              <div class="week-label">Q2–Q3 2027</div>
+              <div class="week-items">
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Grandes festivales de pop en España: enviar dossier premium con métricas de 100K para negociar cachés superiores</span><span class="item-tag it-ci">Booking</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Planificar gira por Madrid, Barcelona y Valencia — ciudades objetivo identificadas</span><span class="item-tag it-ci">Booking</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Valorar colaboraciones con artistas nacionales (Aitana, Abraham Mateo, Dani Fernández) si las métricas lo permiten</span><span class="item-tag it-ci">Contenido</span></div>
+              </div>
+            </div>
+            <div class="week-row">
+              <div class="week-label">Q4 2027</div>
+              <div class="week-items">
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Presentar candidatura al Benidorm Fest 2028 — con el músculo de métricas y trayectoria acumulada este año</span><span class="item-tag it-ci">Candidatura</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Si España participa en Eurovisión: explorar vías de candidatura o colaboración con la delegación española</span><span class="item-tag it-ci">Eurovisión</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Reunión anual con Artes Búho: valorar año 2, escalar caché y definir hoja de ruta internacional</span><span class="item-tag it-ci">Estrategia</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /timeline -->
+</section>
+
+</main>
+<footer class="page-contact" aria-label="Contacto Artes Buho">
+  <div>◎ @artesbuho</div>
+  <div>✉ contratacion@artesbuho.com<br><span style="font-weight:600;color:var(--ink-light)">Av. Manzanares 196, Madrid CP 28026</span></div>
+  <div class="pill">↗ www.artesbuho.com ↖</div>
+  <div>☎ +34 649 63 59 07</div>
+</footer>
+</div>
+
+<script>
+/* ── STORE ── */
+const INFO_STORE = 'info-maestra-mariocassado:v1:';
+function sk(k){return INFO_STORE+k}
+function save(k,v){try{localStorage.setItem(sk(k),JSON.stringify(v))}catch(e){}}
+function load(k,def){try{const v=localStorage.getItem(sk(k));return v!==null?JSON.parse(v):def}catch(e){return def}}
+
+/* ── NAVIGATION ── */
+function show(id,el){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  const sec=document.getElementById(id);
+  if(sec)sec.classList.add('active');
+  if(el)el.classList.add('active');
+  save('activeSec',id);
+  window.scrollTo(0,0);
+}
+
+/* ── CLIP ── */
+function cp(btn){
+  const card=btn.closest('.card,.slogan');
+  if(!card)return;
+  const tmp=document.createElement('div');
+  tmp.innerHTML=card.innerHTML;
+  tmp.querySelectorAll('button,.cb,.cb-inline,.edit-tools,.cl').forEach(n=>n.remove());
+  const txt=(tmp.innerText||tmp.textContent||'').replace(/\n{3,}/g,'\n\n').trim();
+  navigator.clipboard.writeText(txt).then(()=>{btn.textContent='✓ Copiado';btn.classList.add('ok');setTimeout(()=>{btn.textContent='Copiar';btn.classList.remove('ok')},2000)});
+}
+function cpEl(btn){
+  const card=btn.closest('.card');
+  if(!card)return;
+  const tmp=document.createElement('div');
+  tmp.innerHTML=card.innerHTML;
+  tmp.querySelectorAll('button,.cb,.cb-inline,.edit-tools').forEach(n=>n.remove());
+  const txt=(tmp.innerText||tmp.textContent||'').replace(/\n{3,}/g,'\n\n').trim();
+  navigator.clipboard.writeText(txt).then(()=>{btn.textContent='✓ Copiado';btn.classList.add('ok');setTimeout(()=>{btn.textContent='Copiar';btn.classList.remove('ok')},2000)});
+}
+
+/* ── ACCORDION (entrevistas) ── */
+function tgl(btn){
+  const card=btn.closest('.icard');
+  card.classList.toggle('open');
+}
+
+/* ── PHASE TOGGLE ── */
+function tglPhase(id){
+  document.getElementById(id).classList.toggle('open');
+}
+
+/* ── ITEMS (checklist) ── */
+function toggleItem(el){
+  el.classList.toggle('done');
+  el.querySelector('.item-check').textContent=el.classList.contains('done')?'✓':'';
+  savePhaseState();
+  updateProgress();
+}
+
+function savePhaseState(){
+  ['ph1','ph2','ph3','ph4'].forEach(phId=>{
+    const ph=document.getElementById(phId);
+    if(!ph)return;
+    const items=ph.querySelectorAll('.item');
+    const state=Array.from(items).map(i=>i.classList.contains('done'));
+    save('phase:'+phId,state);
+  });
+}
+
+function loadPhaseState(){
+  ['ph1','ph2','ph3','ph4'].forEach(phId=>{
+    const ph=document.getElementById(phId);
+    if(!ph)return;
+    const state=load('phase:'+phId,[]);
+    const items=ph.querySelectorAll('.item');
+    items.forEach((item,i)=>{
+      if(state[i]){item.classList.add('done');item.querySelector('.item-check').textContent='✓';}
+    });
+  });
+}
+
+function updateProgress(){
+  let totalAll=0,doneAll=0;
+  ['ph1','ph2','ph3','ph4'].forEach((phId,i)=>{
+    const ph=document.getElementById(phId);
+    if(!ph)return;
+    const items=ph.querySelectorAll('.item');
+    const done=ph.querySelectorAll('.item.done');
+    const n=i+1;
+    const pct=items.length?Math.round(done.length/items.length*100):0;
+    const bar=document.getElementById('prog'+n);
+    const lbl=document.getElementById('prog'+n+'-label');
+    const pctEl=document.getElementById('prog'+n+'-pct');
+    if(bar)bar.style.width=pct+'%';
+    if(lbl)lbl.textContent=done.length+' / '+items.length+' acciones completadas';
+    if(pctEl)pctEl.textContent=pct+'%';
+    totalAll+=items.length;
+    doneAll+=done.length;
+  });
+  const globalPct=totalAll?Math.round(doneAll/totalAll*100):0;
+  const ti=document.getElementById('total-items');
+  const di=document.getElementById('done-items');
+  const pd=document.getElementById('pct-done');
+  if(ti)ti.textContent=totalAll;
+  if(di)di.textContent=doneAll;
+  if(pd)pd.textContent=globalPct+'%';
+}
+
+/* ── TRAIT SLIDERS ── */
+function initTraits(){
+  document.querySelectorAll('[data-trait]').forEach(t=>{
+    const chk=t.querySelector('.trait-check');
+    const rng=t.querySelector('.trait-range');
+    const num=t.querySelector('.trait-number');
+    const ring=t.querySelector('.ring');
+    function update(v){
+      if(ring){ring.style.setProperty('--pct',v);ring.setAttribute('data-pct',v+'%');}
+      if(num)num.value=v;
+      if(rng)rng.value=v;
+      const off=chk&&!chk.checked;
+      t.classList.toggle('off',!!off);
+    }
+    if(rng)rng.addEventListener('input',()=>update(+rng.value));
+    if(num)num.addEventListener('input',()=>update(+num.value));
+    if(chk)chk.addEventListener('change',()=>t.classList.toggle('off',!chk.checked));
+    if(ring){const v=getComputedStyle(ring).getPropertyValue('--pct').trim();if(v)update(+v);}
+  });
+}
+
+/* ── ADD BUTTONS ── */
+function addFormat(){
+  const grid=document.querySelector('#espectaculo .g3');
+  if(!grid)return;
+  const d=document.createElement('div');d.className='fcard';
+  d.innerHTML='<div class="fch" contenteditable="true"><div class="fcn">Nuevo Formato</div><div class="fcd">Duración</div></div><div class="fcb" contenteditable="true"><p style="font-size:13px;color:var(--ink-mid)">Descripción del formato...</p></div>';
+  grid.appendChild(d);
+}
+function addSong(){
+  const ref=document.querySelector('#discografia .srow');
+  if(!ref)return;
+  const d=document.createElement('div');d.className='srow';
+  d.innerHTML='<div class="snum" contenteditable="true">##</div><div class="si"><div class="st" contenteditable="true">Título de la canción</div><div class="sm" contenteditable="true">Información adicional...</div></div><div class="slinks"><span class="sl ph" contenteditable="true">Plataforma pendiente</span></div>';
+  ref.parentNode.insertBefore(d,ref.nextSibling);
+}
+function addInterview(){
+  const c=document.querySelector('#entrevistas');
+  if(!c)return;
+  const d=document.createElement('div');d.className='icard open';
+  d.innerHTML='<div class="iq" onclick="tgl(this)"><span class="iq-t" contenteditable="true">Nueva pregunta...</span><span class="iq-i">+</span></div><div class="ia" style="max-height:600px;padding:18px 20px"><div class="ia-t" contenteditable="true">Respuesta tipo...</div><button class="cb-inline" onclick="cpEl(this)">Copiar respuesta</button></div>';
+  c.appendChild(d);
+}
+function addPressAppearance(){
+  const card=document.querySelector('[data-press-source]');
+  if(!card)return;
+  const d=document.createElement('div');d.setAttribute('data-press-source','');d.style='padding:10px 0;border-bottom:1px solid var(--border)';
+  d.innerHTML='<div class="press-outlet" contenteditable="true">Nuevo medio</div><p style="font-size:13px;color:var(--ink-mid)" contenteditable="true">Descripción de la aparición...</p>';
+  card.parentNode.insertBefore(d,card);
+}
+function addPressNote(){
+  const sec=document.querySelector('#prensa');
+  if(!sec)return;
+  const d=document.createElement('div');d.className='card';d.style='position:relative';
+  d.innerHTML='<div class="cl teal" contenteditable="true">Nota de prensa</div><div class="ct" contenteditable="true">Título</div><p contenteditable="true">Contenido de la nota...</p><button class="cb" onclick="cp(this)">Copiar</button>';
+  sec.appendChild(d);
+}
+
+/* ── LOCK SYSTEM ── */
+function applyLocks(){
+  if(!window.PAVONEO_CONFIG)return;
+  const cfg=window.PAVONEO_CONFIG;
+  const locked=cfg.locked||{};
+  const msg=cfg.lockMessage||{};
+  const tierBadge=document.getElementById('sb-tier-badge');
+  if(tierBadge)tierBadge.textContent=(cfg.tier||'info').toUpperCase();
+  ['prensa','rider','ficha'].forEach(sid=>{
+    const sec=document.getElementById(sid);
+    const navLock=document.querySelector('[data-lock-icon="'+sid+'"]');
+    const navItem=document.querySelector('[data-nav-id="'+sid+'"]');
+    if(!sec)return;
+    const isLocked=locked[sid]===true;
+    if(isLocked){
+      sec.classList.add('is-locked');
+      if(navLock)navLock.textContent=' 🔒';
+      if(!sec.querySelector('.lock-overlay')){
+        const ov=document.createElement('div');ov.className='lock-overlay';
+        ov.innerHTML='<div class="lock-card"><div class="lock-icon">🔒</div><div class="lock-title">'+
+          (msg.title||'Contenido bloqueado')+'</div><div class="lock-body">'+
+          (msg.body||'Esta sección estará disponible en el próximo nivel.')+'</div>'+
+          '<a href="mailto:artesbuho.oficial@gmail.com" class="lock-cta">'+
+          (msg.cta||'Contactar Artes Búho')+' →</a>'+
+          '<div class="lock-badge">'+cfg.artistName+' · Pavoneo 360°</div></div>';
+        sec.appendChild(ov);
+      }
+    } else {
+      sec.classList.remove('is-locked');
+      if(navLock)navLock.textContent='';
+    }
+  });
+}
+
+/* ── RESTORE ACTIVE SECTION ── */
+function restoreSection(){
+  const saved=load('activeSec','overview');
+  const navEl=document.querySelector('.ni[onclick*="'+saved+'"]');
+  show(saved,navEl);
+}
+
+/* ── INIT ── */
+document.addEventListener('DOMContentLoaded',()=>{
+  applyLocks();
+  initTraits();
+  loadPhaseState();
+  updateProgress();
+  restoreSection();
+
+  /* Tone pills */
+  document.querySelectorAll('.tone-pill').forEach(pill=>{
+    const chk=pill.querySelector('.tone-check');
+    if(chk)chk.addEventListener('change',()=>pill.classList.toggle('off',!chk.checked));
+    if(chk&&!chk.checked)pill.classList.add('off');
+  });
+});
+</script>
+</body>
+</html>
