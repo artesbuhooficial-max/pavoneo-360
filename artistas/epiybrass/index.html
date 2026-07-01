@@ -2196,6 +2196,7 @@ function restoreLinkFields() {
   });
 }
 function initSwatchEditors(){
+  if(document.querySelector('.palette .swc-picker'))return;
   var SWATCH_KEY='pavoneo-swatches:'+(window.PAVONEO_CONFIG&&window.PAVONEO_CONFIG.artistSlug?window.PAVONEO_CONFIG.artistSlug:location.pathname.replace(/\W/g,'-'));
   var swatches=document.querySelectorAll('.palette .sw');
   if(!swatches.length)return;
@@ -2207,9 +2208,9 @@ function initSwatchEditors(){
   function saveAll(){
     var d={};
     swatches.forEach(function(sw,i){
-      var pk=sw.querySelector('.swc-picker');
+      var hs=sw.querySelector('.swl-hex');
       var ns=sw.querySelector('.swl-name');
-      if(pk&&ns)d[i]={hex:pk.value,name:ns.textContent.trim()};
+      if(hs&&ns)d[i]={hex:hs.textContent.trim(),name:ns.textContent.trim()};
     });
     localStorage.setItem(SWATCH_KEY,JSON.stringify(d));
   }
@@ -2228,17 +2229,17 @@ function initSwatchEditors(){
       if(saved[i].name)namePart=saved[i].name;
     }
     var hexVal=hexPart.toLowerCase();
-    if(hexVal[0]!=='#')hexVal='#'+hexVal;
+    if(hexVal.charAt(0)!=='#')hexVal='#'+hexVal;
     var label=document.createElement('label');
     label.className='swc-wrap';
     label.title='Clic para cambiar color';
     var picker=document.createElement('input');
     picker.type='color';
     picker.className='swc-picker';
-    try{picker.value=hexVal;}catch(e){picker.value='#000000';}
     swc.parentNode.insertBefore(label,swc);
     label.appendChild(swc);
     label.appendChild(picker);
+    picker.value=hexVal;
     var hexSpan=document.createElement('span');
     hexSpan.className='swl-hex';
     hexSpan.textContent=hexPart.toUpperCase();
