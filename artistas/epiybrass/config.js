@@ -27,9 +27,12 @@ window.PAVONEO_CONFIG = {
   // true  = bloqueada (el artista ve un aviso y no puede leer el contenido)
   // false = desbloqueada (contenido visible con normalidad)
   locked: {
-    ficha:   true,   // Ficha Artística
-    rider:   true,   // Rider Técnico & Formatos
-    prensa:  true    // Notas de Prensa & Medios
+    ficha:        true,   // Ficha Artística
+    rider:        true,   // Rider Técnico & Formatos
+    prensa:       true,   // Notas de Prensa & Medios
+    espectaculo:  true,   // El Espectáculo
+    discografia:  true,   // Discografía & Singles
+    entrevistas:  true    // Tarjetas de Entrevista
   },
 
   // Texto que se muestra en el overlay de bloqueo.
