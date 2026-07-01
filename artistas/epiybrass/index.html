@@ -1,0 +1,2149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Epi&amp;Brass · INFO MAESTRA</title>
+<script src="config.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:      #F7F2E5;
+  --cream2:     #FFF8E8;
+  --parchment:  #EADDBF;
+  --paper:      #FFFFFF;
+  --ink:        #071C48;
+  --ink-mid:    #24406E;
+  --ink-light:  #6A7EA6;
+  --blue:       #0757D8;
+  --blue-2:     #0B66FF;
+  --blue-soft:  #EAF2FF;
+  --blue-deep:  #043C9F;
+  --teal:       #0757D8;
+  --teal-l:     #3E83FF;
+  --teal-pale:  #EAF2FF;
+  --terra:      #D59A18;
+  --terra-pale: #FFF2CE;
+  --gold:       #E8B83E;
+  --gold-pale:  #FFF5D7;
+  --sage:       #456C8F;
+  --sage-pale:  #EEF5FB;
+  --violet:     #2347A5;
+  --violet-pale:#EDF2FF;
+  --border:     #D8E3F5;
+  --sh:         0 10px 28px rgba(7,28,72,.07);
+  --sh-md:      0 18px 52px rgba(7,28,72,.13);
+  --r:          10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,#f8fbff 0%,#fff 44%,#fff8e8 100%);color:var(--ink);font-size:15px;line-height:1.65;min-height:100vh}
+a{color:var(--teal);text-decoration:none}
+a:hover{text-decoration:underline}
+::selection{background:var(--teal-pale);color:var(--teal)}
+
+/* ── LAYOUT ─────────────── */
+.app{display:flex;min-height:100vh}
+
+/* ── SIDEBAR ────────────── */
+.sidebar{
+  width:262px;min-width:262px;
+  background:linear-gradient(180deg,#0757D8 0%,#054CC2 52%,#03378E 100%);color:#fff;
+  position:sticky;top:0;height:100vh;
+  overflow-y:auto;display:flex;flex-direction:column;
+  z-index:100;scrollbar-width:none;
+  box-shadow:10px 0 34px rgba(7,87,216,.16)
+}
+.sidebar::-webkit-scrollbar{display:none}
+.sb-head{
+  padding:28px 18px 22px;
+  border-bottom:1px solid rgba(255,255,255,.12)
+}
+.brand-lockup{display:flex;align-items:center;gap:11px;margin-bottom:14px}
+.brand-mark{
+  position:relative;width:64px;height:58px;flex:0 0 auto;
+  filter:drop-shadow(0 10px 16px rgba(0,0,0,.12))
+}
+.brand-mark img{width:100%;height:100%;object-fit:contain;display:block}
+.brand-mark::before,.brand-mark::after{
+  content:none;position:absolute;background:var(--cream2);
+  border-radius:18px 18px 8px 8px;transform-origin:center bottom
+}
+.brand-mark::before{width:25px;height:48px;left:7px;top:2px;transform:skew(-12deg) rotate(2deg)}
+.brand-mark::after{width:33px;height:48px;right:3px;top:2px;border-radius:18px 22px 20px 8px;transform:rotate(-43deg)}
+.brand-word{font-weight:900;line-height:.82;color:var(--cream2);font-size:18px;letter-spacing:-.05em}
+.brand-word span{display:block}
+.brand-note{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,248,232,.66);font-weight:700;margin-top:5px}
+.sb-project{
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);
+  border-radius:10px;padding:12px 13px
+}
+.sb-logo{
+  font-family:'DM Sans',sans-serif;
+  font-size:16px;font-weight:900;color:#fff;
+  margin-bottom:3px;line-height:1.2
+}
+.sb-sub{
+  font-size:9px;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(255,255,255,.38);font-weight:500;margin-top:2px
+}
+.sb-badge{
+  display:inline-block;margin-top:10px;
+  background:var(--cream2);color:var(--blue-deep);
+  font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  padding:3px 10px;border-radius:20px
+}
+.sb-badge.violet{background:var(--violet)}
+.sb-head-links{
+  display:flex;gap:6px;flex-wrap:wrap;margin-top:10px
+}
+.sb-link{
+  font-size:10px;color:rgba(255,255,255,.72);
+  display:flex;align-items:center;gap:4px;
+  transition:.15s
+}
+.sb-link:hover{color:var(--teal-l);text-decoration:none}
+.sb-link .dot{
+  width:5px;height:5px;border-radius:50%;
+  background:currentColor;display:inline-block
+}
+
+.sidebar nav{padding:14px 0;flex:1}
+.ng-label{
+  padding:10px 22px 4px;
+  font-size:9px;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(255,248,232,.68);font-weight:700
+}
+.ni{
+  display:flex;align-items:center;gap:9px;
+  padding:9px 22px;font-size:12.5px;font-weight:400;
+  color:rgba(255,255,255,.82);cursor:pointer;
+  transition:.16s;border-left:2px solid transparent;margin:1px 9px;border-radius:8px
+}
+.ni:hover{color:#fff;background:rgba(255,255,255,.11);border-left-color:rgba(255,248,232,.55)}
+.ni.active{color:var(--blue-deep);background:var(--cream2);border-left-color:var(--cream2);font-weight:800;box-shadow:0 8px 20px rgba(0,0,0,.14)}
+.ni.pavoneo{color:rgba(180,160,220,.7)}
+.ni.pavoneo:hover,.ni.pavoneo.active{color:#fff;background:rgba(107,76,138,.25);border-left-color:#9B7ACC}
+.ni .ic{width:15px;text-align:center;font-style:normal;flex-shrink:0;opacity:.65}
+
+.sb-foot{
+  padding:16px 22px;border-top:1px solid rgba(255,255,255,.12);
+  font-size:11px;color:rgba(255,255,255,.72);line-height:1.5
+}
+.sb-foot strong{color:#fff}
+
+/* ── MAIN ───────────────── */
+.main{flex:1;min-width:0;padding:28px 34px 92px;position:relative}
+
+/* ── MASTHEAD ───────────── */
+.masthead{
+  background:linear-gradient(135deg,#fff 0%,#fff 58%,#fff7df 100%);
+  color:var(--ink);padding:40px 46px 30px;position:relative;overflow:hidden;
+  border:1px solid rgba(216,227,245,.95);border-radius:18px;box-shadow:var(--sh-md)
+}
+.masthead::before{
+  content:'';position:absolute;right:-74px;top:-112px;
+  width:360px;height:360px;border-radius:50%;
+  background:radial-gradient(circle at 44% 42%,#fff6d8 0%,#fff1c4 56%,#ead8a8 100%);
+  box-shadow:inset 18px -18px 0 rgba(7,28,72,.05),0 24px 60px rgba(7,87,216,.12);
+  pointer-events:none
+}
+.masthead::after{
+  content:'Artes\A Buho';white-space:pre;position:absolute;right:58px;top:43px;
+  font-size:25px;font-weight:900;letter-spacing:-.08em;line-height:.82;color:var(--blue);
+  transform:rotate(-5deg);pointer-events:none
+}
+.mh-eye{
+  font-size:9px;letter-spacing:.25em;text-transform:uppercase;
+  color:var(--blue);font-weight:800;margin-bottom:10px
+}
+.mh-title{
+  font-family:'DM Sans',sans-serif;
+  font-size:56px;font-weight:900;line-height:.95;
+  margin-bottom:11px;letter-spacing:-.045em;max-width:620px
+}
+.mh-title em{color:var(--gold);font-style:italic;font-weight:900}
+.mh-tag{
+  font-size:15px;color:var(--ink-mid);
+  font-weight:600;margin-bottom:26px
+}
+.mh-meta{
+  display:flex;gap:10px;flex-wrap:wrap;
+  padding-top:0;border-top:none;max-width:960px
+}
+.mi{font-size:11.5px;background:#fff;border:1px solid var(--border);border-radius:999px;padding:8px 13px;box-shadow:0 8px 18px rgba(7,87,216,.06)}
+.mi-l{color:var(--blue);font-size:8.5px;letter-spacing:.15em;text-transform:uppercase;display:block;margin-bottom:0;font-weight:800}
+.mi-v{color:var(--ink);font-weight:700}
+.mi-v a{color:var(--ink)}
+
+/* ── SECTION ────────────── */
+.sec{padding:28px 0 0;display:none;animation:fu .28s ease both}
+.sec.active{display:block}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.sh{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  margin-bottom:22px;padding-bottom:16px;border-bottom:1px solid var(--border)
+}
+.sh-eye{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--teal);font-weight:600;margin-bottom:5px}
+.sh-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--ink);line-height:1.1}
+.sh-title.violet{color:var(--violet)}
+
+/* ── CARD ───────────────── */
+.card{
+  background:rgba(255,255,255,.92);border:1px solid var(--border);
+  border-radius:var(--r);padding:24px 28px;
+  margin-bottom:14px;box-shadow:var(--sh);
+  transition:box-shadow .18s;position:relative
+}
+.card:hover{box-shadow:var(--sh-md)}
+.cl{font-size:9px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;margin-bottom:8px}
+.cl.teal{color:var(--teal)} .cl.terra{color:var(--terra)}
+.cl.gold{color:var(--gold)} .cl.sage{color:var(--sage)}
+.cl.violet{color:var(--violet)}
+.ct{font-family:'Playfair Display',serif;font-size:17px;font-weight:600;margin-bottom:10px;color:var(--ink)}
+.card p{color:var(--ink-mid);line-height:1.72;font-size:14px}
+
+/* ── DASHBOARD OVERVIEW ───────────── */
+.overview-board{
+  display:grid;grid-template-columns:1.25fr .9fr .9fr 1.2fr;gap:14px;
+  align-items:stretch
+}
+.overview-board .card{margin-bottom:0;min-height:100%;overflow:hidden}
+.span2{grid-column:span 2}
+.span-row2{grid-row:span 2}
+.hero-card{
+  min-height:288px;border:1px solid rgba(255,255,255,.45);color:#fff;
+  background:
+    linear-gradient(180deg,rgba(7,28,72,.02) 0%,rgba(7,28,72,.74) 63%,rgba(3,16,54,.95) 100%),
+    radial-gradient(circle at 72% 20%,rgba(62,131,255,.7),transparent 34%),
+    linear-gradient(135deg,#113e9d,#061535);
+  display:flex;flex-direction:column;justify-content:flex-end;text-align:right
+}
+.hero-card::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 30% 92%,rgba(255,255,255,.42) 0 2%,transparent 3%),
+    radial-gradient(ellipse at 46% 82%,rgba(255,255,255,.35) 0 2%,transparent 3%),
+    radial-gradient(ellipse at 62% 92%,rgba(255,255,255,.38) 0 2%,transparent 3%);
+  opacity:.55
+}
+.hero-card .cl,.hero-card .ct,.hero-card p,.hero-card button{position:relative;z-index:1}
+.hero-card .cl{color:#fff}
+.hero-card .ct{color:#fff;font-family:'DM Sans',sans-serif;font-size:26px;font-weight:900;letter-spacing:-.03em}
+.hero-card p{color:rgba(255,255,255,.82)}
+.read-more{
+  align-self:flex-end;margin-top:22px;background:rgba(255,255,255,.08);color:#fff;
+  border:1px solid rgba(255,255,255,.45);border-radius:999px;padding:9px 18px;
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:800;cursor:pointer
+}
+.read-more:hover{background:#fff;color:var(--blue-deep)}
+.blue-card{
+  background:linear-gradient(135deg,var(--blue) 0%,#0846B1 100%);color:#fff;border-color:rgba(255,255,255,.18)
+}
+.blue-card .cl,.blue-card .ct,.blue-card p{color:#fff}
+.blue-card p{opacity:.86}
+.cream-card{background:linear-gradient(135deg,#fff 0%,#fff6dc 100%)}
+.quote-tile{
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  padding:28px;background:linear-gradient(135deg,var(--blue) 0%,#0b66ff 100%);color:#fff
+}
+.quote-tile p{font-family:'Playfair Display',serif;font-style:italic;font-size:18px;line-height:1.45;color:#fff}
+.quick-links{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px}
+.quick-link{
+  width:68px;display:flex;flex-direction:column;align-items:center;gap:5px;
+  font-size:10px;color:var(--ink);font-weight:700
+}
+.quick-ico{
+  width:38px;height:38px;border-radius:50%;display:grid;place-items:center;
+  background:#fff;border:1px solid var(--border);color:var(--blue);font-weight:900;
+  box-shadow:0 8px 18px rgba(7,87,216,.09)
+}
+.bio-list{display:grid;gap:10px}
+.bio-line{display:flex;align-items:center;gap:10px;color:var(--ink-mid);font-size:12.5px;font-weight:700}
+.bio-line span:first-child{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--blue-soft);color:var(--blue);font-size:12px}
+.soundcheck{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:15px}
+.meter{display:grid;gap:6px;text-align:center;font-size:10.5px;color:var(--ink-mid);font-weight:700}
+.ring{
+  --pct:40;width:56px;height:56px;margin:auto;border-radius:50%;
+  background:conic-gradient(var(--blue) calc(var(--pct)*1%),#E7EAF1 0);
+  display:grid;place-items:center;color:var(--blue);font-weight:900
+}
+.ring::before{content:attr(data-pct);width:40px;height:40px;border-radius:50%;background:#fff;display:grid;place-items:center}
+.press-strip{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-top:14px}
+.press-logo{font-size:17px;color:var(--blue-deep);font-weight:900;letter-spacing:-.04em}
+.page-contact{
+  position:fixed;left:262px;right:0;bottom:0;z-index:95;
+  display:grid;grid-template-columns:1fr 1.25fr auto 1fr;gap:18px;align-items:center;
+  padding:12px 34px;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);
+  border-top:1px solid var(--border);box-shadow:0 -12px 32px rgba(7,28,72,.08);
+  color:var(--ink);font-weight:800
+}
+.page-contact .pill{
+  justify-self:center;background:var(--cream2);border:1px solid var(--parchment);
+  color:var(--blue-deep);padding:10px 28px;border-radius:8px
+}
+@media(max-width:1180px){.overview-board{grid-template-columns:1fr 1fr}.span2{grid-column:span 2}.span-row2{grid-row:auto}.page-contact{grid-template-columns:1fr 1fr;left:0}}
+@media(max-width:760px){
+  .app{display:block}.sidebar{position:relative;width:100%;height:auto;min-width:0}.main{padding:18px 16px 110px}
+  .masthead{padding:30px 24px}.masthead::before,.masthead::after{display:none}.mh-title{font-size:40px}
+  .overview-board{grid-template-columns:1fr}.span2{grid-column:auto}.page-contact{display:none}
+}
+
+/* copy btn */
+.cb{
+  position:absolute;top:16px;right:16px;
+  background:var(--cream2);border:1px solid var(--border);
+  border-radius:6px;padding:4px 11px;
+  font-size:10.5px;font-weight:500;color:var(--ink-light);
+  cursor:pointer;transition:.14s;font-family:'DM Sans',sans-serif
+}
+.cb:hover{background:var(--teal-pale);color:var(--teal);border-color:var(--teal-l)}
+.cb.ok{background:var(--sage-pale);color:var(--sage);border-color:var(--sage)}
+/* inline copy btn (not absolute) */
+.cb-inline{
+  display:inline-flex;align-items:center;gap:5px;
+  margin-top:10px;
+  background:var(--cream2);border:1px solid var(--border);
+  border-radius:6px;padding:4px 11px;
+  font-size:10.5px;font-weight:500;color:var(--ink-light);
+  cursor:pointer;transition:.14s;font-family:'DM Sans',sans-serif
+}
+.cb-inline:hover{background:var(--teal-pale);color:var(--teal);border-color:var(--teal-l)}
+.cb-inline.ok{background:var(--sage-pale);color:var(--sage);border-color:var(--sage)}
+.editable-block{position:relative}
+.edit-tools{
+  position:absolute;top:14px;right:16px;z-index:12;
+  display:flex;gap:6px;align-items:center
+}
+.editable-block.has-copy>.edit-tools{right:92px}
+.edit-btn,.add-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:5px;
+  background:#fff;border:1px solid var(--border);border-radius:6px;
+  padding:4px 10px;font-size:10.5px;font-weight:700;color:var(--blue);
+  cursor:pointer;transition:.14s;font-family:'DM Sans',sans-serif
+}
+.edit-btn:hover,.add-btn:hover{background:var(--blue-soft);border-color:var(--teal-l);text-decoration:none}
+.edit-tools .edit-btn:first-child{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 8px 18px rgba(7,87,216,.18)}
+.edit-btn.save{background:var(--blue);border-color:var(--blue);color:#fff}
+.edit-btn.cancel{color:var(--ink-light)}
+.editing{outline:2px solid rgba(11,102,255,.42);outline-offset:3px}
+.editing [contenteditable="true"]{
+  background:rgba(255,245,215,.78);box-shadow:0 0 0 1px rgba(232,184,62,.55);
+  border-radius:4px;padding:1px 3px
+}
+.editing a{cursor:text}
+.add-bar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.field-hint{font-size:11px;color:var(--ink-light);margin-top:6px}
+.trait-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:15px
+}
+.trait{
+  background:#fff;border:1px solid var(--border);border-radius:8px;
+  padding:12px;display:grid;gap:8px;min-height:128px
+}
+.trait.off{opacity:.45}
+.trait-head{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:800;color:var(--ink)}
+.trait-check,.tone-check{accent-color:var(--blue)}
+.trait-body{display:grid;grid-template-columns:58px 1fr 52px;gap:10px;align-items:center}
+.trait-range{width:100%;accent-color:var(--blue)}
+.trait-number{
+  width:52px;border:1px solid var(--border);border-radius:6px;padding:5px;
+  font:700 11px 'DM Sans',sans-serif;color:var(--ink);text-align:center
+}
+.tone-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:4px}
+.tone-pill{
+  border:1px solid var(--border);border-radius:8px;background:#fff;padding:10px;
+  display:grid;gap:5px
+}
+.tone-pill.off{opacity:.45}
+.tone-title{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:800;color:var(--ink)}
+.tone-desc{font-size:11.5px;color:var(--ink-mid);line-height:1.45}
+.mockup-box{
+  border:2px dashed var(--border);border-radius:8px;background:var(--cream2);
+  padding:18px;display:grid;gap:12px;justify-items:start
+}
+.mockup-preview{
+  width:min(100%,420px);max-height:260px;object-fit:contain;border:1px solid var(--border);
+  border-radius:8px;background:#fff;display:none
+}
+.mockup-preview[src]:not([src=""]){display:block}
+.mockup-input{font-size:12px;color:var(--ink-mid)}
+@media(max-width:860px){.trait-grid,.tone-grid{grid-template-columns:1fr}.trait-body{grid-template-columns:58px 1fr 52px}}
+
+/* ── GRID ───────────────── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+@media(max-width:860px){.g2,.g3{grid-template-columns:1fr}}
+
+/* ── PERSON CARD ─────────── */
+.pcard{background:#fff;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}
+.ph{padding:20px 24px 16px;background:linear-gradient(135deg,var(--ink) 0%,#1e3030 100%);color:#fff}
+.pn{font-family:'Playfair Display',serif;font-size:18px;font-weight:700}
+.pr{font-size:10px;color:rgba(255,255,255,.45);letter-spacing:.09em;text-transform:uppercase;margin-top:2px}
+.po{font-size:11px;color:var(--teal-l);margin-top:5px;font-style:italic}
+.pb{padding:18px 24px;position:relative}
+.pb p{font-size:13.5px;line-height:1.7;color:var(--ink-mid);margin-bottom:8px}
+
+/* ── INTERVIEW CARD ─────── */
+.icard{background:#fff;border:1px solid var(--border);border-radius:var(--r);margin-bottom:12px;box-shadow:var(--sh);overflow:hidden}
+.iq{
+  padding:16px 20px;background:linear-gradient(90deg,var(--teal-pale),#fff);
+  border-bottom:1px solid var(--border);display:flex;
+  justify-content:space-between;align-items:center;
+  cursor:pointer;user-select:none;gap:12px
+}
+.iq-t{font-weight:600;font-size:13.5px;color:var(--ink);flex:1}
+.iq-i{color:var(--teal);font-size:18px;transition:transform .2s;flex-shrink:0}
+.icard.open .iq-i{transform:rotate(45deg)}
+.ia{padding:0 20px;max-height:0;overflow:hidden;transition:max-height .32s ease,padding .2s ease}
+.icard.open .ia{max-height:700px;padding:18px 20px}
+.ia-t{
+  font-size:13.5px;line-height:1.75;color:var(--ink-mid);font-style:italic;
+  border-left:3px solid var(--teal-pale);padding-left:16px;margin-bottom:12px
+}
+
+/* ── SONG ROW ───────────── */
+.srow{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 18px;background:#fff;border:1px solid var(--border);
+  border-radius:var(--r);margin-bottom:9px;box-shadow:var(--sh);
+  transition:box-shadow .14s;position:relative
+}
+.srow:hover{box-shadow:var(--sh-md)}
+.snum{font-family:'DM Mono',monospace;font-size:11px;color:var(--ink-light);width:22px;flex-shrink:0}
+.si{flex:1}
+.st{font-weight:600;font-size:14.5px;color:var(--ink)}
+.sm{font-size:11.5px;color:var(--ink-light);margin-top:2px}
+.slinks{display:flex;gap:5px;flex-wrap:wrap}
+.sl{
+  padding:3px 11px;border-radius:14px;font-size:10.5px;font-weight:500;
+  border:1px solid var(--border);color:var(--teal);background:var(--teal-pale);
+  transition:.14s;display:flex;align-items:center;gap:3px
+}
+.sl:hover{background:var(--teal);color:#fff;border-color:var(--teal);text-decoration:none}
+.sl.ph{color:var(--ink-light);background:var(--cream);border-style:dashed;cursor:default}
+
+/* ── PALETTE ────────────── */
+.palette{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.sw{display:flex;flex-direction:column;align-items:center;gap:5px}
+.swc{width:58px;height:58px;border-radius:8px;border:1px solid rgba(0,0,0,.08);box-shadow:0 2px 6px rgba(0,0,0,.09)}
+.swl{font-size:9px;font-family:'DM Mono',monospace;color:var(--ink-light);text-align:center}
+
+/* ── TAG CLOUD ──────────── */
+.tc{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.tag{padding:4px 12px;border-radius:18px;font-size:11.5px;font-weight:500;border:1px solid var(--border);background:var(--cream2);color:var(--ink-mid)}
+.tag.t{background:var(--teal-pale);color:var(--teal);border-color:var(--teal-l)}
+.tag.g{background:var(--gold-pale);color:#7a6010;border-color:#cca840}
+.tag.r{background:var(--terra-pale);color:var(--terra);border-color:#c87055}
+.tag.s{background:var(--sage-pale);color:var(--sage);border-color:#8eaa7a}
+.tag.v{background:var(--violet-pale);color:var(--violet);border-color:#9a74b8}
+
+/* ── FIELD ROW ──────────── */
+.fr{display:flex;align-items:baseline;gap:10px;padding:11px 0;border-bottom:1px solid var(--border)}
+.fr:last-child{border-bottom:none}
+.fk{font-size:10.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-light);min-width:175px;flex-shrink:0}
+.fv{font-size:13.5px;color:var(--ink)}
+.fv.ph2{color:var(--terra);font-style:italic;font-size:12.5px}
+.fv a{color:var(--teal)}
+
+/* ── QUOTE ──────────────── */
+.qb{
+  border-left:4px solid var(--teal);padding:14px 20px;
+  background:var(--teal-pale);border-radius:0 7px 7px 0;
+  margin:13px 0;font-style:italic;
+  font-family:'Playfair Display',serif;font-size:15px;line-height:1.55;color:var(--ink)
+}
+.qa{margin-top:7px;font-size:11.5px;font-style:normal;font-family:'DM Sans',sans-serif;color:var(--ink-light)}
+
+/* ── SLOGAN ─────────────── */
+.slogan{
+  background:linear-gradient(135deg,var(--ink) 0%,#162828 100%);color:#fff;
+  border-radius:var(--r);padding:28px 32px;margin-bottom:13px;position:relative;overflow:hidden
+}
+.slogan::before{
+  content:'"';position:absolute;right:16px;top:-12px;
+  font-family:'Playfair Display',serif;font-size:110px;color:rgba(255,255,255,.04);line-height:1
+}
+.slogan-t{font-family:'Playfair Display',serif;font-size:20px;font-style:italic;line-height:1.4;margin-bottom:8px}
+.slogan-c{font-size:10px;color:rgba(255,255,255,.38);letter-spacing:.12em;text-transform:uppercase}
+
+/* ── FORMAT CARD ─────────── */
+.fcard{background:#fff;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}
+.fch{padding:14px 18px;background:var(--ink);color:#fff}
+.fcn{font-weight:700;font-size:14px}
+.fcd{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px}
+.fcb{padding:16px 18px}
+.fcr{display:flex;gap:7px;align-items:flex-start;margin-bottom:7px}
+.fci{color:var(--teal);flex-shrink:0;margin-top:1px}
+.fct{font-size:12.5px;color:var(--ink-mid)}
+
+/* ── PLACEHOLDER ─────────── */
+.ph-banner{
+  background:var(--terra-pale);border:1px dashed var(--terra);
+  border-radius:8px;padding:10px 16px;font-size:12.5px;color:var(--terra);
+  display:flex;align-items:center;gap:9px;margin-bottom:12px
+}
+
+/* ── TIER LOCK SYSTEM ─────── */
+.ni-lock{
+  margin-left:auto;font-size:11px;opacity:.55;flex-shrink:0
+}
+.sec.is-locked{position:relative;min-height:480px;overflow:hidden}
+.sec.is-locked > *:not(.lock-overlay){
+  filter:blur(6px);pointer-events:none;user-select:none
+}
+.lock-overlay{
+  position:absolute;inset:0;z-index:50;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(180deg,rgba(247,242,229,.55) 0%,rgba(247,242,229,.93) 38%,rgba(247,242,229,.99) 100%)
+}
+.lock-card{
+  max-width:420px;text-align:center;padding:36px 34px 30px;
+  background:#fff;border:1px solid var(--border);border-radius:16px;
+  box-shadow:var(--sh-md)
+}
+.lock-icon{
+  width:54px;height:54px;border-radius:50%;margin:0 auto 16px;
+  background:linear-gradient(135deg,var(--violet),#6B4C8A);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;color:#fff;box-shadow:0 10px 24px rgba(35,71,165,.28)
+}
+.lock-title{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:var(--ink);margin-bottom:10px}
+.lock-body{font-size:13px;color:var(--ink-mid);line-height:1.6;margin-bottom:20px}
+.lock-cta{
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--violet);color:#fff;border:none;border-radius:999px;
+  padding:11px 24px;font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:700;
+  cursor:pointer;transition:.16s;text-decoration:none
+}
+.lock-cta:hover{background:var(--blue-deep);text-decoration:none}
+.lock-badge{
+  display:inline-block;margin-top:14px;font-size:9.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-light);font-weight:600
+}
+
+/* ── PRESS ───────────────── */
+.press-outlet{
+  font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+  font-weight:600;color:var(--terra);margin-bottom:5px;
+  display:flex;align-items:center;gap:7px
+}
+.press-outlet::after{content:'';flex:1;height:1px;background:var(--terra-pale)}
+.pt{display:inline-block;padding:2px 7px;border-radius:3px;font-size:8.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;margin-left:5px}
+.pt.tv{background:#e6eeff;color:#2a58e0}
+.pt.radio{background:var(--gold-pale);color:#7a6010}
+.pt.dig{background:var(--sage-pale);color:var(--sage)}
+.pt.mag{background:var(--terra-pale);color:var(--terra)}
+
+/* ════════════════════════════════════
+   PAVONEO 360° SECTION
+════════════════════════════════════ */
+.pav-hero{
+  background:linear-gradient(135deg,#1a1030 0%,#2a1060 50%,#162828 100%);
+  color:#fff;border-radius:var(--r);padding:32px 36px;margin-bottom:24px;position:relative;overflow:hidden
+}
+.pav-hero::before{
+  content:'360°';position:absolute;right:20px;top:50%;transform:translateY(-50%);
+  font-family:'Playfair Display',serif;font-size:100px;font-weight:700;
+  color:rgba(255,255,255,.04);pointer-events:none
+}
+.pav-hero-eye{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:#9B7ACC;font-weight:600;margin-bottom:8px}
+.pav-hero-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;line-height:1.1;margin-bottom:6px}
+.pav-hero-sub{font-size:13px;color:rgba(255,255,255,.45);font-style:italic;margin-bottom:24px}
+.pav-kpis{display:flex;gap:32px;flex-wrap:wrap;padding-top:20px;border-top:1px solid rgba(255,255,255,.1)}
+.pav-kpi{}
+.pav-kpi-val{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:#9B7ACC}
+.pav-kpi-label{font-size:10px;color:rgba(255,255,255,.38);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
+
+/* Timeline */
+.timeline{position:relative;margin-top:8px}
+.timeline::before{
+  content:'';position:absolute;left:28px;top:0;bottom:0;
+  width:2px;background:linear-gradient(to bottom,var(--violet),var(--teal),var(--sage));
+  border-radius:1px
+}
+.phase-block{margin-bottom:8px}
+.phase-head{
+  display:flex;align-items:center;gap:14px;
+  padding:16px 20px 16px 52px;
+  background:#fff;border:1px solid var(--border);
+  border-radius:var(--r);cursor:pointer;
+  box-shadow:var(--sh);transition:.18s;
+  position:relative;margin-left:14px
+}
+.phase-head:hover{box-shadow:var(--sh-md)}
+.phase-dot{
+  position:absolute;left:-26px;top:50%;transform:translateY(-50%);
+  width:22px;height:22px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;color:#fff;flex-shrink:0
+}
+.phase-dot.p1{background:var(--violet)}
+.phase-dot.p2{background:var(--teal)}
+.phase-dot.p3{background:var(--terra)}
+.phase-dot.p4{background:var(--sage)}
+.phase-label{font-size:8.5px;letter-spacing:.15em;text-transform:uppercase;font-weight:700;margin-bottom:2px}
+.p1 .phase-label,.phase-head.p1 .phase-label{color:var(--violet)}
+.p2 .phase-label,.phase-head.p2 .phase-label{color:var(--teal)}
+.p3 .phase-label,.phase-head.p3 .phase-label{color:var(--terra)}
+.p4 .phase-label,.phase-head.p4 .phase-label{color:var(--sage)}
+.phase-name{font-weight:600;font-size:15px;color:var(--ink)}
+.phase-dates{font-size:11px;color:var(--ink-light);margin-top:1px}
+.phase-toggle{margin-left:auto;color:var(--ink-light);font-size:18px;transition:transform .2s;flex-shrink:0}
+.phase-block.open .phase-toggle{transform:rotate(45deg)}
+
+.phase-body{
+  margin-left:14px;
+  max-height:0;overflow:hidden;
+  transition:max-height .38s ease,padding .2s
+}
+.phase-block.open .phase-body{max-height:2000px;padding-top:6px}
+.phase-inner{
+  background:#fff;border:1px solid var(--border);
+  border-radius:0 0 var(--r) var(--r);
+  border-top:none;padding:0 0 16px;box-shadow:var(--sh)
+}
+
+/* Objective strip */
+.obj-strip{
+  background:var(--cream2);border-bottom:1px solid var(--border);
+  padding:14px 20px;display:flex;flex-wrap:wrap;gap:8px;align-items:center
+}
+.obj-strip-label{font-size:9px;letter-spacing:.15em;text-transform:uppercase;font-weight:600;color:var(--ink-light);margin-right:4px;flex-shrink:0}
+.obj-chip{
+  padding:3px 10px;border-radius:14px;font-size:11px;font-weight:500;
+  background:#fff;border:1px solid var(--border);color:var(--ink-mid)
+}
+
+/* Week rows */
+.weeks{padding:16px 20px 4px}
+.week-row{
+  display:grid;grid-template-columns:80px 1fr auto;
+  gap:12px;align-items:start;margin-bottom:16px
+}
+.week-label{
+  font-family:'DM Mono',monospace;font-size:10px;
+  color:var(--ink-light);padding-top:6px;flex-shrink:0
+}
+.week-items{display:flex;flex-direction:column;gap:6px}
+.item{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:9px 14px;background:var(--cream);
+  border:1px solid var(--border);border-radius:8px;
+  transition:.14s;cursor:pointer
+}
+.item:hover{background:var(--cream2)}
+.item.done{opacity:.55}
+.item.done .item-text{text-decoration:line-through;color:var(--ink-light)}
+.item-check{
+  width:17px;height:17px;border-radius:4px;border:2px solid var(--border);
+  flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;
+  transition:.14s;background:#fff
+}
+.item.done .item-check{background:var(--sage);border-color:var(--sage);color:#fff}
+.item-text{font-size:12.5px;color:var(--ink-mid);line-height:1.45;flex:1}
+.item-tag{
+  flex-shrink:0;padding:2px 8px;border-radius:10px;
+  font-size:9.5px;font-weight:600;letter-spacing:.06em
+}
+.it-an{background:var(--violet-pale);color:var(--violet)}
+.it-co{background:var(--teal-pale);color:var(--teal)}
+.it-re{background:var(--terra-pale);color:var(--terra)}
+.it-ci{background:var(--sage-pale);color:var(--sage)}
+
+/* Progress bar */
+.prog-wrap{margin:0 20px 14px;background:var(--cream2);border-radius:4px;height:6px;overflow:hidden}
+.prog-bar{height:100%;border-radius:4px;transition:width .4s ease}
+.prog-bar.p1{background:linear-gradient(90deg,var(--violet),#9B7ACC)}
+.prog-bar.p2{background:linear-gradient(90deg,var(--teal),var(--teal-l))}
+.prog-bar.p3{background:linear-gradient(90deg,var(--terra),#d07050)}
+.prog-bar.p4{background:linear-gradient(90deg,var(--sage),#8aaa70)}
+.prog-label{padding:6px 20px 12px;font-size:10.5px;color:var(--ink-light);display:flex;justify-content:space-between}
+
+/* Summary table */
+.summ-table{
+  width:100%;border-collapse:collapse;
+  font-size:12.5px;margin-top:6px
+}
+.summ-table th{
+  text-align:left;padding:8px 14px;
+  background:var(--cream2);font-size:9.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-light);font-weight:600;
+  border-bottom:1px solid var(--border)
+}
+.summ-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--ink-mid);vertical-align:top}
+.summ-table tr:last-child td{border-bottom:none}
+.status-pill{
+  display:inline-block;padding:2px 10px;border-radius:10px;
+  font-size:9.5px;font-weight:600;letter-spacing:.06em
+}
+.sp-todo{background:var(--cream2);color:var(--ink-light);border:1px solid var(--border)}
+.sp-active{background:#fff3cd;color:#856404;border:1px solid #ffc107}
+.sp-done{background:var(--sage-pale);color:var(--sage);border:1px solid #8aaa70}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-head">
+    <div class="brand-lockup" aria-label="Artes Buho">
+      <div class="brand-mark" aria-hidden="true"><img alt="" src="data:image/png;base64,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"></div>
+      <div>
+        <div class="brand-word"><span>Pavoneo</span><span>360</span></div>
+        <div class="brand-note">Artes Buho Management</div>
+      </div>
+    </div>
+    <div class="sb-project">
+      <div class="sb-logo" id="sb-project-name">Epi&amp;Brass</div>
+      <div class="sb-sub">Brass House · Madrid</div>
+      <div class="sb-badge" id="sb-tier-badge">INFO MAESTRA</div>
+      <div class="sb-head-links">
+        <a href="https://www.instagram.com/epibrass/" target="_blank" class="sb-link"><span class="dot"></span> Instagram</a>
+        <a href="https://www.tiktok.com/@epi.brass" target="_blank" class="sb-link"><span class="dot"></span> TikTok</a>
+        <a href="https://www.youtube.com/@EPIBRASS" target="_blank" class="sb-link"><span class="dot"></span> YouTube</a>
+      </div>
+    </div>
+  </div>
+  <nav>
+    <div class="ng-label">Identidad</div>
+    <div class="ni active" onclick="show('overview',this)"><i class="ic">◈</i> Resumen del Proyecto</div>
+    <div class="ni" onclick="show('bios',this)"><i class="ic">◉</i> Biografías</div>
+    <div class="ni" onclick="show('comunicacion',this)"><i class="ic">◎</i> Estilo de Comunicación</div>
+    <div class="ni" onclick="show('estetica',this)"><i class="ic">◐</i> Estética e Identidad</div>
+
+    <div class="ng-label" style="margin-top:6px">Contenido</div>
+    <div class="ni" onclick="show('espectaculo',this)"><i class="ic">▷</i> El Espectáculo</div>
+    <div class="ni" onclick="show('discografia',this)"><i class="ic">◑</i> Discografía & Singles</div>
+    <div class="ni" onclick="show('entrevistas',this)"><i class="ic">◒</i> Tarjetas de Entrevista</div>
+
+    <div class="ng-label" style="margin-top:6px">Prensa & Materiales</div>
+    <div class="ni" data-nav-id="prensa" onclick="show('prensa',this)"><i class="ic">◇</i> Notas de Prensa & Medios<span class="ni-lock" data-lock-icon="prensa"></span></div>
+    <div class="ni" data-nav-id="rider" onclick="show('rider',this)"><i class="ic">▸</i> Rider Técnico & Formatos<span class="ni-lock" data-lock-icon="rider"></span></div>
+    <div class="ni" data-nav-id="ficha" onclick="show('ficha',this)"><i class="ic">◈</i> Ficha Artística<span class="ni-lock" data-lock-icon="ficha"></span></div>
+    <div class="ni" onclick="show('fotos',this)"><i class="ic">◻</i> Fotos & Material Gráfico</div>
+
+    <div class="ng-label" style="margin-top:6px">Gestión</div>
+    <div class="ni" onclick="show('contacto',this)"><i class="ic">◌</i> Datos & Contacto</div>
+    <div class="ni" onclick="show('links',this)"><i class="ic">⊕</i> Links de Interés</div>
+
+    <div class="ng-label" style="margin-top:8px">Estrategia</div>
+    <div class="ni pavoneo" onclick="show('pavoneo',this)"><i class="ic">✦</i> Pavoneo 360°</div>
+  </nav>
+  <div class="sb-foot">
+    <strong>Oficina del Artista</strong><br>
+    epibrassband@gmail.com<br>
+    Actualización: 2026
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div class="mh-eye">Documento de referencia central · Consultoría Artes Búho 2026</div>
+  <div class="mh-title">Epi&amp;<em>Brass</em></div>
+  <div class="mh-tag">Brass House · Electrónica · Funk · Hip Hop · Jazz · Madrid</div>
+  <div class="mh-meta">
+    <div class="mi"><span class="mi-l">Proyecto</span><span class="mi-v">Epi&amp;Brass</span></div>
+    <div class="mi"><span class="mi-l">Contacto técnico</span><span class="mi-v">639 882 823</span></div>
+    <div class="mi"><span class="mi-l">Instagram</span><span class="mi-v"><a href="https://www.instagram.com/epibrass/" target="_blank">@epibrass</a></span></div>
+    <div class="mi"><span class="mi-l">TikTok</span><span class="mi-v"><a href="https://www.tiktok.com/@epi.brass" target="_blank">@epi.brass</a></span></div>
+    <div class="mi"><span class="mi-l">YouTube</span><span class="mi-v"><a href="https://www.youtube.com/@EPIBRASS" target="_blank">@EPIBRASS</a></span></div>
+    <div class="mi"><span class="mi-l">Email</span><span class="mi-v"><a href="mailto:epibrassband@gmail.com">epibrassband@gmail.com</a></span></div>
+  </div>
+</div>
+
+<!-- ██ OVERVIEW ██ -->
+<section class="sec active" id="overview">
+  <div class="sh"><div><div class="sh-eye">Resumen del Proyecto</div><div class="sh-title">Quiénes somos</div></div></div>
+
+  <div class="overview-board">
+    <div class="card cream-card span2">
+      <div class="cl teal">Definición principal</div>
+      <div class="ct">Brass House que sacude Madrid desde las calles hasta los escenarios</div>
+      <p>Epi&amp;Brass es una banda de vientos y percusión de Madrid que mezcla la energía y el carácter de la brass band tradicional con estructuras y ritmos de la música electrónica, el funk, el hip hop y el jazz. Su propuesta —el <strong>Brass House</strong>— es prácticamente inexistente en España, lo que convierte al proyecto en una apuesta de nicho con alto potencial en el mercado de eventos, festivales callejeros y el circuito de salas. Un directo potente, cercano y muy festivo que lo mismo funciona en un pasacalles de pueblo que en un escenario con backline completo.</p>
+      <button class="cb" onclick="cp(this)">Copiar</button>
+    </div>
+
+    <div class="card">
+      <div class="cl teal">Conceptual</div>
+      <div class="ct">De la calle al escenario</div>
+      <p>Epi&amp;Brass nace en la calle y lleva ese espíritu a cualquier espacio que ocupa: la energía, la cercanía al público y la actitud directa son constantes que no cambian según el escenario. La metáfora central es sencilla: música que no entiende de barreras entre quien toca y quien baila.</p>
+      <button class="cb" onclick="cp(this)">Copiar</button>
+    </div>
+
+    <div class="card">
+      <div class="cl teal">Conceptual</div>
+      <div class="ct">El nombre: Epi&amp;Brass</div>
+      <p>El nombre une la identidad personal del proyecto con el formato musical que lo define. <em>Brass</em> habla de los vientos —el núcleo sonoro de la banda— y del estilo festivo y callejero que les caracteriza. Una marca corta, pronunciable y directa, igual que su música.</p>
+      <button class="cb" onclick="cp(this)">Copiar</button>
+    </div>
+
+    <div class="card hero-card span-row2">
+      <div class="cl gold">Propuesta de valor</div>
+      <div class="ct">Brass House: océano azul en España</div>
+      <p>Proyecto con altísima versatilidad (calle, sala, festivales, bodas, fiestas privadas) y con una propuesta sonora casi sin competencia directa en territorio nacional.</p>
+      <button class="read-more" onclick="show('bios',document.querySelector('[onclick*=bios]'))">Leer más →</button>
+    </div>
+
+    <div class="card blue-card">
+      <div class="cl">Género / estilo</div>
+      <div class="ct">Brass House<br>Brass Band · Electrónica</div>
+      <div class="tc">
+        <span class="tag" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.28)">Funk</span>
+        <span class="tag" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.28)">Hip Hop</span>
+        <span class="tag" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.28)">Jazz</span>
+        <span class="tag" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.28)">Festivo</span>
+        <span class="tag" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.28)">Callejero</span>
+      </div>
+    </div>
+
+    <div class="card cream-card">
+      <div class="cl teal">Bio express</div>
+      <div class="bio-list">
+        <div class="bio-line"><span>◎</span> Formación: 2024–2025</div>
+        <div class="bio-line"><span>⌖</span> Madrid</div>
+        <div class="bio-line"><span>✦</span> Integrantes: 6 músicos</div>
+        <div class="bio-line"><span>↗</span> Público: 25–44 años · 55% mujeres</div>
+        <div class="bio-line"><span>⚡</span> Mood: Alegría · Energía · Fiesta</div>
+      </div>
+    </div>
+
+    <div class="card blue-card">
+      <div class="cl">Hitos clave</div>
+      <p>☆ Único proyecto de Brass House activo en Madrid</p>
+      <p>☆ Consultoría estratégica Artes Búho (2026)</p>
+      <p>☆ Grabación material en Lavapiés — en producción</p>
+      <p>☆ Live Session Artes Búho — próximamente</p>
+    </div>
+
+    <div class="card cream-card span2">
+      <div class="cl teal">Soundcheck</div>
+      <div class="soundcheck trait-grid">
+        <div class="trait" data-trait>
+          <div class="trait-head"><input class="trait-check" type="checkbox" checked><span class="trait-label">Energía en vivo</span></div>
+          <div class="trait-body"><div class="ring" style="--pct:95" data-pct="95%"></div><input class="trait-range" type="range" min="0" max="100" value="95"><input class="trait-number" type="number" min="0" max="100" value="95"></div>
+        </div>
+        <div class="trait" data-trait>
+          <div class="trait-head"><input class="trait-check" type="checkbox" checked><span class="trait-label">Versatilidad</span></div>
+          <div class="trait-body"><div class="ring" style="--pct:90" data-pct="90%"></div><input class="trait-range" type="range" min="0" max="100" value="90"><input class="trait-number" type="number" min="0" max="100" value="90"></div>
+        </div>
+        <div class="trait" data-trait>
+          <div class="trait-head"><input class="trait-check" type="checkbox" checked><span class="trait-label">Innovación sonora</span></div>
+          <div class="trait-body"><div class="ring" style="--pct:85" data-pct="85%"></div><input class="trait-range" type="range" min="0" max="100" value="85"><input class="trait-number" type="number" min="0" max="100" value="85"></div>
+        </div>
+        <div class="trait" data-trait>
+          <div class="trait-head"><input class="trait-check" type="checkbox" checked><span class="trait-label">Cercanía al público</span></div>
+          <div class="trait-body"><div class="ring" style="--pct:92" data-pct="92%"></div><input class="trait-range" type="range" min="0" max="100" value="92"><input class="trait-number" type="number" min="0" max="100" value="92"></div>
+        </div>
+        <div class="trait" data-trait>
+          <div class="trait-head"><input class="trait-check" type="checkbox" checked><span class="trait-label">Identidad visual</span></div>
+          <div class="trait-body"><div class="ring" style="--pct:25" data-pct="25%"></div><input class="trait-range" type="range" min="0" max="100" value="25"><input class="trait-number" type="number" min="0" max="100" value="25"></div>
+        </div>
+        <div class="trait" data-trait>
+          <div class="trait-head"><input class="trait-check" type="checkbox" checked><span class="trait-label">Gamberrismo</span></div>
+          <div class="trait-body"><div class="ring" style="--pct:75" data-pct="75%"></div><input class="trait-range" type="range" min="0" max="100" value="75"><input class="trait-number" type="number" min="0" max="100" value="75"></div>
+        </div>
+        <div class="trait" data-trait>
+          <div class="trait-head"><input class="trait-check" type="checkbox" checked><span class="trait-label">Festivo / Fiesta</span></div>
+          <div class="trait-body"><div class="ring" style="--pct:98" data-pct="98%"></div><input class="trait-range" type="range" min="0" max="100" value="98"><input class="trait-number" type="number" min="0" max="100" value="98"></div>
+        </div>
+        <div class="trait" data-trait>
+          <div class="trait-head"><input class="trait-check" type="checkbox"><span class="trait-label">Profundidad lírica</span></div>
+          <div class="trait-body"><div class="ring" style="--pct:0" data-pct="0%"></div><input class="trait-range" type="range" min="0" max="100" value="0"><input class="trait-number" type="number" min="0" max="100" value="0"></div>
+        </div>
+        <div class="trait" data-trait>
+          <div class="trait-head"><input class="trait-check" type="checkbox"><span class="trait-label">Intimidad</span></div>
+          <div class="trait-body"><div class="ring" style="--pct:0" data-pct="0%"></div><input class="trait-range" type="range" min="0" max="100" value="0"><input class="trait-number" type="number" min="0" max="100" value="0"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card span2">
+      <div class="cl teal">Links rápidos</div>
+      <div class="quick-links">
+        <a class="quick-link" href="https://www.nombredelproyecto.com" target="_blank"><span class="quick-ico">⌾</span>Web oficial</a>
+        <a class="quick-link" href="https://www.instagram.com/epibrass/" target="_blank"><span class="quick-ico">◎</span>Instagram</a>
+        <a class="quick-link" href="https://www.tiktok.com/@epi.brass" target="_blank"><span class="quick-ico">↗</span>TikTok</a>
+        <a class="quick-link" href="https://www.youtube.com/@EPIBRASS" target="_blank"><span class="quick-ico">▶</span>YouTube</a>
+        <a class="quick-link" href="https://open.spotify.com/" target="_blank"><span class="quick-ico">♬</span>Spotify</a>
+        <a class="quick-link" href="https://drive.google.com/file/d/1qWm4I_M7YrbMqKUL_kI1OogDFAIeSMIs/view" target="_blank"><span class="quick-ico">□</span>Dossier</a>
+      </div>
+    </div>
+
+    <div class="card quote-tile">
+      <p>"Déjate llevar."</p>
+    </div>
+
+    <div class="card span2 cream-card">
+      <div class="cl teal">Festivales objetivo</div>
+      <div class="press-strip" id="featured-press-strip">
+        <span class="press-logo">Real Brass Festival</span>
+        <span class="press-logo">Festival Baltum</span>
+        <span class="press-logo">Galaico Brass</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ██ BIOS ██ -->
+<section class="sec" id="bios">
+  <div class="sh"><div><div class="sh-eye">El equipo</div><div class="sh-title">Biografías</div></div></div>
+
+  <div class="add-bar">
+    <button class="add-btn" type="button" onclick="addBio()">+ Añadir biografía de artista</button>
+  </div>
+
+  <div class="card project-bio" style="border-left:4px solid var(--teal)">
+    <div class="cl teal">Biografía del proyecto</div>
+    <div class="ct">Epi&amp;Brass — Brass House desde Madrid</div>
+    <p>Epi&amp;Brass es una banda de Madrid que lleva la brass band al siglo XXI. Su propuesta, el <strong>Brass House</strong>, funde la potencia y el carácter callejero de los vientos y la percusión con la estructura rítmica y electrónica de la música de baile contemporánea, añadiendo capas de funk, hip hop y jazz para construir un sonido festivo, directo y genuinamente propio.</p>
+    <p style="margin-top:8px">Formados por seis músicos con experiencia en otros proyectos del circuito madrileño, Epi&amp;Brass parte de la calle como origen y como filosofía: su directo es tan válido en un pasacalles de fiestas de pueblo como en un escenario con producción completa. Esa versatilidad extrema —acústico o amplificado, interior o exterior— es una de sus señas de identidad más potentes.</p>
+    <p style="margin-top:8px">En España apenas existen dos proyectos con un enfoque similar al suyo, y ninguno en Madrid. Epi&amp;Brass ocupa, por tanto, un espacio casi vacío en la escena nacional: una música festiva con actitud urbana, estética callejera y vocación de llegar a todos los públicos.</p>
+    <button class="cb" onclick="cp(this)">Copiar</button>
+  </div>
+
+  <div class="g2" style="margin-bottom:14px">
+    <div class="pcard">
+      <div class="ph">
+        <div class="pn">Sergio García Pinell</div>
+        <div class="pr">Coordinación · Gestión · Instrumento</div>
+        <div class="po">Madrid — Responsable del proyecto</div>
+      </div>
+      <div class="pb">
+        <p>Sergio es el motor organizativo de Epi&amp;Brass. Además de su rol musical dentro de la banda, ejerce como punto central de coordinación: organiza los ensayos, mantiene la comunicación entre los miembros y lleva el seguimiento general del proyecto. Su perfil combina músico activo y gestor de facto, asumiendo las funciones de la comisión de coordinación y administración.</p>
+        <p>Cuenta con experiencia previa en bandas del circuito madrileño y lleva a Epi&amp;Brass el aprendizaje acumulado de esos años de actividad.</p>
+        <button class="cb-inline" onclick="cpEl(this)">Copiar bio</button>
+      </div>
+    </div>
+    <div class="pcard">
+      <div class="ph">
+        <div class="pn">Miembro — Diseño &amp; Vídeo</div>
+        <div class="pr">Instrumento · Diseño gráfico · Edición vídeo</div>
+        <div class="po">Madrid — Comisión de Contenido</div>
+      </div>
+      <div class="pb">
+        <p>Este miembro del grupo aúna talento musical con una carrera profesional en el diseño gráfico, la edición de vídeo y la animación. Su perfil es estratégico para el proyecto: es el responsable natural de la comisión de contenido visual, tanto en la producción de piezas para redes sociales como en el diseño del dossier comercial y la futura identidad visual de la banda.</p>
+        <p>Su nivel profesional permite a Epi&amp;Brass disponer de recursos creativos in-house que muchos proyectos similares tienen que subcontratar.</p>
+        <button class="cb-inline" onclick="cpEl(this)">Copiar bio</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2" style="margin-bottom:14px">
+    <div class="pcard">
+      <div class="ph">
+        <div class="pn">Miembro — Pianista profesional</div>
+        <div class="pr">Instrumento en banda · Piano profesional</div>
+        <div class="po">Madrid</div>
+      </div>
+      <div class="pb">
+        <p>Músico con doble perfil: instrumentista dentro de Epi&amp;Brass y pianista profesional en paralelo. Su formación académica y su experiencia en el circuito aportan a la banda un nivel técnico elevado y una perspectiva armónica que enriquece el proceso de composición y los arreglos del grupo.</p>
+        <button class="cb-inline" onclick="cpEl(this)">Copiar bio</button>
+      </div>
+    </div>
+    <div class="pcard">
+      <div class="ph">
+        <div class="pn">Miembro — Flamenco &amp; Contactos</div>
+        <div class="pr">Instrumento · Circuito flamenco</div>
+        <div class="po">Madrid</div>
+      </div>
+      <div class="pb">
+        <p>Músico con amplios conocimientos en el mundo del flamenco y una red de contactos consolidada dentro de ese circuito. Su perfil abre a Epi&amp;Brass posibilidades de colaboración y visibilidad en espacios y festivales del circuito flamenco y de fusión, ampliando el mapa de contratación más allá del nicho brass.</p>
+        <button class="cb-inline" onclick="cpEl(this)">Copiar bio</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <div class="cl sage">Miembros en Valencia (este curso)</div>
+    <p><strong>Miembro 5 y Miembro 6</strong> — Dos integrantes residen actualmente en Valencia por motivos formativos. Participan en el proyecto de forma periódica (ensayos, grabaciones y conciertos cuando hay coincidencia). La banda trabaja para integrarles en las fechas clave de la hoja de ruta: grabación de Live Sessions y actuaciones estratégicas. <em>[ Completar nombres cuando el grupo lo confirme ]</em></p>
+    <button class="cb" onclick="cp(this)">Copiar</button>
+  </div>
+</section>
+
+<!-- ██ COMUNICACIÓN ██ -->
+<section class="sec" id="comunicacion">
+  <div class="sh"><div><div class="sh-eye">Identidad verbal</div><div class="sh-title">Estilo de Comunicación</div></div></div>
+
+  <div class="slogan" style="position:relative">
+    <div class="slogan-t">"Déjate llevar."</div>
+    <div class="slogan-c">Claim principal · Epi&amp;Brass</div>
+    <button class="cb-inline" style="position:absolute;top:16px;right:16px;margin:0" onclick="cpEl(this)">Copiar</button>
+  </div>
+
+  <div class="slogan" style="background:linear-gradient(135deg,#2a1808 0%,#162828 100%);position:relative">
+    <div class="slogan-t">"Electrónica a todo pulmón."</div>
+    <div class="slogan-c">Claim alternativo · Epi&amp;Brass</div>
+    <button class="cb-inline" style="position:absolute;top:16px;right:16px;margin:0" onclick="cpEl(this)">Copiar</button>
+  </div>
+
+  <div class="slogan" style="background:linear-gradient(135deg,#071C48 0%,#0757D8 100%);position:relative">
+    <div class="slogan-t">"De la calle al escenario."</div>
+    <div class="slogan-c">Claim alternativo 2 · Epi&amp;Brass</div>
+    <button class="cb-inline" style="position:absolute;top:16px;right:16px;margin:0" onclick="cpEl(this)">Copiar</button>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="cl teal">Frases &amp; conceptos propios</div>
+      <div style="margin-top:6px">
+        <div class="qb">"Brass House"<div class="qa">El estilo que define al proyecto: brass band tradicional con estructuras y ritmos de electrónica, funk, hip hop y jazz. El término que los diferencia de cualquier charanga o brass band convencional.</div></div>
+        <button class="cb-inline" onclick="cpEl(this)">Copiar</button>
+        <div class="qb" style="margin-top:10px">"De la calle al escenario"<div class="qa">La filosofía del proyecto: el origen callejero es su identidad más fuerte. No cambian su energía ni su actitud directa según el espacio donde tocan.</div></div>
+        <button class="cb-inline" onclick="cpEl(this)">Copiar</button>
+        <div class="qb" style="margin-top:10px">"Brass con actitud callejera y urbana"<div class="qa">Cómo se presentan ante festivales, medios y promotores: enfoque moderno, no charanga de verbena.</div></div>
+        <button class="cb-inline" onclick="cpEl(this)">Copiar</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="cl terra">Tono de comunicación</div>
+      <div class="tone-grid">
+        <div class="tone-pill"><div class="tone-title"><input class="tone-check" type="checkbox" checked><span>Divertido</span></div><div class="tone-desc">Ligero, cercano y con juego; permite comunicar sin solemnidad. Clave para bodas, eventos y redes.</div></div>
+        <div class="tone-pill"><div class="tone-title"><input class="tone-check" type="checkbox" checked><span>Dinámico</span></div><div class="tone-desc">Ágil, activo y fácil de convertir en píldoras de contenido en redes. Compatiblee con la estrategia de Meta Ads.</div></div>
+        <div class="tone-pill"><div class="tone-title"><input class="tone-check" type="checkbox" checked><span>Cercano</span></div><div class="tone-desc">Trato directo, human y sin pretensiones. El modelo de comunicación 1:1 con nuevos seguidores es parte del ADN del proyecto.</div></div>
+        <div class="tone-pill"><div class="tone-title"><input class="tone-check" type="checkbox" checked><span>Festivo</span></div><div class="tone-desc">La alegría y la energía son su propuesta de valor. La comunicación tiene que transmitir que con Epi&amp;Brass se pasa bien.</div></div>
+        <div class="tone-pill"><div class="tone-title"><input class="tone-check" type="checkbox"><span>Ácido</span></div><div class="tone-desc">Reservado para contextos más adultos o festivos. Puede usarse con irona pero no es el tono principal.</div></div>
+        <div class="tone-pill"><div class="tone-title"><input class="tone-check" type="checkbox"><span>Profundo</span></div><div class="tone-desc">No es un tono habitual del proyecto. Su comunicación prioriza la energía y el disfrute sobre la reflexión.</div></div>
+      </div>
+      <p style="font-size:13px;color:var(--ink-mid);margin-top:12px">Epi&amp;Brass comunica como habla: con desparpajo, cercanía y ganas de pasarlo bien. Su tono en redes y en la comunicación directa (DMs, booking) debe reflejar esa energía festiva que los define en directo.</p>
+      <button class="cb-inline" onclick="cpEl(this)">Copiar tono</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cl gold">Temas recurrentes que definen la comunicación</div>
+    <br>
+    <div class="g2">
+      <div>
+        <p style="font-size:13px"><strong>🎺 La calle como escenario</strong><br>El origen callejero de la banda es su propuesta diferencial más fuerte. Comunicar desde ahí —la energía, la improvisación, la cercanía con el público en espacios no convencionales— es su mejor activo de storytelling.</p><br>
+        <p style="font-size:13px"><strong>🔊 Brass + Electrónica: el cruce que no existe</strong><br>El Brass House como concepto propio. Hablar de esta fusión de forma natural y con convicción ayuda a posicionarse ante medios, festivales y promotores que no han visto esto antes.</p><br>
+        <p style="font-size:13px"><strong>🎉 Alegría, energía y fiesta</strong><br>Las tres emociones que definen su música también deben definir su comunicación. Cada contenido tiene que transmitir que con Epi&amp;Brass la gente se lo pasa bien.</p>
+      </div>
+      <div>
+        <p style="font-size:13px"><strong>🏙️ Madrid como contexto</strong><br>La escena madrileña, los barrios (Lavapiés, Tapapiés), los espacios urbanos. Madrid es su territorio y parte de su identidad. Comunicar desde ese lugar concreto les da autenticidad.</p><br>
+        <p style="font-size:13px"><strong>🎯 Versatilidad total</strong><br>Pueden tocar en todo tipo de contextos. Comunicar esa versatilidad abre mercados muy diferentes: desde fiestas de pueblo y bodas hasta festivales de brass y salas de conciertos.</p><br>
+        <p style="font-size:13px"><strong>🌱 Proyecto en construcción</strong><br>Son un proyecto joven y en formación, y eso puede comunicarse con autenticidad. La transparencia sobre el proceso genera comunidad y engagement antes de que haya material grabado.</p>
+      </div>
+    </div>
+    <button class="cb" onclick="cp(this)">Copiar</button>
+  </div>
+
+  <div class="card">
+    <div class="cl sage">Referentes artísticos que mencionan públicamente</div>
+    <p><strong>Internacionales:</strong> Lucky Chops · Young Blood Brass Band · Meute<br>
+    <strong>Nacionales:</strong> Hip Horns<br>
+    <strong>Referente en redes:</strong> Gata Brass Band<br>
+    <strong>Referente estético:</strong> Lucky Chops · Steam Brass Band</p>
+    <p style="margin-top:8px;font-size:12.5px;color:var(--ink-light)">Útil para contextualizar el proyecto ante programadores, medios o jurados de convocatorias. Meute como referente de éxito de brass con estética trabajada.</p>
+    <button class="cb" onclick="cp(this)">Copiar</button>
+  </div>
+</section>
+
+<!-- ██ ESTÉTICA ██ -->
+<section class="sec" id="estetica">
+  <div class="sh"><div><div class="sh-eye">Branding & Visual</div><div class="sh-title">Estética e Identidad Gráfica</div></div></div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="cl teal">Paleta de colores del proyecto</div>
+      <div class="palette">
+        <div class="sw"><div class="swc" style="background:#1C2020"></div><div class="swl">#1C2020<br>Negro urbano</div></div>
+        <div class="sw"><div class="swc" style="background:#2B6565"></div><div class="swl">#2B6565<br>Verde bronce</div></div>
+        <div class="sw"><div class="swc" style="background:#F8F4EE;border:1px solid #ddd"></div><div class="swl">#F8F4EE<br>Crema</div></div>
+        <div class="sw"><div class="swc" style="background:#B0C4B0"></div><div class="swl">#B0C4B0<br>Oliva claro</div></div>
+        <div class="sw"><div class="swc" style="background:#D4A830"></div><div class="swl">#D4A830<br>Latón dorado</div></div>
+      </div>
+      <p style="font-size:12px;color:var(--ink-light);margin-top:6px">⚠ Paleta provisional — pendiente de definir junto al experto en diseño del grupo. El concepto estético visual (vestuario y branding) es la prioridad estratégica número 1 según la consultoría.</p>
+      <button class="cb" onclick="cp(this)">Copiar descripción</button>
+    </div>
+    <div class="card">
+      <div class="cl terra">Universo estético de referencia</div>
+      <div class="tc" style="margin-top:6px">
+        <span class="tag t">Callejero / Urban</span>
+        <span class="tag t">Anti-charanga</span>
+        <span class="tag g">Brass Band moderna</span>
+        <span class="tag g">Meute (referente)</span>
+        <span class="tag r">Steam Brass Band</span>
+        <span class="tag r">Lucky Chops</span>
+        <span class="tag s">Disruptivo</span>
+        <span class="tag s">Urbano festivo</span>
+        <span class="tag">No uniforme militar</span>
+        <span class="tag">Concepto propio</span>
+      </div>
+      <br>
+      <p style="font-size:13px;color:var(--ink-mid)">La estética es la PRIORIDAD MÁXIMA del proyecto según la consultoría. Epi&amp;Brass necesita un concepto visual disruptivo que los aleje radicalmente de la charanga tradicional. El modelo a seguir: Meute (impacto inmediato por el uniforme antes de escuchar una nota) y Steam Brass Band (concepto coherente, cada miembro con su flow dentro de un estilo común).</p>
+      <button class="cb" onclick="cp(this)">Copiar</button>
+    </div>
+  </div>
+
+  <div class="card" style="border-left:4px solid var(--terra)">
+    <div class="cl terra">🚨 URGENTE — Definición estética</div>
+    <p>La consultoría de Artes Búho establece la definición del concepto visual como el paso crítico antes de grabar cualquier contenido oficial. <strong>No se graba ningún vídeo, foto ni Live Session sin la estética 100% definida.</strong></p>
+    <div class="tc" style="margin-top:12px">
+      <span class="tag r">Buscar estilistas en Infojobs</span>
+      <span class="tag r">Pedir presupuestos de atrezo</span>
+      <span class="tag g">Tableros de Pinterest</span>
+      <span class="tag g">Chat GPT como diseñador de ropa</span>
+      <span class="tag t">Huir de las charangas de España</span>
+    </div>
+    <p style="margin-top:12px;font-size:13px;color:var(--ink-mid)">Recomendación: buscar a profesionales del mundo de la moda, el cine o el atrezo para que aporten un concepto exterior. No tomar decisiones estéticas desde el conocimiento interno actual del grupo.</p>
+    <button class="cb" onclick="cp(this)">Copiar</button>
+  </div>
+
+  <div class="card">
+    <div class="cl sage">Equipo creativo visual</div>
+    <div class="fr"><span class="fk">Diseño gráfico &amp; Vídeo</span><span class="fv">Miembro del grupo — profesional en diseño, edición de vídeo y animación</span></div>
+    <div class="fr"><span class="fk">Fotografía</span><span class="fv ph2">[ Pendiente — cámara contratado en Tapapiés ]</span></div>
+    <div class="fr"><span class="fk">Vestuario / Concepto estético</span><span class="fv ph2">[ Pendiente — buscar profesional externo (Infojobs / moda / atrezo) ]</span></div>
+    <div class="fr"><span class="fk">Visuales en directo</span><span class="fv ph2">[ Pendiente ]</span></div>
+    <button class="cb-inline" onclick="cpEl(this)" style="margin-top:8px">Copiar créditos</button>
+  </div>
+
+  <div class="ph-banner">⚠ <span>Pendiente: <strong>logos en alta resolución, fotos de prensa, material gráfico, concepto estético definido</strong>. Añadir enlaces a carpeta de Drive.</span></div>
+  <div class="g3">
+    <div class="card" style="border:2px dashed var(--border);box-shadow:none;text-align:center;padding:28px 16px">
+      <div style="font-size:36px;margin-bottom:7px">🖼</div>
+      <div style="font-size:12px;color:var(--ink-light)">Logo principal<br><span style="color:var(--terra)">[ Pendiente ]</span></div>
+    </div>
+    <div class="card" style="border:2px dashed var(--border);box-shadow:none;text-align:center;padding:28px 16px">
+      <div style="font-size:36px;margin-bottom:7px">📸</div>
+      <div style="font-size:12px;color:var(--ink-light)">Fotos de prensa<br><span style="color:var(--terra)">[ Pendiente ]</span></div>
+    </div>
+    <div class="card" style="border:2px dashed var(--border);box-shadow:none;text-align:center;padding:28px 16px">
+      <div style="font-size:36px;margin-bottom:7px">🎨</div>
+      <div style="font-size:12px;color:var(--ink-light)">Material gráfico<br><span style="color:var(--terra)">[ Pendiente ]</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ██ ESPECTÁCULO ██ -->
+<section class="sec" id="espectaculo">
+  <div class="sh"><div><div class="sh-eye">En vivo</div><div class="sh-title">El Espectáculo</div></div></div>
+
+  <div class="card" style="border-left:4px solid var(--teal)">
+    <div class="cl teal">Texto de presentación del show</div>
+    <p>Epi&amp;Brass es un directo que empieza antes de que suene la primera nota. La banda llega, se coloca y el espacio ya ha cambiado: seis músicos que saben que su trabajo no es solo tocar bien, sino hacer que la gente se olvide de todo y se deje llevar.</p>
+    <br>
+    <p>Su propuesta en vivo combina la energía y el carácter visual de una brass band con los ritmos de la electrónica y el funk contemporáneo. Un Brass House que funciona lo mismo en el centro de una plaza que en un escenario con backline completo: sin perder intensidad, sin perder cercanía, sin perder la fiesta.</p>
+    <br>
+    <p>Epi&amp;Brass se adapta al espacio y al contexto: pasacalles, conciertos de sala, festivales callejeros, fiestas privadas o eventos corporativos. La versatilidad es parte de su valor, y la actitud directa hacia el público —el desparpajo, la comunicación, el calor— es su sello más reconocible.</p>
+    <button class="cb" onclick="cp(this)">Copiar</button>
+  </div>
+
+  <div style="margin:20px 0 10px">
+    <span class="cl teal" style="color:var(--teal);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;font-weight:600">Formatos de contratación</span>
+  </div>
+
+  <div class="add-bar">
+    <button class="add-btn" type="button" onclick="addFormat()">+ Añadir formato</button>
+  </div>
+
+  <div class="g3">
+    <div class="fcard">
+      <div class="fch"><div class="fcn">Formato Completo — Sala</div><div class="fcd">60–90 min</div></div>
+      <div class="fcb">
+        <div class="fcr"><span class="fci">▸</span><span class="fct">Salas de conciertos, festivales con escenario</span></div>
+        <div class="fcr"><span class="fci">▸</span><span class="fct">6 músicos, formación completa</span></div>
+        <div class="fcr"><span class="fci">▸</span><span class="fct">Sonido amplificado, rider técnico completo</span></div>
+      </div>
+    </div>
+    <div class="fcard">
+      <div class="fch"><div class="fcn">Formato Callejero — Pasacalles</div><div class="fcd">Variable / acústico</div></div>
+      <div class="fcb">
+        <div class="fcr"><span class="fci">▸</span><span class="fct">Fiestas de pueblo, romerías, mercados, plazas</span></div>
+        <div class="fcr"><span class="fci">▸</span><span class="fct">Sin escenario ni amplificación</span></div>
+        <div class="fcr"><span class="fci">▸</span><span class="fct">Máxima movilidad y contacto con el público</span></div>
+      </div>
+    </div>
+    <div class="fcard">
+      <div class="fch"><div class="fcn">Formato Evento Privado</div><div class="fcd">A definir por cliente</div></div>
+      <div class="fcb">
+        <div class="fcr"><span class="fci">▸</span><span class="fct">Bodas, cumpleaños, fiestas privadas, corporativos</span></div>
+        <div class="fcr"><span class="fci">▸</span><span class="fct">Adaptable en duración y repertorio</span></div>
+        <div class="fcr"><span class="fci">▸</span><span class="fct">Alta versatilidad técnica y logística</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <div class="cl sage">Historial de actuaciones destacadas</div>
+    <div class="fr"><span class="fk">Grabación en Lavapiés</span><span class="fv">Material de cámara grabado en Tapapiés — en proceso de edición</span></div>
+    <div class="fr"><span class="fk">Ciudades con público</span><span class="fv">Madrid · Alicante · Valencia</span></div>
+    <div class="fr"><span class="fk">Festivales objetivo</span><span class="fv">Real Brass Festival · Festival Baltum · Galaico Brass Festival</span></div>
+    <div class="fr"><span class="fk">Live Session Artes Búho</span><span class="fv ph2">[ Pendiente — acordar fecha con David ]</span></div>
+    <button class="cb-inline" onclick="cpEl(this)" style="margin-top:8px">Copiar historial</button>
+  </div>
+</section>
+
+<!-- ██ DISCOGRAFÍA ██ -->
+<section class="sec" id="discografia">
+  <div class="sh"><div><div class="sh-eye">Música</div><div class="sh-title">Discografía & Singles</div></div></div>
+
+  <div class="add-bar">
+    <button class="add-btn" type="button" onclick="addSong()">+ Añadir canción / próximo single</button>
+  </div>
+
+  <div class="card" style="border-left:4px solid var(--gold);margin-bottom:20px">
+    <div class="cl gold">Estrategia discográfica</div>
+    <div class="ct">Fase actual: en producción</div>
+    <p>Según la consultoría, la estrategia recomendada es <strong>no invertir en un disco de estudio completo</strong> en esta fase. El objetivo es extraer el audio máster de las Live Sessions en Artes Búho para subirlo a plataformas (Spotify, Apple Music). Así se tiene presencia digital sin descapitalizar el proyecto.</p>
+    <p style="margin-top:8px">Material actual: grabaciones brutas de Tapapiés (en proceso de edición). Próximo material: Live Session Artes Búho (pendiente de fecha con David).</p>
+    <div class="fr" style="margin-top:10px"><span class="fk">Dossier actual</span><span class="fv"><a href="https://drive.google.com/file/d/1qWm4I_M7YrbMqKUL_kI1OogDFAIeSMIs/view" target="_blank">Ver en Drive ↗</a></span></div>
+    <button class="cb" onclick="cp(this)">Copiar</button>
+  </div>
+
+  <div class="srow" style="border:2px dashed var(--border);background:var(--cream2)">
+    <div class="snum" style="color:var(--terra)">↻</div>
+    <div class="si"><div class="st" style="color:var(--terra)">Live Session Artes Búho <span style="font-size:11px;font-weight:400">(en producción)</span></div><div class="sm">Material de vídeo y audio para redes y Spotify · Fecha por confirmar con David</div></div>
+    <div class="slinks"><span class="sl ph">Pendiente</span></div>
+  </div>
+  <div class="srow" style="border:2px dashed var(--border);background:var(--cream2)">
+    <div class="snum" style="color:var(--terra)">↻</div>
+    <div class="si"><div class="st" style="color:var(--terra)">Material Lavapiés / Tapapiés <span style="font-size:11px;font-weight:400">(bruto grabado)</span></div><div class="sm">Grabación de cámara disponible · Pendiente de edición y postproducción</div></div>
+    <div class="slinks"><span class="sl ph">En edición</span></div>
+  </div>
+  <div class="srow" style="border:2px dashed var(--border);background:var(--cream2)">
+    <div class="snum" style="color:var(--terra)">↻</div>
+    <div class="si"><div class="st" style="color:var(--terra)">Primer single / versión propia <span style="font-size:11px;font-weight:400">(por definir)</span></div><div class="sm">Composición propia o versión arreglada · En proceso creativo</div></div>
+    <div class="slinks"><span class="sl ph">Composición</span></div>
+  </div>
+</section>
+
+<!-- ██ ENTREVISTAS ██ -->
+<section class="sec" id="entrevistas">
+  <div class="sh"><div><div class="sh-eye">Recursos de comunicación</div><div class="sh-title">Tarjetas de Entrevista</div></div></div>
+
+  <div class="add-bar">
+    <button class="add-btn" type="button" onclick="addInterview()">+ Añadir pregunta / respuesta</button>
+  </div>
+
+  <div class="card" style="background:var(--teal-pale);border-color:var(--teal-l);margin-bottom:20px">
+    <p style="font-size:13px;color:var(--teal)">💡 <strong>Cómo usar estas tarjetas:</strong> Respuestas tipo para mantener coherencia comunicativa en entrevistas, pitchings, convocatorias y redes. Expandir para ver y copiar cada respuesta.</p>
+  </div>
+
+  <div class="icard open">
+    <div class="iq" onclick="tgl(this)"><span class="iq-t">¿Quiénes sois y cómo definiríais vuestro proyecto?</span><span class="iq-i">+</span></div>
+    <div class="ia">
+      <div class="ia-t">Somos Epi&amp;Brass, una brass band de Madrid que hace Brass House: cogemos la energía y el carácter callejero de la brass band tradicional y la metemos dentro de estructuras de electrónica, funk, hip hop y jazz. Lo que sale no es una charanga ni un grupo de jazz, es algo diferente que aquí en España prácticamente nadie está haciendo. Somos seis músicos con experiencia en otros proyectos, pero con Epi&amp;Brass queremos construir algo sólido y a largo plazo.</div>
+      <button class="cb-inline" onclick="cpEl(this)">Copiar respuesta</button>
+    </div>
+  </div>
+
+  <div class="icard">
+    <div class="iq" onclick="tgl(this)"><span class="iq-t">¿Cómo surgió el proyecto y de dónde viene el nombre?</span><span class="iq-i">+</span></div>
+    <div class="ia">
+      <div class="ia-t">El proyecto nace de la convicción de que hay muy pocas brass bands en España con un enfoque similar al nuestro —que sepamos, solo dos, y ambas lejos de Madrid— y que ese espacio vacío tiene mucho recorrido. El nombre une nuestra identidad más personal con el elemento musical que lo define todo: los vientos. Epi habla de quiénes somos, Brass habla de cómo sonamos.</div>
+      <button class="cb-inline" onclick="cpEl(this)">Copiar respuesta</button>
+    </div>
+  </div>
+
+  <div class="icard">
+    <div class="iq" onclick="tgl(this)"><span class="iq-t">¿Qué os diferencia de otros proyectos similares?</span><span class="iq-i">+</span></div>
+    <div class="ia">
+      <div class="ia-t">Dentro de Madrid no hay ningún otro proyecto que trabaje este estilo de forma clara. Nos diferenciamos de otras brass bands por un enfoque más moderno y callejero, y una actitud muy directa hacia el público. Nuestro punto fuerte es el directo: potente, cercano y muy ameno. Pero también podemos adaptarnos a cualquier tipo de evento —desde una fiesta de techno a un pasacalles de fiestas de pueblo— sin perder identidad.</div>
+      <button class="cb-inline" onclick="cpEl(this)">Copiar respuesta</button>
+    </div>
+  </div>
+
+  <div class="icard">
+    <div class="iq" onclick="tgl(this)"><span class="iq-t">¿Qué emociones transmite vuestra música?</span><span class="iq-i">+</span></div>
+    <div class="ia">
+      <div class="ia-t">Alegría, energía y fiesta. No pretendemos que la gente se siente a escuchar: queremos que se levante a bailar. Lo que mejor sabemos hacer es disfrutar a la gente y contagiar ese disfrute. Si al final del concierto el público ha bailado, ha sonreído y se ha olvidado de todo durante un rato, hemos hecho nuestro trabajo.</div>
+      <button class="cb-inline" onclick="cpEl(this)">Copiar respuesta</button>
+    </div>
+  </div>
+
+  <div class="icard">
+    <div class="iq" onclick="tgl(this)"><span class="iq-t">¿Cómo son vuestros directos?</span><span class="iq-i">+</span></div>
+    <div class="ia">
+      <div class="ia-t">Lo que mejor sabemos hacer es adaptarnos a cualquier escenario —si es que lo hay— y situación. Tenemos mucha facilidad y desparpajo para hablar e interactuar con el público, y eso hace que el show sea dinámico y cercano independientemente de si estamos en medio de una calle, en un festival o en una sala. La energía es la misma: directa, festiva y sin barreras entre quien toca y quien baila.</div>
+      <button class="cb-inline" onclick="cpEl(this)">Copiar respuesta</button>
+    </div>
+  </div>
+
+  <div class="icard">
+    <div class="iq" onclick="tgl(this)"><span class="iq-t">¿En qué tipo de eventos o espacios tocáis?</span><span class="iq-i">+</span></div>
+    <div class="ia">
+      <div class="ia-t">En todos. Eso es literalmente uno de nuestros puntos fuertes: podemos tocar tanto amplificado como acústico, en escenario o en pasacalles, en una fiesta de pueblo, en una boda, en un festival de calle o en una sala con backline completo. El formato cambia, la energía no. Tenemos una propuesta muy accesible que puede llegar a públicos muy diversos.</div>
+      <button class="cb-inline" onclick="cpEl(this)">Copiar respuesta</button>
+    </div>
+  </div>
+
+  <div class="icard">
+    <div class="iq" onclick="tgl(this)"><span class="iq-t">¿Cómo definís vuestro sonido en pocas palabras?</span><span class="iq-i">+</span></div>
+    <div class="ia">
+      <div class="ia-t">Brass House. Electrónica a todo pulmón. Vientos que no saben que no se puede bailar con vientos.</div>
+      <button class="cb-inline" onclick="cpEl(this)">Copiar respuesta</button>
+    </div>
+  </div>
+
+  <div class="icard">
+    <div class="iq" onclick="tgl(this)"><span class="iq-t">¿Cuáles son vuestros referentes?</span><span class="iq-i">+</span></div>
+    <div class="ia">
+      <div class="ia-t">A nivel internacional miramos mucho a Lucky Chops, Young Blood Brass Band y Meute: proyectos que han demostrado que los vientos pueden llegar a un público enorme y contemporáneo. En España tenemos como referente a Hip Horns. En redes sociales nos interesa mucho lo que está haciendo Gata Brass Band, que tiene un rollo cercano y muy conectado con su comunidad.</div>
+      <button class="cb-inline" onclick="cpEl(this)">Copiar respuesta</button>
+    </div>
+  </div>
+</section>
+
+<!-- ██ PRENSA ██ -->
+<section class="sec" id="prensa">
+  <div class="sh"><div><div class="sh-eye">Medios & Comunicación</div><div class="sh-title">Notas de Prensa & Apariciones</div></div></div>
+
+  <div class="add-bar">
+    <button class="add-btn" type="button" onclick="addPressAppearance()">+ Añadir aparición en medios</button>
+    <button class="add-btn" type="button" onclick="addPressNote()">+ Añadir nota de prensa</button>
+  </div>
+
+  <div class="card" style="margin-bottom:20px">
+    <div class="cl terra">Apariciones en medios</div>
+    <div data-press-source style="padding:10px 0;border-bottom:1px solid var(--border)">
+      <div class="press-outlet">Redes Sociales <span class="pt dig">Digital</span></div>
+      <p style="font-size:13px;color:var(--ink-mid)">Instagram @epibrass · TikTok @epi.brass · YouTube @EPIBRASS</p>
+    </div>
+    <div data-press-source style="padding:10px 0;border-bottom:1px solid var(--border)">
+      <div class="press-outlet">Prensa especializada <span class="pt dig">Digital</span></div>
+      <p style="font-size:13px;color:var(--ink-mid)">[ Pendiente — primera aparición en medios a coordinar con el material de Live Session ]</p>
+    </div>
+    <div data-press-source style="padding:10px 0">
+      <div class="press-outlet">Festivales de brass <span class="pt mag">Festival</span></div>
+      <p style="font-size:13px;color:var(--ink-mid)">Real Brass Festival · Festival Baltum · Galaico Brass Festival — [ Objetivo en hoja de ruta 6–12 meses ]</p>
+    </div>
+    <button class="cb" onclick="cp(this)">Copiar</button>
+  </div>
+
+  <div class="card" style="position:relative">
+    <div class="cl teal">Texto de presentación para medios — Epi&amp;Brass</div>
+    <div class="ct">Texto base para notas de prensa y convocatorias</div>
+    <p>Epi&amp;Brass es una banda de Madrid que fusiona la brass band con la música electrónica contemporánea en lo que el proyecto denomina <strong>Brass House</strong>: estructuras rítmicas de la electrónica, el funk y el hip hop ejecutadas en directo con vientos y percusión. Una propuesta prácticamente inexistente en España que sitúa al grupo en un nicho propio dentro del panorama musical nacional.</p>
+    <br><p>El proyecto destaca por la versatilidad de sus formatos —desde pasacalles y fiestas de calle hasta salas de conciertos y festivales— y por un directo potente, cercano y muy festivo que pone a bailar a públicos de toda condición. Disponibles para bodas, eventos privados, fiestas de pueblo, festivales y conciertos. Contacto: epibrassband@gmail.com | 639 882 823</p>
+    <button class="cb" onclick="cp(this)">Copiar</button>
+  </div>
+</section>
+
+<!-- ██ RIDER ██ -->
+<section class="sec" id="rider">
+  <div class="sh"><div><div class="sh-eye">Técnica</div><div class="sh-title">Rider Técnico & Formatos</div></div></div>
+  <div class="ph-banner">⚠ <span>Añadir enlace al PDF del rider técnico cuando esté en Drive. Rider a elaborar por el grupo.</span></div>
+  <div class="card">
+    <div class="cl teal">Contacto técnico</div>
+    <div class="fr"><span class="fk">Persona de contacto</span><span class="fv">Sergio García Pinell</span></div>
+    <div class="fr"><span class="fk">Teléfono</span><span class="fv">639 882 823</span></div>
+    <div class="fr"><span class="fk">Email</span><span class="fv"><a href="mailto:epibrassband@gmail.com">epibrassband@gmail.com</a></span></div>
+    <div class="fr"><span class="fk">Rider PDF</span><span class="fv ph2">[ Pendiente — elaborar y subir a Drive ]</span></div>
+    <button class="cb-inline" onclick="cpEl(this)" style="margin-top:8px">Copiar contacto</button>
+  </div>
+  <div class="g2" style="margin-top:14px">
+    <div class="fcard">
+      <div class="fch"><div class="fcn">Formato Dúo</div><div class="fcd">Formación mínima</div></div>
+      <div class="fcb">
+        <div class="fcr"><span class="fci">▸</span><span class="fct">Espacio mínimo: X × X m</span></div>
+        <div class="fcr"><span class="fci">▸</span><span class="fct">X líneas a mesa</span></div>
+        <div class="fcr"><span class="fci">▸</span><span class="fct">X monitores de escenario</span></div>
+      </div>
+    </div>
+    <div class="fcard">
+      <div class="fch"><div class="fcn">Formato Trío</div><div class="fcd">+ Músico colaborador</div></div>
+      <div class="fcb">
+        <div class="fcr"><span class="fci">▸</span><span class="fct">Espacio mínimo: X × X m</span></div>
+        <div class="fcr"><span class="fci">▸</span><span class="fct">X líneas totales</span></div>
+        <div class="fcr"><span class="fci">▸</span><span class="fct">X monitores de escenario</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ██ FICHA ARTÍSTICA ██ -->
+<section class="sec" id="ficha">
+  <div class="sh"><div><div class="sh-eye">Créditos completos</div><div class="sh-title">Ficha Artística</div></div></div>
+  <div class="card" style="position:relative">
+    <div class="cl teal">Epi&amp;Brass — Live Session / Primera grabación (2026)</div>
+    <div class="fr"><span class="fk">Coordinación del proyecto</span><span class="fv">Sergio García Pinell</span></div>
+    <div class="fr"><span class="fk">Producción musical</span><span class="fv ph2">[ Pendiente — Live Session Artes Búho ]</span></div>
+    <div class="fr"><span class="fk">Intérpretes</span><span class="fv">6 músicos — [ Completar nombres completos ]</span></div>
+    <div class="fr"><span class="fk">Formación</span><span class="fv">Vientos (saxofones, trompeta, trombón) + percusión — [ Completar detalle ]</span></div>
+    <div class="fr"><span class="fk">Grabación vídeo</span><span class="fv">Cámara contratado — Lavapiés / Tapapiés (Madrid)</span></div>
+    <div class="fr"><span class="fk">Diseño gráfico &amp; edición vídeo</span><span class="fv">Miembro del grupo — profesional in-house</span></div>
+    <div class="fr"><span class="fk">Fotografía</span><span class="fv ph2">[ Pendiente ]</span></div>
+    <div class="fr"><span class="fk">Vestuario / Concepto estético</span><span class="fv ph2">[ En proceso — prioridad estratégica ]</span></div>
+    <div class="fr"><span class="fk">Comunicación &amp; estrategia</span><span class="fv">Artes Búho Management · Román García</span></div>
+    <div class="fr"><span class="fk">Distribución digital</span><span class="fv">Motmo (a través de Artes Búho) — [ Pendiente ]</span></div>
+    <div class="fr"><span class="fk">Editorial / SGAE</span><span class="fv">Pendiente — registrar a través de Artes Búho</span></div>
+    <button class="cb" onclick="cp(this)">Copiar créditos completos</button>
+  </div>
+</section>
+
+<!-- ██ FOTOS ██ -->
+<section class="sec" id="fotos">
+  <div class="sh"><div><div class="sh-eye">Material visual</div><div class="sh-title">Fotos &amp; Material Gráfico</div></div></div>
+  <div class="ph-banner">⚠ <span>Añadir los enlaces a las carpetas de Drive con el material fotográfico y gráfico. <strong>Toda la identidad visual es prioritaria antes de grabar contenido oficial.</strong></span></div>
+  <div class="card">
+    <div class="cl teal">Fotografía profesional</div>
+    <div class="fr"><span class="fk">Fotógrafo/a</span><span class="fv ph2">[ Pendiente — contratar ]</span></div>
+    <div class="fr"><span class="fk">Grabación bruta Lavapiés</span><span class="fv">Material disponible — pendiente de editar</span></div>
+    <div class="fr"><span class="fk">Fotos de prensa</span><span class="fv ph2">[ Pendiente — necesario antes de primer booking ]</span></div>
+    <div class="fr"><span class="fk">Fotos live</span><span class="fv ph2">[ Pendiente ]</span></div>
+  </div>
+  <div class="card">
+    <div class="cl gold">Material gráfico</div>
+    <div class="fr"><span class="fk">Diseñador/a</span><span class="fv">Miembro del grupo — profesional in-house</span></div>
+    <div class="fr"><span class="fk">Dossier actual</span><span class="fv"><a href="https://drive.google.com/file/d/1qWm4I_M7YrbMqKUL_kI1OogDFAIeSMIs/view" target="_blank">Drive ↗</a></span></div>
+    <div class="fr"><span class="fk">Assets para RRSS</span><span class="fv ph2">[ Pendiente — a crear con nueva identidad estética ]</span></div>
+    <div class="fr"><span class="fk">Logo alta resolución</span><span class="fv ph2">[ Pendiente ]</span></div>
+  </div>
+</section>
+
+<!-- ██ CONTACTO ██ -->
+<section class="sec" id="contacto">
+  <div class="sh"><div><div class="sh-eye">Gestión interna</div><div class="sh-title">Datos &amp; Contacto</div></div></div>
+  <div class="card" style="background:var(--terra-pale);border-color:#c87055">
+    <div style="font-size:13px;color:var(--terra)">🔒 <strong>Información sensible.</strong> Este apartado no debe compartirse externamente sin consentimiento explícito de los/las artistas.</div>
+  </div>
+  <div class="card" style="margin-top:12px">
+    <div class="cl teal">Titular del proyecto — Facturación</div>
+    <div class="fr"><span class="fk">Nombre completo</span><span class="fv">Sergio García Pinell</span></div>
+    <div class="fr"><span class="fk">Teléfono</span><span class="fv">639 882 823</span></div>
+    <div class="fr"><span class="fk">Email</span><span class="fv"><a href="mailto:epibrassband@gmail.com">epibrassband@gmail.com</a></span></div>
+    <div class="fr"><span class="fk">DNI / NIF</span><span class="fv ph2">[ Archivado en CRM interno Artes Búho ]</span></div>
+    <div class="fr"><span class="fk">Dirección de facturación</span><span class="fv ph2">[ Archivado en CRM interno Artes Búho ]</span></div>
+  </div>
+  <div class="card">
+    <div class="cl terra">Resto de integrantes</div>
+    <div class="fr"><span class="fk">Miembro 2</span><span class="fv ph2">[ Completar ]</span></div>
+    <div class="fr"><span class="fk">Miembro 3</span><span class="fv ph2">[ Completar ]</span></div>
+    <div class="fr"><span class="fk">Miembro 4</span><span class="fv ph2">[ Completar ]</span></div>
+    <div class="fr"><span class="fk">Miembro 5 (Valencia)</span><span class="fv ph2">[ Completar ]</span></div>
+    <div class="fr"><span class="fk">Miembro 6 (Valencia)</span><span class="fv ph2">[ Completar ]</span></div>
+  </div>
+  <div class="card">
+    <div class="cl sage">Contacto del proyecto</div>
+    <div class="fr"><span class="fk">Email oficial</span><span class="fv"><a href="mailto:epibrassband@gmail.com">epibrassband@gmail.com</a></span></div>
+    <div class="fr"><span class="fk">Teléfono de contacto</span><span class="fv">639 882 823</span></div>
+    <div class="fr"><span class="fk">Comunicación &amp; Estrategia</span><span class="fv">Artes Búho Management — Román García</span></div>
+    <div class="fr"><span class="fk">Management</span><span class="fv ph2">[ Pendiente — objetivo subcontratar ]</span></div>
+  </div>
+</section>
+
+<!-- ██ LINKS ██ -->
+<section class="sec" id="links">
+  <div class="sh"><div><div class="sh-eye">Presencia digital</div><div class="sh-title">Links de Interés</div></div></div>
+  <div class="g2">
+    <div class="card">
+      <div class="cl teal">Redes sociales</div>
+      <div class="fr"><span class="fk">Instagram</span><span class="fv"><a href="https://www.instagram.com/epibrass/" target="_blank">@epibrass ↗</a></span></div>
+      <div class="fr"><span class="fk">TikTok</span><span class="fv"><a href="https://www.tiktok.com/@epi.brass" target="_blank">@epi.brass ↗</a></span></div>
+      <div class="fr"><span class="fk">YouTube</span><span class="fv"><a href="https://www.youtube.com/@EPIBRASS" target="_blank">@EPIBRASS ↗</a></span></div>
+      <div class="fr"><span class="fk">Linktree</span><span class="fv ph2">[ Pendiente ]</span></div>
+      <div class="fr"><span class="fk">X / Twitter</span><span class="fv ph2">No tienen</span></div>
+    </div>
+    <div class="card">
+      <div class="cl terra">Plataformas de música</div>
+      <div class="fr"><span class="fk">Spotify</span><span class="fv ph2">[ Pendiente — objetivo a corto plazo vía Live Session ]</span></div>
+      <div class="fr"><span class="fk">SoundCloud</span><span class="fv ph2">[ Pendiente ]</span></div>
+      <div class="fr"><span class="fk">Distribución</span><span class="fv">Motmo (vía Artes Búho) — pendiente de activar</span></div>
+    </div>
+    <div class="card">
+      <div class="cl gold">Documentos clave</div>
+      <div class="fr"><span class="fk">Dossier actual</span><span class="fv"><a href="https://drive.google.com/file/d/1qWm4I_M7YrbMqKUL_kI1OogDFAIeSMIs/view" target="_blank">Drive ↗</a></span></div>
+      <div class="fr"><span class="fk">Web oficial</span><span class="fv ph2">[ Pendiente ]</span></div>
+      <div class="fr"><span class="fk">Rider técnico</span><span class="fv ph2">[ Pendiente ]</span></div>
+    </div>
+    <div class="card">
+      <div class="cl sage">Artes Búho</div>
+      <div class="fr"><span class="fk">Web Artes Búho</span><span class="fv"><a href="https://www.artesbuho.com" target="_blank">artesbuho.com ↗</a></span></div>
+      <div class="fr"><span class="fk">Contacto</span><span class="fv">contratacion@artesbuho.com</span></div>
+      <div class="fr"><span class="fk">Consultor</span><span class="fv">Román García</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ██ PAVONEO 360° ██ -->
+<section class="sec" id="pavoneo">
+  <div class="sh">
+    <div>
+      <div class="sh-eye" style="color:var(--violet)">Estrategia · Artes Búho</div>
+      <div class="sh-title violet">Pavoneo 360°</div>
+    </div>
+  </div>
+
+  <div class="pav-hero">
+    <div class="pav-hero-eye">Estrategia de Comunicación Digital · Epi&amp;Brass 2026</div>
+    <div class="pav-hero-title">Plan Pavoneo 360°</div>
+    <div class="pav-hero-sub">Estética → Material → Captación Digital → Escala</div>
+    <div class="pav-kpis">
+      <div class="pav-kpi"><div class="pav-kpi-val">4</div><div class="pav-kpi-label">Fases</div></div>
+      <div class="pav-kpi"><div class="pav-kpi-val" id="total-weeks">12</div><div class="pav-kpi-label">Semanas</div></div>
+      <div class="pav-kpi"><div class="pav-kpi-val" id="total-items">0</div><div class="pav-kpi-label">Acciones totales</div></div>
+      <div class="pav-kpi"><div class="pav-kpi-val" id="done-items">0</div><div class="pav-kpi-label">Completadas</div></div>
+      <div class="pav-kpi"><div class="pav-kpi-val" id="pct-done">0%</div><div class="pav-kpi-label">Progreso global</div></div>
+    </div>
+  </div>
+
+  <!-- RESUMEN TABLE -->
+  <div class="card" style="margin-bottom:20px;overflow-x:auto">
+    <div class="cl violet">Resumen del plan estratégico</div>
+    <table class="summ-table">
+      <thead>
+        <tr>
+          <th>Fase</th><th>Período</th><th>Objetivo principal</th><th>Entregable clave</th><th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:var(--violet)">F1 · Estética</strong></td>
+          <td>Mes 1</td>
+          <td>Definir el concepto estético visual (vestuario/uniforme) y organigrama interno por comisiones</td>
+          <td>Concepto visual cerrado + comisiones asignadas</td>
+          <td><span class="status-pill sp-active">En curso</span></td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--teal)">F2 · Material</strong></td>
+          <td>Meses 2–3</td>
+          <td>Live Session Artes Búho + día de contenido mensual para redes</td>
+          <td>Pack de vídeos + audio para Spotify</td>
+          <td><span class="status-pill sp-todo">Pendiente</span></td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--terra)">F3 · Captación</strong></td>
+          <td>Meses 4–6</td>
+          <td>Meta Ads con los vídeos más efectivos + booking social 1:1 a nuevos seguidores</td>
+          <td>Primeros bolos cerrados vía redes · Base de datos activa</td>
+          <td><span class="status-pill sp-todo">Pendiente</span></td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--sage)">F4 · Escala</strong></td>
+          <td>Meses 6–12</td>
+          <td>Acceso al circuito de festivales de brass + registro SGAE + incremento de caché</td>
+          <td>Dossier premium · Editorial activa · Festivales contactados</td>
+          <td><span class="status-pill sp-todo">Pendiente</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="timeline">
+
+    <!-- FASE 1 -->
+    <div class="phase-block open" id="ph1">
+      <div class="phase-head p1" onclick="tglPhase('ph1')">
+        <div class="phase-dot p1">1</div>
+        <div>
+          <div class="phase-label">Fase 1</div>
+          <div class="phase-name">Estética &amp; Organización</div>
+          <div class="phase-dates">Semanas 1–3 · Mes 1</div>
+        </div>
+        <span class="phase-toggle">+</span>
+      </div>
+      <div class="phase-body">
+        <div class="phase-inner">
+          <div class="obj-strip">
+            <span class="obj-strip-label">Objetivos</span>
+            <span class="obj-chip">Concepto visual cerrado</span>
+            <span class="obj-chip">Comisiones asignadas</span>
+            <span class="obj-chip">Huir de la estética charanga</span>
+            <span class="obj-chip">Infojobs / atrecistas contactados</span>
+            <span class="obj-chip">Pinterest + ChatGPT explorados</span>
+          </div>
+          <div class="prog-wrap"><div class="prog-bar p1" id="prog1" style="width:0%"></div></div>
+          <div class="prog-label"><span id="prog1-label">0 / 0 acciones completadas</span><span id="prog1-pct">0%</span></div>
+          <div class="weeks">
+
+            <div class="week-row">
+              <div class="week-label">Semana 1</div>
+              <div class="week-items">
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Asignar comisiones: Booking/Ventas (2), Redes/Contenido (2), Coordinación/Facturación (Sergio + 1)</span><span class="item-tag it-an">Organización</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Cada miembro se compromete a un tiempo mínimo semanal para su comisión</span><span class="item-tag it-an">Organización</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Auditoría de perfiles: Instagram @epibrass, TikTok @epi.brass, YouTube @EPIBRASS</span><span class="item-tag it-an">Análisis</span></div>
+              </div>
+            </div>
+
+            <div class="week-row">
+              <div class="week-label">Semana 2</div>
+              <div class="week-items">
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Analizar referencias estéticas: Meute, Lucky Chops, Steam Brass Band, Gata Brass Band</span><span class="item-tag it-an">Estética</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Crear tablero Pinterest compartido con referencias de vestuario y estética visual</span><span class="item-tag it-an">Estética</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Buscar en Infojobs perfiles de diseño de moda, atrezo, vestuario escénico</span><span class="item-tag it-an">Estética</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Usar ChatGPT / Gemini como "diseñador de ropa": pedir propuestas conceptuales</span><span class="item-tag it-an">Estética</span></div>
+              </div>
+            </div>
+
+            <div class="week-row">
+              <div class="week-label">Semana 3</div>
+              <div class="week-items">
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Cada miembro presenta 5 propuestas estéticas (referencias, ideas, mood boards)</span><span class="item-tag it-an">Estética</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Reunión del grupo para decidir el concepto visual definitivo (no uniforme militar, sí concepto propio)</span><span class="item-tag it-an">Estética</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Solicitar presupuestos a 2–3 profesionales externos de vestuario/atrezo</span><span class="item-tag it-an">Estética</span></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FASE 2 -->
+    <div class="phase-block" id="ph2">
+      <div class="phase-head p2" onclick="tglPhase('ph2')">
+        <div class="phase-dot p2">2</div>
+        <div>
+          <div class="phase-label">Fase 2</div>
+          <div class="phase-name">Generación de Material</div>
+          <div class="phase-dates">Semanas 4–8 · Meses 2–3</div>
+        </div>
+        <span class="phase-toggle">+</span>
+      </div>
+      <div class="phase-body">
+        <div class="phase-inner">
+          <div class="obj-strip">
+            <span class="obj-strip-label">Objetivos</span>
+            <span class="obj-chip">Live Session Artes Búho</span>
+            <span class="obj-chip">Día de contenido mensual</span>
+            <span class="obj-chip">5–10 vídeos potentes</span>
+            <span class="obj-chip">Contenido de venta (bodas/eventos)</span>
+            <span class="obj-chip">Audio para Spotify</span>
+            <span class="obj-chip">Dossier actualizado</span>
+          </div>
+          <div class="prog-wrap"><div class="prog-bar p2" id="prog2" style="width:0%"></div></div>
+          <div class="prog-label"><span id="prog2-label">0 / 0 acciones completadas</span><span id="prog2-pct">0%</span></div>
+          <div class="weeks">
+
+            <div class="week-row">
+              <div class="week-label">Semanas 4–5</div>
+              <div class="week-items">
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Confirmar fecha Live Session con David (Artes Búho) — la estética debe estar 100% lista</span><span class="item-tag it-co">Grabación</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Primer "Día de contenido": juntarse todos y grabar 5–7 vídeos cortos con estética nueva</span><span class="item-tag it-co">Contenido</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Grabar 2 vídeos específicos de venta: uno para bodas, uno para eventos/fiestas privadas</span><span class="item-tag it-co">Contenido</span></div>
+              </div>
+            </div>
+
+            <div class="week-row">
+              <div class="week-label">Semana 6</div>
+              <div class="week-items">
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Grabación Live Session en Artes Búho (vídeo + audio profesional)</span><span class="item-tag it-co">Grabación</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Editar y postproducir el bruto de Lavapiés/Tapapiés para uso en redes</span><span class="item-tag it-co">Contenido</span></div>
+              </div>
+            </div>
+
+            <div class="week-row">
+              <div class="week-label">Semanas 7–8</div>
+              <div class="week-items">
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Subir audio de Live Session a Spotify a través de Motmo/Artes Búho</span><span class="item-tag it-co">Distribución</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Actualizar dossier con fotos, vídeo y material nuevo — diseñado por el miembro in-house</span><span class="item-tag it-co">Contenido</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Revisar y aprobar el pack de contenidos para comenzar la fase de captación</span><span class="item-tag it-co">Contenido</span></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FASE 3 -->
+    <div class="phase-block" id="ph3">
+      <div class="phase-head p3" onclick="tglPhase('ph3')">
+        <div class="phase-dot p3">3</div>
+        <div>
+          <div class="phase-label">Fase 3</div>
+          <div class="phase-name">Captación Digital &amp; Booking</div>
+          <div class="phase-dates">Semanas 9–11 · Meses 4–6</div>
+        </div>
+        <span class="phase-toggle">+</span>
+      </div>
+      <div class="phase-body">
+        <div class="phase-inner">
+          <div class="obj-strip">
+            <span class="obj-strip-label">Objetivos</span>
+            <span class="obj-chip">Meta Ads activos en España</span>
+            <span class="obj-chip">Publicar 1–2 vídeos/semana</span>
+            <span class="obj-chip">Booking social 1:1</span>
+            <span class="obj-chip">Bodas / eventos / pueblos</span>
+            <span class="obj-chip">Métricas semanales</span>
+          </div>
+          <div class="prog-wrap"><div class="prog-bar p3" id="prog3" style="width:0%"></div></div>
+          <div class="prog-label"><span id="prog3-label">0 / 0 acciones completadas</span><span id="prog3-pct">0%</span></div>
+          <div class="weeks">
+
+            <div class="week-row">
+              <div class="week-label">Semana 9</div>
+              <div class="week-items">
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Publicar los 5 vídeos del pack y activar Meta Ads en todos con presupuesto inicial bajo</span><span class="item-tag it-re">Ads</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Segmentar por España — bodas, eventos, fiestas — no publicitar en Latinoamérica</span><span class="item-tag it-re">Ads</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Comisión de Booking: contactar a seguidores nuevos vía DM — presentación natural + oferta de bolo</span><span class="item-tag it-re">Booking</span></div>
+              </div>
+            </div>
+
+            <div class="week-row">
+              <div class="week-label">Semana 10</div>
+              <div class="week-items">
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Revisar métricas: parar campañas de los 4 vídeos que peor funcionen, doblar inversión en el mejor</span><span class="item-tag it-re">Ads</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Redirigir el vídeo ganador a públicos nuevos que no hayan interactuado aún</span><span class="item-tag it-re">Ads</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Booking: preguntar a seguidores si tienen pueblo/peña/evento. Ofrecer precio de lanzamiento</span><span class="item-tag it-re">Booking</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Contactar a Artes Búho, Agallón Rock y otros contactos directos con el nuevo material</span><span class="item-tag it-re">Booking</span></div>
+              </div>
+            </div>
+
+            <div class="week-row">
+              <div class="week-label">Semana 11</div>
+              <div class="week-items">
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Día de contenido #2: grabar 5–7 vídeos nuevos para mantener frecuencia de publicación</span><span class="item-tag it-co">Contenido</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Revisar retorno de inversión publicitaria: ¿cuántos leads/bolos por euro invertido?</span><span class="item-tag it-re">Ads</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Reportar situación a Artes Búho para ajustar estrategia según resultados reales</span><span class="item-tag it-re">Reporting</span></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FASE 4 -->
+    <div class="phase-block" id="ph4">
+      <div class="phase-head p4" onclick="tglPhase('ph4')">
+        <div class="phase-dot p4">✓</div>
+        <div>
+          <div class="phase-label">Fase 4</div>
+          <div class="phase-name">Escala &amp; Posicionamiento</div>
+          <div class="phase-dates">Semana 12 → Meses 6–12</div>
+        </div>
+        <span class="phase-toggle">+</span>
+      </div>
+      <div class="phase-body">
+        <div class="phase-inner">
+          <div class="obj-strip">
+            <span class="obj-strip-label">Objetivos</span>
+            <span class="obj-chip">Festivales de brass contactados</span>
+            <span class="obj-chip">SGAE registrada</span>
+            <span class="obj-chip">Editorial activa (Motmo)</span>
+            <span class="obj-chip">Dossier premium listo</span>
+            <span class="obj-chip">Incremento de caché</span>
+          </div>
+          <div class="prog-wrap"><div class="prog-bar p4" id="prog4" style="width:0%"></div></div>
+          <div class="prog-label"><span id="prog4-label">0 / 0 acciones completadas</span><span id="prog4-pct">0%</span></div>
+          <div class="weeks">
+
+            <div class="week-row">
+              <div class="week-label">Mes 6</div>
+              <div class="week-items">
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Activar editorial a través de Artes Búho (Motmo) para registro en SGAE</span><span class="item-tag it-ci">Editorial</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Registrar repertorio propio y versiones en hoja de variedades</span><span class="item-tag it-ci">Editorial</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Revisar métricas globales y decidir si escalar presupuesto publicitario</span><span class="item-tag it-ci">Estrategia</span></div>
+              </div>
+            </div>
+
+            <div class="week-row">
+              <div class="week-label">Mes 7–9</div>
+              <div class="week-items">
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Enviar dossier actualizado a Real Brass Festival, Baltum y Galaico Brass Festival</span><span class="item-tag it-ci">Booking</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Explorar colaboraciones vocales externas como "Epi&amp;Brass feat. cantante" — Epi&amp;Brass como marca principal</span><span class="item-tag it-ci">Contenido</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Evaluar si ampliar presencia a Alicante y Valencia aprovechando los miembros que residen allí</span><span class="item-tag it-ci">Booking</span></div>
+              </div>
+            </div>
+
+            <div class="week-row">
+              <div class="week-label">Mes 10–12</div>
+              <div class="week-items">
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Valorar subcontratar management o booking externo si el volumen de bolos lo justifica</span><span class="item-tag it-ci">Gestión</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Revisar caché y condiciones de contratación según tracción real del proyecto</span><span class="item-tag it-ci">Gestión</span></div>
+                <div class="item" onclick="toggleItem(this)"><div class="item-check">✓</div><span class="item-text">Reunión de cierre anual con Artes Búho: hoja de ruta del año 2</span><span class="item-tag it-ci">Estrategia</span></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /timeline -->
+</section>
+
+</main>
+<footer class="page-contact" aria-label="Contacto Artes Buho">
+  <div>◎ @artesbuho</div>
+  <div>✉ contratacion@artesbuho.com<br><span style="font-weight:600;color:var(--ink-light)">Av. Manzanares 196, Madrid CP 28026</span></div>
+  <div class="pill">↗ www.artesbuho.com ↖</div>
+  <div>☎ +34 649 63 59 07</div>
+</footer>
+</div>
+
+<script>
+const INFO_STORE = 'info-maestra-epiybrass:v1:';
+const EDITABLE_BLOCKS = '.masthead, .card, .pcard, .slogan, .fcard, .srow, .icard';
+const EDITABLE_FIELDS = '.mh-eye,.mh-title,.mh-tag,.mi-l,.mi-v,.cl,.ct,p,.bio-line,.pn,.pr,.po,.slogan-t,.slogan-c,.qb,.tag,.press-logo,.press-outlet,.st,.sm,.snum,.iq-t,.ia-t,.fcn,.fcd,.fct,.fk,.fv,.swl,.trait-label,.tone-title span,.tone-desc,.read-more,.fcr';
+
+restoreSavedSections();
+
+function storageGet(key) {
+  try { return window.localStorage.getItem(key); }
+  catch (err) { return null; }
+}
+
+function storageSet(key, value) {
+  try { window.localStorage.setItem(key, value); }
+  catch (err) { console.warn('No se pudo guardar localmente:', err); }
+}
+
+function cleanForSave(node) {
+  const clone = node.cloneNode(true);
+  clone.querySelectorAll('.edit-tools').forEach(el => el.remove());
+  clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+  clone.querySelectorAll('.editing').forEach(el => el.classList.remove('editing'));
+  return clone.innerHTML;
+}
+
+function restoreSavedSections() {
+  document.querySelectorAll('.sec').forEach(sec => {
+    const saved = storageGet(INFO_STORE + 'section:' + sec.id);
+    if (saved) sec.innerHTML = saved;
+  });
+  const masthead = document.querySelector('.masthead');
+  const savedMasthead = storageGet(INFO_STORE + 'masthead');
+  if (masthead && savedMasthead) masthead.innerHTML = savedMasthead;
+}
+
+function saveScope(block) {
+  normalizeInputs(block);
+  const section = block.closest('.sec');
+  if (section) storageSet(INFO_STORE + 'section:' + section.id, cleanForSave(section));
+  if (block.classList.contains('masthead')) storageSet(INFO_STORE + 'masthead', cleanForSave(block));
+  updateFeaturedPress();
+}
+
+function normalizeInputs(scope) {
+  scope.querySelectorAll('input').forEach(input => {
+    if (input.type === 'checkbox') {
+      if (input.checked) input.setAttribute('checked', '');
+      else input.removeAttribute('checked');
+    } else if (input.type !== 'file') {
+      input.setAttribute('value', input.value);
+    }
+  });
+}
+
+function initEditableBlocks() {
+  document.querySelectorAll(EDITABLE_BLOCKS).forEach(block => {
+    block.classList.add('editable-block');
+    const directChildren = Array.from(block.children);
+    const hasDirectCopy = directChildren.some(el => el.classList && (el.classList.contains('cb') || el.classList.contains('cb-inline')));
+    const hasDirectTools = directChildren.some(el => el.classList && el.classList.contains('edit-tools'));
+    block.classList.toggle('has-copy', hasDirectCopy);
+    if (hasDirectTools) return;
+    const tools = document.createElement('div');
+    tools.className = 'edit-tools';
+    tools.innerHTML = '<button class="edit-btn" type="button" onclick="editBlock(this)">Editar</button><button class="edit-btn save" type="button" style="display:none" onclick="saveBlock(this)">Guardar</button>';
+    const copyButton = directChildren.find(el => el.classList && (el.classList.contains('cb') || el.classList.contains('cb-inline')));
+    if (copyButton) block.insertBefore(tools, copyButton);
+    else block.appendChild(tools);
+  });
+}
+
+function editableFields(block) {
+  return Array.from(block.querySelectorAll(EDITABLE_FIELDS)).filter(el => !el.closest('.edit-tools') && !el.closest('button') && !el.closest('input'));
+}
+
+function editBlock(btn) {
+  const block = btn.closest('.editable-block');
+  block.dataset.beforeEdit = cleanForSave(block);
+  block.classList.add('editing');
+  editableFields(block).forEach(el => el.setAttribute('contenteditable', 'true'));
+  btn.style.display = 'none';
+  btn.nextElementSibling.style.display = 'inline-flex';
+}
+
+function saveBlock(btn) {
+  const block = btn.closest('.editable-block');
+  editableFields(block).forEach(el => el.removeAttribute('contenteditable'));
+  block.classList.remove('editing');
+  btn.style.display = 'none';
+  btn.previousElementSibling.style.display = 'inline-flex';
+  saveScope(block);
+}
+
+function afterAdd(block) {
+  initEditableBlocks();
+  saveScope(block);
+  const edit = Array.from(block.children).find(el => el.classList && el.classList.contains('edit-tools'))?.querySelector('.edit-btn');
+  if (edit) editBlock(edit);
+}
+
+function addBio() {
+  const grid = document.querySelector('#bios .g2');
+  const block = document.createElement('div');
+  block.className = 'pcard';
+  block.innerHTML = '<div class="ph"><div class="pn">Nombre Artista</div><div class="pr">Rol / instrumento / función</div><div class="po">Alias / ciudad / año</div></div><div class="pb"><p>Escribe aquí la biografía específica de esta persona: recorrido, papel dentro del proyecto, lenguaje artístico y aportación al directo o al disco.</p><button class="cb-inline" onclick="cpEl(this)">Copiar bio</button></div>';
+  grid.appendChild(block);
+  afterAdd(block);
+}
+
+function addFormat() {
+  const grid = document.querySelector('#espectaculo .g3');
+  const block = document.createElement('div');
+  block.className = 'fcard';
+  block.innerHTML = '<div class="fch"><div class="fcn">Nuevo formato</div><div class="fcd">Duración</div></div><div class="fcb"><div class="fcr"><span class="fci">▸</span><span class="fct">Contexto de contratación</span></div><div class="fcr"><span class="fci">▸</span><span class="fct">Necesidades técnicas / artísticas</span></div><div class="fcr"><span class="fci">▸</span><span class="fct">Valor diferencial del formato</span></div></div>';
+  grid.appendChild(block);
+  afterAdd(block);
+}
+
+function addSong() {
+  const section = document.getElementById('discografia');
+  const count = section.querySelectorAll('.srow').length + 1;
+  const block = document.createElement('div');
+  block.className = 'srow';
+  block.innerHTML = '<div class="snum">' + String(count).padStart(2, '0') + '</div><div class="si"><div class="st">Título canción / próximo single</div><div class="sm">Artista · Género / estilo · Estado del lanzamiento</div></div><div class="slinks"><a class="sl" href="https://www.youtube.com/" target="_blank">Videoclip ↗</a><a class="sl" href="https://open.spotify.com/" target="_blank">Plataformas ↗</a><a class="sl" href="https://drive.google.com/" target="_blank">Pitch oficial</a></div><button class="cb-inline" style="margin:0;flex-shrink:0" onclick="cpEl(this)">Copiar</button>';
+  section.appendChild(block);
+  afterAdd(block);
+}
+
+function addInterview() {
+  const section = document.getElementById('entrevistas');
+  const block = document.createElement('div');
+  block.className = 'icard open';
+  block.innerHTML = '<div class="iq" onclick="tgl(this)"><span class="iq-t">Nueva pregunta editable</span><span class="iq-i">+</span></div><div class="ia"><div class="ia-t">Respuesta tipo editable para entrevistas, convocatorias, redes o pitchings.</div><button class="cb-inline" onclick="cpEl(this)">Copiar respuesta</button></div>';
+  section.appendChild(block);
+  afterAdd(block);
+}
+
+function addPressAppearance() {
+  const card = document.querySelector('#prensa .card');
+  const row = document.createElement('div');
+  row.setAttribute('data-press-source', '');
+  row.setAttribute('style', 'padding:10px 0;border-bottom:1px solid var(--border)');
+  row.innerHTML = '<div class="press-outlet">Nuevo medio <span class="pt dig">Medio</span></div><p style="font-size:13px;color:var(--ink-mid)">Nombre del programa, publicación o aparición · enlace / fecha / contexto</p>';
+  card.insertBefore(row, card.querySelector('.cb'));
+  afterAdd(card);
+}
+
+function addPressNote() {
+  const section = document.getElementById('prensa');
+  const block = document.createElement('div');
+  block.className = 'card';
+  block.setAttribute('style', 'position:relative');
+  block.innerHTML = '<div class="cl teal">Nota de prensa — Nuevo contenido</div><div class="ct">Título / single / evento</div><p>Texto editable de la nota de prensa. Añade aquí el cuerpo principal, enfoque, fechas, enlaces y contexto mediático.</p><button class="cb" onclick="cp(this)">Copiar</button>';
+  section.appendChild(block);
+  afterAdd(block);
+}
+
+function previewMockup(input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const img = input.closest('.mockup-box').querySelector('.mockup-preview');
+    img.src = reader.result;
+    saveScope(input.closest('.editable-block'));
+  };
+  reader.readAsDataURL(file);
+}
+
+function syncTrait(trait) {
+  const check = trait.querySelector('.trait-check');
+  const range = trait.querySelector('.trait-range');
+  const number = trait.querySelector('.trait-number');
+  const ring = trait.querySelector('.ring');
+  let value = Math.max(0, Math.min(100, parseInt(range.value || number.value || 0, 10)));
+  range.value = value;
+  number.value = value;
+  ring.style.setProperty('--pct', check.checked ? value : 0);
+  ring.dataset.pct = (check.checked ? value : 0) + '%';
+  trait.classList.toggle('off', !check.checked);
+}
+
+function syncTone(pill) {
+  const check = pill.querySelector('.tone-check');
+  if (check) pill.classList.toggle('off', !check.checked);
+}
+
+function initControls() {
+  document.querySelectorAll('[data-trait]').forEach(syncTrait);
+  document.querySelectorAll('.tone-pill').forEach(syncTone);
+}
+
+function updateFeaturedPress() {
+  const target = document.getElementById('featured-press-strip');
+  if (!target) return;
+  const items = Array.from(document.querySelectorAll('#prensa [data-press-source]')).map(row => {
+    const outlet = row.querySelector('.press-outlet')?.childNodes[0]?.textContent.trim();
+    const detail = row.querySelector('p')?.innerText.trim();
+    return outlet || detail;
+  }).filter(Boolean).slice(0, 6);
+  if (!items.length) return;
+  target.innerHTML = items.map(text => '<span class="press-logo">' + text + '</span>').join('');
+}
+
+document.addEventListener('input', e => {
+  if (e.target.classList.contains('trait-range')) {
+    e.target.closest('[data-trait]').querySelector('.trait-number').value = e.target.value;
+    syncTrait(e.target.closest('[data-trait]'));
+  }
+  if (e.target.classList.contains('trait-number')) {
+    e.target.closest('[data-trait]').querySelector('.trait-range').value = e.target.value;
+    syncTrait(e.target.closest('[data-trait]'));
+  }
+});
+
+document.addEventListener('change', e => {
+  if (e.target.classList.contains('trait-check')) syncTrait(e.target.closest('[data-trait]'));
+  if (e.target.classList.contains('tone-check')) syncTone(e.target.closest('.tone-pill'));
+});
+
+document.addEventListener('click', e => {
+  const link = e.target.closest('a');
+  if (!link || !link.closest('.editing')) return;
+  e.preventDefault();
+  const url = prompt('Pega aquí el enlace correcto:', link.getAttribute('href') || '');
+  if (url !== null) link.setAttribute('href', url || '#');
+});
+// ── NAV ──────────────────────────────────────────────────
+function show(id, el) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
+  const sec = document.getElementById(id);
+  if (sec) sec.classList.add('active');
+  if (el) el.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── COPY ─────────────────────────────────────────────────
+function cp(btn) {
+  const block = btn.closest('.card, .press-item, .pcard, .srow, .icard, .slogan, .fcard');
+  copyStr(btn, collectText(block));
+}
+function cpEl(btn) {
+  const block = btn.closest('.card, .press-item, .pcard, .srow, .icard, .slogan, .fcard') || btn.parentElement;
+  copyStr(btn, collectText(block));
+}
+function collectText(root) {
+  if (!root) return '';
+  const clone = root.cloneNode(true);
+  clone.querySelectorAll('button, input, .edit-tools, .slinks, .quick-links').forEach(el => el.remove());
+  return clone.innerText.split('\n').map(t => t.trim()).filter(t => t && !t.startsWith('[')).join('\n');
+}
+function copyStr(btn, text) {
+  const write = navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject();
+  write.catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+  }).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = 'Copiado';
+    btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('ok'); }, 2000);
+  });
+}
+
+// ── INTERVIEW TOGGLE ──────────────────────────────────────
+function tgl(el) {
+  el.closest('.icard').classList.toggle('open');
+}
+
+// ── PHASE TOGGLE ──────────────────────────────────────────
+function tglPhase(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+// ── ITEM CHECK + PROGRESS ─────────────────────────────────
+function toggleItem(item) {
+  item.classList.toggle('done');
+  updateProgress();
+}
+
+function updateProgress() {
+  const phases = [
+    {id:'ph1', prog:'prog1', label:'prog1-label', pct:'prog1-pct', cls:'p1'},
+    {id:'ph2', prog:'prog2', label:'prog2-label', pct:'prog2-pct', cls:'p2'},
+    {id:'ph3', prog:'prog3', label:'prog3-label', pct:'prog3-pct', cls:'p3'},
+    {id:'ph4', prog:'prog4', label:'prog4-label', pct:'prog4-pct', cls:'p4'},
+  ];
+  let totalAll = 0, doneAll = 0;
+  phases.forEach(ph => {
+    const block = document.getElementById(ph.id);
+    if (!block) return;
+    const items = block.querySelectorAll('.item');
+    const done = block.querySelectorAll('.item.done');
+    const total = items.length;
+    const d = done.length;
+    const p = total ? Math.round(d/total*100) : 0;
+    document.getElementById(ph.prog).style.width = p + '%';
+    document.getElementById(ph.label).textContent = d + ' / ' + total + ' acciones completadas';
+    document.getElementById(ph.pct).textContent = p + '%';
+    totalAll += total; doneAll += d;
+  });
+  document.getElementById('total-items').textContent = totalAll;
+  document.getElementById('done-items').textContent = doneAll;
+  document.getElementById('pct-done').textContent = totalAll ? Math.round(doneAll/totalAll*100) + '%' : '0%';
+}
+
+// ── TIER LOCK SYSTEM ───────────────────────────────────────
+// Lee window.PAVONEO_CONFIG (cargado desde config.js) y aplica
+// el bloqueo visual a las secciones marcadas como `locked: true`.
+// Artes Búho controla esto cambiando config.js, nunca este HTML.
+function applyTierConfig() {
+  const cfg = window.PAVONEO_CONFIG;
+  if (!cfg) return; // si no hay config.js, todo queda desbloqueado por defecto
+
+  // Badge de tier en la sidebar
+  const badge = document.getElementById('sb-tier-badge');
+  if (badge && cfg.tier) {
+    const tierLabels = { pavoneo: 'PAVONEO · INFO MAESTRA', infra: 'INFRA · INFO MAESTRA' };
+    badge.textContent = tierLabels[cfg.tier] || 'INFO MAESTRA';
+    if (cfg.tier === 'infra') badge.classList.add('violet');
+  }
+
+  const locked = cfg.locked || {};
+  const msg = cfg.lockMessage || {
+    title: 'Contenido bloqueado',
+    body: 'Esta sección no está disponible en tu plan actual.',
+    cta: 'Más información'
+  };
+
+  Object.keys(locked).forEach(sectionId => {
+    const isLocked = locked[sectionId];
+    const navIcon = document.querySelector('[data-lock-icon="' + sectionId + '"]');
+    const sec = document.getElementById(sectionId);
+
+    if (navIcon) navIcon.textContent = isLocked ? '🔒' : '';
+
+    if (!sec || !isLocked) return;
+
+    sec.classList.add('is-locked');
+    if (sec.querySelector('.lock-overlay')) return; // ya insertado, evita duplicados
+
+    const overlay = document.createElement('div');
+    overlay.className = 'lock-overlay';
+    overlay.innerHTML =
+      '<div class="lock-card">' +
+        '<div class="lock-icon">🔒</div>' +
+        '<div class="lock-title">' + msg.title + '</div>' +
+        '<div class="lock-body">' + msg.body + '</div>' +
+        '<button class="lock-cta" type="button" onclick="window.location.href=\'mailto:contratacion@artesbuho.com?subject=Quiero%20desbloquear%20mi%20Info%20Maestra\'">' + msg.cta + ' →</button>' +
+        '<div class="lock-badge">Artes Búho · Plan Infra</div>' +
+      '</div>';
+    sec.appendChild(overlay);
+  });
+}
+
+// init
+function initInfoMaestra() {
+  try {
+    initEditableBlocks();
+    initControls();
+    updateFeaturedPress();
+    updateProgress();
+    applyTierConfig();
+  } catch (err) {
+    console.error('No se pudieron preparar los controles editables:', err);
+  }
+}
+initInfoMaestra();
+document.addEventListener('DOMContentLoaded', initInfoMaestra);
+</script>
+</body>
+</html>
