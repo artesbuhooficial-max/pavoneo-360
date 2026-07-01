@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Epi&amp;Brass · Dashboard Inversión en Redes</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:      #F7F2E5;
+  --cream2:     #FFF8E8;
+  --parchment:  #EADDBF;
+  --paper:      #FFFFFF;
+  --ink:        #071C48;
+  --ink-mid:    #24406E;
+  --ink-light:  #6A7EA6;
+  --blue:       #0757D8;
+  --blue-2:     #0B66FF;
+  --blue-soft:  #EAF2FF;
+  --blue-deep:  #043C9F;
+  --teal:       #0757D8;
+  --teal-l:     #3E83FF;
+  --teal-pale:  #EAF2FF;
+  --terra:      #D59A18;
+  --terra-pale: #FFF2CE;
+  --gold:       #E8B83E;
+  --gold-pale:  #FFF5D7;
+  --sage:       #456C8F;
+  --sage-pale:  #EEF5FB;
+  --violet:     #2347A5;
+  --violet-pale:#EDF2FF;
+  --green:      #1E8A5E;
+  --green-pale: #E8F7F1;
+  --border:     #D8E3F5;
+  --sh:         0 10px 28px rgba(7,28,72,.07);
+  --sh-md:      0 18px 52px rgba(7,28,72,.13);
+  --r:          10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,#f8fbff 0%,#fff 44%,#fff8e8 100%);color:var(--ink);font-size:15px;line-height:1.65;min-height:100vh}
+a{color:var(--teal);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ── LAYOUT ─────────────── */
+.app{display:flex;min-height:100vh}
+
+/* ── SIDEBAR ────────────── */
+.sidebar{
+  width:262px;min-width:262px;
+  background:linear-gradient(180deg,#0757D8 0%,#054CC2 52%,#03378E 100%);color:#fff;
+  position:sticky;top:0;height:100vh;
+  overflow-y:auto;display:flex;flex-direction:column;
+  z-index:100;scrollbar-width:none;
+  box-shadow:10px 0 34px rgba(7,87,216,.16)
+}
+.sidebar::-webkit-scrollbar{display:none}
+.sb-head{padding:28px 18px 22px;border-bottom:1px solid rgba(255,255,255,.12)}
+.brand-lockup{display:flex;align-items:center;gap:11px;margin-bottom:14px}
+.brand-mark{position:relative;width:64px;height:58px;flex:0 0 auto;filter:drop-shadow(0 10px 16px rgba(0,0,0,.12))}
+.brand-mark img{width:100%;height:100%;object-fit:contain;display:block}
+.brand-word{font-weight:900;line-height:.82;color:var(--cream2);font-size:18px;letter-spacing:-.05em}
+.brand-word span{display:block}
+.brand-note{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,248,232,.66);font-weight:700;margin-top:5px}
+.sb-project{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:10px;padding:12px 13px}
+.sb-logo{font-family:'DM Sans',sans-serif;font-size:16px;font-weight:900;color:#fff;margin-bottom:3px;line-height:1.2}
+.sb-sub{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.38);font-weight:500;margin-top:2px}
+.sb-badge{display:inline-block;margin-top:10px;background:var(--gold);color:var(--ink);font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:3px 10px;border-radius:20px}
+.sb-head-links{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.sb-link{font-size:10px;color:rgba(255,255,255,.72);display:flex;align-items:center;gap:4px;transition:.15s}
+.sb-link:hover{color:var(--teal-l);text-decoration:none}
+.sb-link .dot{width:5px;height:5px;border-radius:50%;background:currentColor;display:inline-block}
+.sidebar nav{padding:14px 0;flex:1}
+.ng-label{padding:10px 22px 4px;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,248,232,.68);font-weight:700}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 22px;font-size:12.5px;font-weight:400;color:rgba(255,255,255,.82);cursor:pointer;transition:.16s;border-left:2px solid transparent;margin:1px 9px;border-radius:8px;text-decoration:none}
+.ni:hover{color:#fff;background:rgba(255,255,255,.11);border-left-color:rgba(255,248,232,.55);text-decoration:none}
+.ni.active{color:var(--blue-deep);background:var(--cream2);border-left-color:var(--cream2);font-weight:800;box-shadow:0 8px 20px rgba(0,0,0,.14)}
+.ni .ic{width:15px;text-align:center;font-style:normal;flex-shrink:0;opacity:.65}
+.sb-foot{padding:16px 22px;border-top:1px solid rgba(255,255,255,.12);font-size:11px;color:rgba(255,255,255,.72);line-height:1.5}
+.sb-foot strong{color:#fff}
+
+/* ── MAIN ───────────────── */
+.main{flex:1;min-width:0;padding:28px 34px 60px;position:relative}
+
+/* ── MASTHEAD ───────────── */
+.masthead{
+  background:linear-gradient(135deg,#071C48 0%,#0B3E9A 58%,#0757D8 100%);
+  color:#fff;padding:36px 46px 28px;position:relative;overflow:hidden;
+  border-radius:18px;box-shadow:var(--sh-md);margin-bottom:28px
+}
+.masthead::before{
+  content:'';position:absolute;right:-60px;top:-80px;
+  width:300px;height:300px;border-radius:50%;
+  background:radial-gradient(circle,rgba(232,184,62,.22) 0%,transparent 70%);
+  pointer-events:none
+}
+.masthead::after{
+  content:'📊';position:absolute;right:52px;top:50%;transform:translateY(-50%);
+  font-size:72px;opacity:.12;pointer-events:none
+}
+.mh-eye{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);font-weight:800;margin-bottom:10px}
+.mh-title{font-family:'DM Sans',sans-serif;font-size:38px;font-weight:900;line-height:1;margin-bottom:8px;letter-spacing:-.04em}
+.mh-title em{color:var(--gold);font-style:normal}
+.mh-sub{font-size:13px;color:rgba(255,255,255,.65);margin-bottom:22px}
+.mh-pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:6px 14px;font-size:11px;font-weight:600;color:#fff}
+.pill-dot{width:6px;height:6px;border-radius:50%;background:var(--gold)}
+
+/* ── KPI GRID ───────────── */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px}
+.kpi{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:22px 22px 18px;box-shadow:var(--sh);position:relative;overflow:hidden;transition:box-shadow .18s}
+.kpi:hover{box-shadow:var(--sh-md)}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent,var(--blue))}
+.kpi-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--ink-light);margin-bottom:10px}
+.kpi-val{font-family:'Playfair Display',serif;font-size:34px;font-weight:700;color:var(--ink);line-height:1;margin-bottom:4px}
+.kpi-val sup{font-size:16px;font-weight:400;vertical-align:super}
+.kpi-desc{font-size:11px;color:var(--ink-light);line-height:1.4}
+.kpi-icon{position:absolute;bottom:16px;right:18px;font-size:28px;opacity:.1}
+.kpi.blue{--accent:var(--blue)}
+.kpi.gold{--accent:var(--gold)}
+.kpi.green{--accent:var(--green)}
+.kpi.terra{--accent:var(--terra)}
+.kpi.sage{--accent:var(--sage)}
+.kpi.violet{--accent:var(--violet)}
+
+/* highlight kpi */
+.kpi.featured{
+  background:linear-gradient(135deg,var(--ink) 0%,#163480 100%);
+  color:#fff;border-color:rgba(255,255,255,.1)
+}
+.kpi.featured .kpi-label{color:rgba(255,255,255,.5)}
+.kpi.featured .kpi-val{color:#fff}
+.kpi.featured .kpi-val sup{color:var(--gold)}
+.kpi.featured .kpi-desc{color:rgba(255,255,255,.45)}
+.kpi.featured .kpi-icon{opacity:.08}
+.kpi.featured::before{background:var(--gold)}
+
+/* ── SECTION ────────────── */
+.sec-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--ink);margin:28px 0 14px;padding-bottom:12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.sec-eye{font-size:9px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--teal);margin-right:6px}
+
+/* ── CARD ───────────────── */
+.card{background:rgba(255,255,255,.92);border:1px solid var(--border);border-radius:var(--r);padding:24px 28px;margin-bottom:14px;box-shadow:var(--sh);position:relative}
+.card:hover{box-shadow:var(--sh-md)}
+.cl{font-size:9px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;margin-bottom:8px}
+.cl.teal{color:var(--teal)}.cl.gold{color:var(--terra)}.cl.sage{color:var(--sage)}.cl.green{color:var(--green)}
+.ct{font-family:'Playfair Display',serif;font-size:17px;font-weight:600;margin-bottom:10px;color:var(--ink)}
+
+/* ── GRID ───────────────── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+
+/* ── FUNNEL ─────────────── */
+.funnel{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.funnel-row{display:grid;grid-template-columns:110px 1fr 80px;gap:12px;align-items:center}
+.funnel-label{font-size:11.5px;font-weight:600;color:var(--ink-mid);text-align:right}
+.funnel-track{height:28px;background:var(--cream2);border-radius:6px;overflow:hidden;position:relative}
+.funnel-bar{height:100%;border-radius:6px;display:flex;align-items:center;padding-left:10px;font-size:10.5px;font-weight:700;color:#fff;transition:width .6s ease}
+.funnel-num{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:var(--ink);text-align:right}
+
+/* ── INTERACTION LIST ────── */
+.int-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+.int-item{background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px 16px;display:flex;align-items:center;gap:10px}
+.int-ico{font-size:20px;flex-shrink:0}
+.int-body{}
+.int-name{font-size:12px;font-weight:700;color:var(--ink);line-height:1.2}
+.int-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--teal);margin-top:2px}
+.int-val.highlight{color:var(--green);font-weight:700}
+.int-val.dim{color:var(--ink-light)}
+
+/* ── RATIO BAR ───────────── */
+.ratio-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.ratio-label{font-size:12px;font-weight:600;color:var(--ink-mid);min-width:160px}
+.ratio-track{flex:1;height:10px;background:var(--cream2);border-radius:5px;overflow:hidden}
+.ratio-fill{height:100%;border-radius:5px}
+.ratio-val{font-family:'DM Mono',monospace;font-size:12px;color:var(--ink);min-width:48px;text-align:right}
+
+/* ── NOTE BOX ────────────── */
+.note{background:var(--gold-pale);border:1px solid var(--parchment);border-radius:var(--r);padding:16px 20px;font-size:13px;color:var(--ink-mid);line-height:1.65}
+.note strong{color:var(--ink)}
+.note-title{font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--terra);margin-bottom:8px}
+
+/* ── BOTTOM BAR ──────────── */
+.bottom-bar{
+  position:fixed;left:262px;right:0;bottom:0;z-index:95;
+  display:flex;align-items:center;justify-content:space-between;gap:18px;
+  padding:10px 34px;background:rgba(255,255,255,.94);backdrop-filter:blur(16px);
+  border-top:1px solid var(--border);box-shadow:0 -12px 32px rgba(7,28,72,.08);
+  font-size:11.5px;color:var(--ink-mid);font-weight:600
+}
+.bottom-bar a{color:var(--teal)}
+
+/* ── RESPONSIVE ─────────── */
+@media(max-width:1100px){.kpi-grid{grid-template-columns:1fr 1fr}.int-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){
+  .app{display:block}.sidebar{position:relative;width:100%;height:auto;min-width:0}.main{padding:18px 16px 80px}
+  .kpi-grid{grid-template-columns:1fr 1fr}.g2,.g3{grid-template-columns:1fr}.int-grid{grid-template-columns:1fr}
+  .masthead{padding:28px 24px}.bottom-bar{left:0;display:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-head">
+    <div class="brand-lockup" aria-label="Artes Buho">
+      <div class="brand-mark" aria-hidden="true">
+        <img alt="" src="data:image/png;base64,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">
+      </div>
+      <div>
+        <div class="brand-word"><span>Pavoneo</span><span>360</span></div>
+        <div class="brand-note">Artes Buho Management</div>
+      </div>
+    </div>
+    <div class="sb-project">
+      <div class="sb-logo">Epi&amp;Brass</div>
+      <div class="sb-sub">Brass House · Madrid</div>
+      <div class="sb-badge">📊 Inversión en Redes</div>
+      <div class="sb-head-links">
+        <a href="https://www.instagram.com/epibrass/" target="_blank" class="sb-link"><span class="dot"></span> Instagram</a>
+        <a href="https://www.tiktok.com/@epi.brass" target="_blank" class="sb-link"><span class="dot"></span> TikTok</a>
+        <a href="https://www.youtube.com/@EPIBRASS" target="_blank" class="sb-link"><span class="dot"></span> YouTube</a>
+      </div>
+    </div>
+  </div>
+  <nav>
+    <div class="ng-label">Campañas</div>
+    <div class="ni active"><i class="ic">◈</i> Jun 2026 · Campaña Live Sessions</div>
+
+    <div class="ng-label" style="margin-top:8px">Documentos</div>
+    <a class="ni" href="index.html"><i class="ic">◉</i> Info Maestra</a>
+    <a class="ni" href="index.html#pavoneo"><i class="ic">✦</i> Pavoneo 360°</a>
+  </nav>
+  <div class="sb-foot">
+    <strong>Oficina del Artista</strong><br>
+    epibrassband@gmail.com<br>
+    Informe: Junio 2026
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div class="mh-eye">Análisis de Inversión Publicitaria · Meta Ads · Consultoría Artes Búho 2026</div>
+  <div class="mh-title">Dashboard <em>Redes</em></div>
+  <div class="mh-sub">Epi&amp;Brass — Campaña Live Sessions · 31 mayo – 29 junio 2026</div>
+  <div class="mh-pills">
+    <span class="pill"><span class="pill-dot"></span>Meta Ads · Instagram</span>
+    <span class="pill"><span class="pill-dot"></span>Inversión: €79,88</span>
+    <span class="pill"><span class="pill-dot"></span>30 días activa</span>
+    <span class="pill"><span class="pill-dot"></span>Atribución: 7d clic · 1d vista</span>
+  </div>
+</div>
+
+<!-- ── KPI ROW 1: Métricas principales ── -->
+<div class="kpi-grid">
+
+  <div class="kpi featured">
+    <div class="kpi-label">Inversión total</div>
+    <div class="kpi-val"><sup>€</sup>79,88</div>
+    <div class="kpi-desc">Presupuesto ejecutado<br>31 may – 29 jun 2026</div>
+    <div class="kpi-icon">💶</div>
+  </div>
+
+  <div class="kpi blue">
+    <div class="kpi-label">Impresiones</div>
+    <div class="kpi-val">62.241</div>
+    <div class="kpi-desc">Veces que el anuncio<br>se mostró en pantalla</div>
+    <div class="kpi-icon">👁</div>
+  </div>
+
+  <div class="kpi sage">
+    <div class="kpi-label">Alcance</div>
+    <div class="kpi-val">37.874</div>
+    <div class="kpi-desc">Personas únicas<br>que vieron el anuncio</div>
+    <div class="kpi-icon">🎯</div>
+  </div>
+
+  <div class="kpi green">
+    <div class="kpi-label">Interacciones</div>
+    <div class="kpi-val">48.590</div>
+    <div class="kpi-desc">Acciones totales<br>sobre la publicación</div>
+    <div class="kpi-icon">⚡</div>
+  </div>
+
+</div>
+
+<!-- ── KPI ROW 2: Métricas derivadas ── -->
+<div class="kpi-grid">
+
+  <div class="kpi gold">
+    <div class="kpi-label">CPM</div>
+    <div class="kpi-val"><sup>€</sup>1,28</div>
+    <div class="kpi-desc">Coste por cada 1.000<br>impresiones</div>
+    <div class="kpi-icon">📉</div>
+  </div>
+
+  <div class="kpi green">
+    <div class="kpi-label">Coste / interacción</div>
+    <div class="kpi-val"><sup>€</sup>0,0016</div>
+    <div class="kpi-desc">Precio por cada acción<br>generada (muy eficiente)</div>
+    <div class="kpi-icon">✅</div>
+  </div>
+
+  <div class="kpi sage">
+    <div class="kpi-label">Frecuencia</div>
+    <div class="kpi-val">1,64<sup style="font-size:14px">x</sup></div>
+    <div class="kpi-desc">Veces promedio que cada<br>persona vio el anuncio</div>
+    <div class="kpi-icon">🔁</div>
+  </div>
+
+  <div class="kpi terra" style="--accent:var(--terra)">
+    <div class="kpi-label">Visionado completo</div>
+    <div class="kpi-val">19,3<sup style="font-size:14px">%</sup></div>
+    <div class="kpi-desc">Del 25% inicial al<br>100% de reproducción</div>
+    <div class="kpi-icon">🎬</div>
+  </div>
+
+</div>
+
+<!-- ── EMBUDO DE VÍDEO ── -->
+<div class="sec-title">
+  <span class="sec-eye">Retención</span>
+  Embudo de reproducción de vídeo
+</div>
+
+<div class="card">
+  <div class="cl teal">Retención por tramos · Campaña Live Sessions</div>
+  <p style="font-size:13px;color:var(--ink-mid);margin-bottom:20px">Número de personas que llegaron a cada hito de reproducción. La pérdida entre tramos indica el porcentaje de audiencia que abandona el vídeo.</p>
+
+  <div class="funnel">
+
+    <div class="funnel-row">
+      <div class="funnel-label">Impresiones</div>
+      <div class="funnel-track">
+        <div class="funnel-bar" style="width:100%;background:linear-gradient(90deg,#0757D8,#3E83FF)">100%</div>
+      </div>
+      <div class="funnel-num">62.241</div>
+    </div>
+
+    <div class="funnel-row">
+      <div class="funnel-label">Alcance único</div>
+      <div class="funnel-track">
+        <div class="funnel-bar" style="width:60.8%;background:linear-gradient(90deg,#456C8F,#6A9AC0)">60,8%</div>
+      </div>
+      <div class="funnel-num">37.874</div>
+    </div>
+
+    <div class="funnel-row">
+      <div class="funnel-label">Vídeo al 25%</div>
+      <div class="funnel-track">
+        <div class="funnel-bar" style="width:36.5%;background:linear-gradient(90deg,#E8B83E,#F5D07A)">36,5%</div>
+      </div>
+      <div class="funnel-num">22.717</div>
+    </div>
+
+    <div class="funnel-row">
+      <div class="funnel-label">Vídeo al 50%</div>
+      <div class="funnel-track">
+        <div class="funnel-bar" style="width:17.3%;background:linear-gradient(90deg,#D59A18,#E8B83E)">17,3%</div>
+      </div>
+      <div class="funnel-num">10.742</div>
+    </div>
+
+    <div class="funnel-row">
+      <div class="funnel-label">Vídeo al 75%</div>
+      <div class="funnel-track">
+        <div class="funnel-bar" style="width:9.7%;background:linear-gradient(90deg,#c07010,#D59A18)">9,7%</div>
+      </div>
+      <div class="funnel-num">6.057</div>
+    </div>
+
+    <div class="funnel-row">
+      <div class="funnel-label">Vídeo al 100%</div>
+      <div class="funnel-track">
+        <div class="funnel-bar" style="width:7.0%;background:linear-gradient(90deg,#1E8A5E,#2EAA78)">7,0%</div>
+      </div>
+      <div class="funnel-num">4.379</div>
+    </div>
+
+  </div>
+
+  <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+    <div class="ratio-row">
+      <div class="ratio-label">Retención 25% → 50%</div>
+      <div class="ratio-track"><div class="ratio-fill" style="width:47.3%;background:var(--gold)"></div></div>
+      <div class="ratio-val">47,3%</div>
+    </div>
+    <div class="ratio-row">
+      <div class="ratio-label">Retención 50% → 75%</div>
+      <div class="ratio-track"><div class="ratio-fill" style="width:56.4%;background:var(--terra)"></div></div>
+      <div class="ratio-val">56,4%</div>
+    </div>
+    <div class="ratio-row">
+      <div class="ratio-label">Retención 75% → 100%</div>
+      <div class="ratio-track"><div class="ratio-fill" style="width:72.3%;background:var(--green)"></div></div>
+      <div class="ratio-val">72,3%</div>
+    </div>
+    <p style="font-size:11.5px;color:var(--ink-light);margin-top:8px">La retención mejora progresivamente: quienes llegan al 75% casi siempre completan el vídeo (72,3% continúa). La mayor pérdida ocurre en los primeros 3 segundos.</p>
+  </div>
+</div>
+
+<!-- ── INTERACCIONES DESGLOSE ── -->
+<div class="sec-title">
+  <span class="sec-eye">Interacciones</span>
+  Desglose de acciones sobre la publicación
+</div>
+
+<div class="g2">
+  <div class="card">
+    <div class="cl green">Métricas con dato confirmado</div>
+    <p style="font-size:12.5px;color:var(--ink-mid);margin-bottom:14px">Valores extraídos directamente del informe de campaña de Meta Ads.</p>
+
+    <div class="int-grid" style="grid-template-columns:1fr 1fr">
+
+      <div class="int-item">
+        <div class="int-ico">⚡</div>
+        <div class="int-body">
+          <div class="int-name">Total interacciones</div>
+          <div class="int-val highlight">48.590</div>
+        </div>
+      </div>
+
+      <div class="int-item">
+        <div class="int-ico">🎬</div>
+        <div class="int-body">
+          <div class="int-name">Reproducciones 3 seg.</div>
+          <div class="int-val highlight">22.717</div>
+        </div>
+      </div>
+
+      <div class="int-item">
+        <div class="int-ico">👤</div>
+        <div class="int-body">
+          <div class="int-name">Visitas al perfil IG</div>
+          <div class="int-val">6</div>
+        </div>
+      </div>
+
+      <div class="int-item">
+        <div class="int-ico">➕</div>
+        <div class="int-body">
+          <div class="int-name">Seguidores ganados</div>
+          <div class="int-val dim">0</div>
+        </div>
+      </div>
+
+      <div class="int-item">
+        <div class="int-ico">🔗</div>
+        <div class="int-body">
+          <div class="int-name">Clics en enlace</div>
+          <div class="int-val dim">—</div>
+        </div>
+      </div>
+
+      <div class="int-item">
+        <div class="int-ico">📅</div>
+        <div class="int-body">
+          <div class="int-name">Fin campaña</div>
+          <div class="int-val" style="font-size:11px">23 jun 2026</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cl teal">¿Qué cuenta como interacción? (Meta)</div>
+    <p style="font-size:12.5px;color:var(--ink-mid);margin-bottom:14px">Según Meta, la métrica "Interacciones" suma todas estas acciones mientras el anuncio está en circulación:</p>
+    <div class="int-grid" style="grid-template-columns:1fr 1fr;gap:7px">
+      <div class="int-item" style="padding:9px 12px;gap:7px">
+        <div class="int-ico" style="font-size:16px">↗</div>
+        <div class="int-name" style="font-size:11px">Publicaciones compartidas</div>
+      </div>
+      <div class="int-item" style="padding:9px 12px;gap:7px">
+        <div class="int-ico" style="font-size:16px">❤️</div>
+        <div class="int-name" style="font-size:11px">Reacciones</div>
+      </div>
+      <div class="int-item" style="padding:9px 12px;gap:7px">
+        <div class="int-ico" style="font-size:16px">🔖</div>
+        <div class="int-name" style="font-size:11px">Publicaciones guardadas</div>
+      </div>
+      <div class="int-item" style="padding:9px 12px;gap:7px">
+        <div class="int-ico" style="font-size:16px">💬</div>
+        <div class="int-name" style="font-size:11px">Comentarios</div>
+      </div>
+      <div class="int-item" style="padding:9px 12px;gap:7px">
+        <div class="int-ico" style="font-size:16px">🎬</div>
+        <div class="int-name" style="font-size:11px">Reproduc. vídeo 3 seg.</div>
+      </div>
+      <div class="int-item" style="padding:9px 12px;gap:7px">
+        <div class="int-ico" style="font-size:16px">🖼</div>
+        <div class="int-name" style="font-size:11px">Visualizaciones de foto</div>
+      </div>
+      <div class="int-item" style="padding:9px 12px;gap:7px">
+        <div class="int-ico" style="font-size:16px">🔗</div>
+        <div class="int-name" style="font-size:11px">Clics en enlace</div>
+      </div>
+      <div class="int-item" style="padding:9px 12px;gap:7px">
+        <div class="int-ico" style="font-size:16px">👤</div>
+        <div class="int-name" style="font-size:11px">Clics en perfil</div>
+      </div>
+      <div class="int-item" style="padding:9px 12px;gap:7px">
+        <div class="int-ico" style="font-size:16px">➕</div>
+        <div class="int-name" style="font-size:11px">Seguidores del perfil</div>
+      </div>
+      <div class="int-item" style="padding:9px 12px;gap:7px">
+        <div class="int-ico" style="font-size:16px">📍</div>
+        <div class="int-name" style="font-size:11px">Clics en ubicación</div>
+      </div>
+      <div class="int-item" style="padding:9px 12px;gap:7px">
+        <div class="int-ico" style="font-size:16px">#</div>
+        <div class="int-name" style="font-size:11px">Clics en hashtag</div>
+      </div>
+      <div class="int-item" style="padding:9px 12px;gap:7px">
+        <div class="int-ico" style="font-size:16px">📊</div>
+        <div class="int-name" style="font-size:11px">Clics sticker votación</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── EFICIENCIA & CONTEXTO ── -->
+<div class="sec-title">
+  <span class="sec-eye">Análisis</span>
+  Eficiencia de la inversión
+</div>
+
+<div class="g2">
+
+  <div class="card">
+    <div class="cl green">Rendimiento de la campaña</div>
+
+    <div class="ratio-row" style="margin-top:12px">
+      <div class="ratio-label">Interacciones / Impresiones</div>
+      <div class="ratio-track"><div class="ratio-fill" style="width:78%;background:var(--green)"></div></div>
+      <div class="ratio-val">78%</div>
+    </div>
+    <div class="ratio-row">
+      <div class="ratio-label">Alcance / Impresiones</div>
+      <div class="ratio-track"><div class="ratio-fill" style="width:60.8%;background:var(--blue)"></div></div>
+      <div class="ratio-val">60,8%</div>
+    </div>
+    <div class="ratio-row">
+      <div class="ratio-label">Vídeo completado / Alcance</div>
+      <div class="ratio-track"><div class="ratio-fill" style="width:11.6%;background:var(--terra)"></div></div>
+      <div class="ratio-val">11,6%</div>
+    </div>
+    <div class="ratio-row">
+      <div class="ratio-label">Vídeo 3 seg. / Alcance</div>
+      <div class="ratio-track"><div class="ratio-fill" style="width:60%;background:var(--gold)"></div></div>
+      <div class="ratio-val">60%</div>
+    </div>
+
+    <p style="font-size:12px;color:var(--ink-light);margin-top:14px">Un CPM de €1,28 y un coste por interacción de €0,0016 son indicadores de alta eficiencia para el sector musical en España. La campaña generó volumen de interacciones a un precio muy bajo.</p>
+  </div>
+
+  <div class="card">
+    <div class="cl teal">Contexto estratégico</div>
+
+    <div style="display:grid;gap:10px;margin-top:8px">
+
+      <div style="display:flex;gap:10px;padding:12px;background:var(--green-pale);border-radius:8px;border:1px solid rgba(30,138,94,.18)">
+        <div style="font-size:20px">✅</div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:3px">Impresiones a bajo coste</div>
+          <div style="font-size:12px;color:var(--ink-mid)">€79,88 por 62.241 impresiones = CPM de €1,28. Muy por debajo de la media del sector.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;padding:12px;background:var(--gold-pale);border-radius:8px;border:1px solid rgba(213,154,24,.22)">
+        <div style="font-size:20px">⚠️</div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--terra);margin-bottom:3px">Sin conversión en seguidores</div>
+          <div style="font-size:12px;color:var(--ink-mid)">0 seguidores ganados con 48.590 interacciones. El objetivo debe ajustarse o la CTA reforzarse.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;padding:12px;background:var(--teal-pale);border-radius:8px;border:1px solid rgba(7,87,216,.15)">
+        <div style="font-size:20px">📌</div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--blue);margin-bottom:3px">Frecuencia saludable</div>
+          <div style="font-size:12px;color:var(--ink-mid)">1,64x de frecuencia media. El anuncio se muestra sin saturar. Margen para ampliar presupuesto.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;padding:12px;background:var(--cream);border-radius:8px;border:1px solid var(--parchment)">
+        <div style="font-size:20px">🎬</div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--ink);margin-bottom:3px">Retención de vídeo: mejorable</div>
+          <div style="font-size:12px;color:var(--ink-mid)">Solo el 7% llega al 100% del vídeo. Recomendar un hook más potente en los primeros 2 segundos.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- ── NOTA METODOLÓGICA ── -->
+<div class="note" style="margin-top:4px">
+  <div class="note-title">📋 Nota metodológica · Meta Ads</div>
+  <strong>Atribución:</strong> 7 días después del clic o 1 día después de la visualización. · <strong>Campaña:</strong> "Epi&amp;Brass [9 junio 2026]" · Objetivo de resultado: Interacciones con publicación (post_engagement). · <strong>Informe:</strong> 31 mayo – 29 junio 2026. La campaña finalizó el 23 junio 2026. · Los datos de desglose de interacciones (reacciones, comentarios, guardados, etc.) no están disponibles en el informe exportado; solo se conoce el total agregado de Meta.
+</div>
+
+</main><!-- /main -->
+
+<!-- BOTTOM BAR -->
+<div class="bottom-bar">
+  <span>Epi&amp;Brass · Dashboard Inversión en Redes · Junio 2026</span>
+  <span>Artes Búho · Consultoría estratégica</span>
+  <a href="index.html">← Volver a Info Maestra</a>
+</div>
+
+</div><!-- /app -->
+</body>
+</html>
