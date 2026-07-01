@@ -510,6 +510,10 @@ a:hover{text-decoration:underline}
 }
 .lock-title{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:var(--ink);margin-bottom:10px}
 .lock-body{font-size:13px;color:var(--ink-mid);line-height:1.6;margin-bottom:20px}
+.lock-contact{
+  margin-top:16px;font-size:13px;font-weight:600;color:var(--ink-mid);
+  letter-spacing:.01em
+}
 .lock-cta{
   display:inline-flex;align-items:center;gap:7px;
   background:var(--violet);color:#fff;border:none;border-radius:999px;
@@ -2123,7 +2127,7 @@ function applyTierConfig() {
         '<div class="lock-icon">🔒</div>' +
         '<div class="lock-title">' + msg.title + '</div>' +
         '<div class="lock-body">' + msg.body + '</div>' +
-        '<button class="lock-cta" type="button" onclick="window.location.href=\'mailto:contratacion@artesbuho.com?subject=Quiero%20desbloquear%20mi%20Info%20Maestra\'">' + msg.cta + ' →</button>' +
+        '<div class="lock-contact">Contacta con los managers del proyecto</div>' +
         '<div class="lock-badge">Artes Búho · Plan Infra</div>' +
       '</div>';
     sec.appendChild(overlay);
