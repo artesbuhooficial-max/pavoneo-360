@@ -1,0 +1,16 @@
+[
+  {
+    "fecha": "2026-07-06",
+    "currentStep": "formulario",
+    "steps": {
+      "contacto": "done",
+      "formulario": "active",
+      "briefing": "todo",
+      "grabacion": "todo",
+      "postproduccion": "todo",
+      "lanzamiento": "todo",
+      "inversion": "todo",
+      "cierre": "todo"
+    }
+  }
+]
