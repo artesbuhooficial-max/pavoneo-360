@@ -37,13 +37,14 @@ a:hover{text-decoration:underline}
 
 /* ── LAYOUT ── */
 .wrap{max-width:1200px;margin:0 auto;padding:28px 32px 90px}
-.masthead{background:linear-gradient(135deg,#071C48 0%,#0B3E9A 60%,#0757D8 100%);color:#fff;padding:34px 44px 28px;border-radius:18px;margin-bottom:26px;position:relative;overflow:hidden;box-shadow:var(--sh-md)}
-.masthead::before{content:'🦉';position:absolute;right:44px;top:50%;transform:translateY(-50%);font-size:84px;opacity:.1}
+.masthead{background:linear-gradient(135deg,#071C48 0%,#0B3E9A 60%,#0757D8 100%);color:#fff;padding:34px 44px 28px;border-radius:18px;margin-bottom:26px;position:relative;overflow:hidden;box-shadow:var(--sh-md);display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.masthead::before{content:'🦉';position:absolute;right:34px;bottom:-14px;font-size:84px;opacity:.1;pointer-events:none}
+.mh-text{flex:1;min-width:260px;position:relative;z-index:1}
 .mh-eye{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);font-weight:800;margin-bottom:9px}
 .mh-title{font-size:36px;font-weight:900;line-height:1;letter-spacing:-.04em;margin-bottom:8px}
 .mh-title em{color:var(--gold);font-style:normal}
-.mh-sub{font-size:13px;color:rgba(255,255,255,.65)}
-.mh-actions{position:absolute;right:36px;bottom:24px;display:flex;gap:8px}
+.mh-sub{font-size:13px;color:rgba(255,255,255,.65);max-width:640px}
+.mh-actions{display:flex;gap:8px;flex-shrink:0;position:relative;z-index:1}
 .mh-btn{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:7px 14px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none}
 .mh-btn:hover{background:rgba(255,255,255,.26);color:#fff;text-decoration:none}
 
@@ -134,9 +135,11 @@ a:hover{text-decoration:underline}
 <div class="wrap" id="app" style="display:none">
 
   <div class="masthead">
-    <div class="mh-eye">Oficina · Artes Búho · Pavoneo 360°</div>
-    <div class="mh-title">Dashboard <em>general</em></div>
-    <div class="mh-sub">Visión global de todos los proyectos, artistas y documentos del ecosistema Pavoneo — actualización en tiempo real desde los expedientes publicados.</div>
+    <div class="mh-text">
+      <div class="mh-eye">Oficina · Artes Búho · Pavoneo 360°</div>
+      <div class="mh-title">Dashboard <em>general</em></div>
+      <div class="mh-sub">Visión global de todos los proyectos, artistas y documentos del ecosistema Pavoneo — actualización en tiempo real desde los expedientes publicados.</div>
+    </div>
     <div class="mh-actions">
       <a class="mh-btn" href="index.html">⚙ Panel oficina</a>
       <a class="mh-btn" href="../enlaces.html">🔗 Enlaces</a>
