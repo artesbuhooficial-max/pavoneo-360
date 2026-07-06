@@ -1,0 +1,109 @@
+{
+  "artistId": "epiybrass",
+  "displayName": "Epi&Brass",
+  "pack": "premium",
+  "currentStep": "cierre",
+  "unlockedUntil": "cierre",
+  "updatedAt": "2026-07-06",
+  "publicLinks": {
+    "infoMaestra": "https://artesbuhooficial-max.github.io/pavoneo-360/artistas/epiybrass/",
+    "materialesPublicos": "",
+    "artifactCloud": "",
+    "mixApp": "../mezcla/",
+    "dashboardRedes": "https://artesbuhooficial-max.github.io/pavoneo-360/artistas/epiybrass/dashboard-redes.html"
+  },
+  "recordingTiming": [
+    {
+      "time": "09:30",
+      "block": "Llegada y acogida",
+      "owner": "Oficina + artista",
+      "detail": "Recepcion, repaso del plan del dia y revision rapida de vestuario."
+    },
+    {
+      "time": "10:00",
+      "block": "Preparacion tecnica",
+      "owner": "David",
+      "detail": "Montaje de microfonia, pruebas de camara y ajuste de set."
+    },
+    {
+      "time": "10:45",
+      "block": "Entrevista base",
+      "owner": "David + artista",
+      "detail": "Preguntas principales y relato del proyecto."
+    },
+    {
+      "time": "12:00",
+      "block": "Live session 1",
+      "owner": "David + artista",
+      "detail": "Grabacion de la primera pieza musical con toma de seguridad."
+    },
+    {
+      "time": "13:15",
+      "block": "Pausa y fotos",
+      "owner": "Oficina",
+      "detail": "Descanso breve y sesion fotografica en estudio."
+    },
+    {
+      "time": "14:15",
+      "block": "Live session 2",
+      "owner": "David + artista",
+      "detail": "Grabacion de la segunda pieza."
+    },
+    {
+      "time": "15:30",
+      "block": "Making off y spot prescriptor",
+      "owner": "Oficina + artista",
+      "detail": "Recursos de proceso, testimonio y mensajes para redes."
+    },
+    {
+      "time": "16:30",
+      "block": "Cierre de grabacion",
+      "owner": "David + oficina",
+      "detail": "Confirmar archivos, copia de seguridad y siguientes pasos."
+    }
+  ],
+  "editorialCalendar": [
+    {
+      "week": "1",
+      "day": "Lunes",
+      "type": "Video promocional",
+      "platform": "Instagram",
+      "status": "Publicado",
+      "note": "Presentacion del proyecto."
+    },
+    {
+      "week": "1",
+      "day": "Miercoles",
+      "type": "Clip live session",
+      "platform": "Instagram",
+      "status": "Publicado",
+      "note": "Primer fragmento musical."
+    },
+    {
+      "week": "2",
+      "day": "Jueves",
+      "type": "Live session completa",
+      "platform": "YouTube",
+      "status": "Publicado",
+      "note": "Publicacion larga y enlace principal de campana."
+    },
+    {
+      "week": "3",
+      "day": "Lunes",
+      "type": "Carrusel fotos",
+      "platform": "Instagram",
+      "status": "Publicado",
+      "note": "Material de sesion fotografica."
+    }
+  ],
+  "steps": {
+    "contacto": { "status": "done" },
+    "formulario": { "status": "done" },
+    "briefing": { "status": "done" },
+    "grabacion": { "status": "done" },
+    "postproduccion": { "status": "done" },
+    "lanzamiento": { "status": "done" },
+    "inversion": { "status": "done" },
+    "cierre": { "status": "active" }
+  }
+}

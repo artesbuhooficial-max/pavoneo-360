@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pavoneo 360 · Dashboard General</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:#F7F2E5; --cream2:#FFF8E8; --parchment:#EADDBF;
+  --ink:#071C48; --ink-mid:#24406E; --ink-light:#6A7EA6;
+  --blue:#0757D8; --blue-deep:#043C9F; --blue-soft:#EAF2FF; --teal-l:#3E83FF;
+  --gold:#E8B83E; --gold-pale:#FFF5D7; --terra:#D59A18;
+  --green:#1E8A5E; --green-pale:#E8F7F1;
+  --violet:#2347A5; --violet-pale:#EDF2FF;
+  --sage:#456C8F; --sage-pale:#EEF5FB;
+  --red:#C0392B; --red-pale:#FDECEA;
+  --border:#D8E3F5;
+  --sh:0 10px 28px rgba(7,28,72,.07); --sh-md:0 18px 52px rgba(7,28,72,.13);
+  --r:12px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,#f8fbff 0%,#fff 44%,#fff8e8 100%);color:var(--ink);font-size:15px;line-height:1.6;min-height:100vh}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ── GATE ── */
+#gate{position:fixed;inset:0;background:linear-gradient(135deg,#071C48 0%,#0B3E9A 60%,#0757D8 100%);display:flex;align-items:center;justify-content:center;z-index:1000}
+.gate-card{background:#fff;border-radius:16px;padding:38px 42px;max-width:360px;width:92%;text-align:center;box-shadow:var(--sh-md)}
+.gate-card h1{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:6px}
+.gate-card p{font-size:12px;color:var(--ink-light);margin-bottom:18px}
+.gate-card input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:'DM Mono',monospace;text-align:center;margin-bottom:12px}
+.gate-card input:focus{outline:none;border-color:var(--blue)}
+.gate-card button{width:100%;background:var(--blue);color:#fff;border:none;border-radius:8px;padding:11px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif}
+.gate-card button:hover{background:var(--blue-deep)}
+.gate-err{color:var(--red);font-size:11px;margin-top:10px;display:none}
+
+/* ── LAYOUT ── */
+.wrap{max-width:1200px;margin:0 auto;padding:28px 32px 90px}
+.masthead{background:linear-gradient(135deg,#071C48 0%,#0B3E9A 60%,#0757D8 100%);color:#fff;padding:34px 44px 28px;border-radius:18px;margin-bottom:26px;position:relative;overflow:hidden;box-shadow:var(--sh-md)}
+.masthead::before{content:'🦉';position:absolute;right:44px;top:50%;transform:translateY(-50%);font-size:84px;opacity:.1}
+.mh-eye{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);font-weight:800;margin-bottom:9px}
+.mh-title{font-size:36px;font-weight:900;line-height:1;letter-spacing:-.04em;margin-bottom:8px}
+.mh-title em{color:var(--gold);font-style:normal}
+.mh-sub{font-size:13px;color:rgba(255,255,255,.65)}
+.mh-actions{position:absolute;right:36px;bottom:24px;display:flex;gap:8px}
+.mh-btn{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:7px 14px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none}
+.mh-btn:hover{background:rgba(255,255,255,.26);color:#fff;text-decoration:none}
+
+/* ── KPIs ── */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:30px}
+.kpi{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;box-shadow:var(--sh)}
+.kpi .k-label{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-light);font-weight:700;margin-bottom:6px}
+.kpi .k-value{font-size:30px;font-weight:900;letter-spacing:-.03em;line-height:1}
+.kpi .k-note{font-size:11px;color:var(--ink-light);margin-top:5px}
+
+/* ── SECTION HEAD ── */
+.sec-head{display:flex;align-items:center;gap:12px;margin:34px 0 16px;padding-bottom:11px;border-bottom:2px solid var(--border)}
+.sec-ico{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;font-size:17px;background:var(--blue-soft)}
+.sec-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:700}
+.sec-sub{font-size:11px;color:var(--ink-light)}
+
+/* ── PIPELINE ── */
+.pipeline{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;overflow-x:auto}
+.pl-col{background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px 8px;min-height:110px}
+.pl-col-head{font-size:9px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:var(--ink-light);text-align:center;padding-bottom:8px;border-bottom:1.5px dashed var(--border);margin-bottom:8px}
+.pl-col-head .n{display:block;font-size:15px;color:var(--parchment);font-family:'Playfair Display',serif;margin-bottom:1px}
+.pl-artist{background:var(--gold-pale);border:1px solid var(--gold);border-radius:7px;padding:6px 7px;font-size:10.5px;font-weight:700;margin-bottom:6px;cursor:pointer;text-align:center;line-height:1.3}
+.pl-artist:hover{background:var(--gold)}
+.pl-artist .pe{font-size:14px;display:block}
+
+/* ── ARTIST CARDS ── */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;transition:box-shadow .18s}
+.card:hover{box-shadow:var(--sh-md)}
+.c-head{display:flex;align-items:center;gap:13px;padding:18px 20px 12px}
+.c-avatar{width:46px;height:46px;border-radius:11px;background:var(--blue-soft);display:grid;place-items:center;font-size:24px;flex-shrink:0}
+.c-name{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;line-height:1.15}
+.c-desc{font-size:11px;color:var(--ink-light)}
+.c-badges{margin-left:auto;display:flex;flex-direction:column;gap:4px;align-items:flex-end}
+.badge{font-size:8.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;padding:3px 9px;border-radius:20px}
+.badge.premium{background:var(--gold-pale);color:var(--terra);border:1px solid var(--gold)}
+.badge.basico{background:var(--sage-pale);color:var(--sage);border:1px solid var(--sage)}
+.badge.tier{background:var(--violet-pale);color:var(--violet);border:1px solid #C8D8F8}
+.c-body{padding:4px 20px 16px}
+.prog-row{display:flex;align-items:center;gap:10px;margin:8px 0 4px}
+.prog-bar{flex:1;height:8px;background:var(--blue-soft);border-radius:6px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--blue) 0%,var(--teal-l) 100%);border-radius:6px;transition:width .5s}
+.prog-pct{font-size:12px;font-weight:800;min-width:34px;text-align:right}
+.steps-dots{display:flex;gap:5px;margin:10px 0 4px}
+.dot{flex:1;height:22px;border-radius:5px;display:grid;place-items:center;font-size:8px;font-weight:800;color:#fff;position:relative;cursor:default}
+.dot.done{background:var(--green)}
+.dot.active{background:var(--gold);color:var(--ink);animation:pulse 2s infinite}
+.dot.todo{background:#E3EAF6;color:var(--ink-light)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+.dot .tip{display:none;position:absolute;bottom:130%;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:10px;font-weight:600;padding:4px 9px;border-radius:6px;white-space:nowrap;z-index:5}
+.dot:hover .tip{display:block}
+.c-current{font-size:11.5px;color:var(--ink-mid);margin-top:7px}
+.c-current strong{color:var(--ink)}
+.c-updated{font-size:10px;color:var(--ink-light);margin-top:2px}
+.c-docs{border-top:1px solid var(--border);background:var(--cream2);padding:12px 20px;display:flex;flex-wrap:wrap;gap:7px}
+.doc-link{display:inline-flex;align-items:center;gap:5px;background:#fff;border:1px solid var(--border);border-radius:6px;padding:5px 11px;font-size:11px;font-weight:700;color:var(--ink-mid);text-decoration:none;transition:.14s}
+.doc-link:hover{background:var(--blue);color:#fff;border-color:var(--blue);text-decoration:none}
+.doc-link.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.doc-link.primary:hover{background:var(--blue-deep)}
+
+/* ── ALERTS / EMPTY ── */
+.notice{background:var(--gold-pale);border:1px solid var(--gold);border-radius:var(--r);padding:16px 20px;font-size:13px;margin-bottom:22px;display:none}
+.footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--border);font-size:11px;color:var(--ink-light);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+
+@media(max-width:760px){
+  .wrap{padding:14px 14px 60px}
+  .masthead{padding:26px 22px}.mh-title{font-size:26px}
+  .mh-actions{position:static;margin-top:16px}
+  .pipeline{grid-template-columns:repeat(4,1fr)}
+  .cards{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- Puerta de acceso (barrera visual de front, igual que oficina/) -->
+<div id="gate">
+  <div class="gate-card">
+    <div style="font-size:40px;margin-bottom:10px">🦉</div>
+    <h1>Dashboard General</h1>
+    <p>Pavoneo 360° · Acceso de oficina — Artes Búho</p>
+    <input type="password" id="gateKey" placeholder="Clave de oficina" onkeydown="if(event.key==='Enter')checkKey()">
+    <button onclick="checkKey()">Entrar</button>
+    <div class="gate-err" id="gateErr">Clave incorrecta</div>
+  </div>
+</div>
+
+<div class="wrap" id="app" style="display:none">
+
+  <div class="masthead">
+    <div class="mh-eye">Oficina · Artes Búho · Pavoneo 360°</div>
+    <div class="mh-title">Dashboard <em>general</em></div>
+    <div class="mh-sub">Visión global de todos los proyectos, artistas y documentos del ecosistema Pavoneo — actualización en tiempo real desde los expedientes publicados.</div>
+    <div class="mh-actions">
+      <a class="mh-btn" href="index.html">⚙ Panel oficina</a>
+      <a class="mh-btn" href="../enlaces.html">🔗 Enlaces</a>
+      <button class="mh-btn" onclick="loadAll(true)">↻ Actualizar</button>
+    </div>
+  </div>
+
+  <div class="notice" id="notice"></div>
+
+  <!-- KPIs -->
+  <div class="kpis" id="kpis"></div>
+
+  <!-- PIPELINE -->
+  <div class="sec-head">
+    <div class="sec-ico">🧭</div>
+    <div><div class="sec-name">Pipeline de producción</div><div class="sec-sub">Dónde está cada artista dentro de los 8 pasos del proceso Pavoneo</div></div>
+  </div>
+  <div class="pipeline" id="pipeline"></div>
+
+  <!-- ARTISTAS -->
+  <div class="sec-head">
+    <div class="sec-ico">🎤</div>
+    <div><div class="sec-name">Proyectos por artista</div><div class="sec-sub">Expediente, progreso y documentos propios de cada proyecto</div></div>
+  </div>
+  <div class="cards" id="cards"></div>
+
+  <div class="footer">
+    <span><strong>Artes Búho</strong> · artesbuho.oficial@gmail.com</span>
+    <span id="footInfo">Repo: pavoneo-360 · main</span>
+  </div>
+</div>
+
+<script>
+/* ═══ CONFIG ═══ */
+const KEY = 'pavoneo360';
+const STEPS = [
+  { id:'contacto',       label:'Entrada',        n:'01' },
+  { id:'formulario',     label:'Info Maestra',   n:'02' },
+  { id:'briefing',       label:'Briefing',       n:'03' },
+  { id:'grabacion',      label:'Grabación',      n:'04' },
+  { id:'postproduccion', label:'Postpro',        n:'05' },
+  { id:'lanzamiento',    label:'Lanzamiento',    n:'06' },
+  { id:'inversion',      label:'Inversión',      n:'07' },
+  { id:'cierre',         label:'Cierre',         n:'08' }
+];
+const DOC_ICON = { 'info-maestra':'📘', 'dashboard':'📊', 'panel':'🧩', 'protocolo':'📋', 'otro':'📄' };
+
+/* ═══ GATE ═══ */
+function checkKey(){
+  const v = document.getElementById('gateKey').value.trim();
+  if(v === KEY){
+    sessionStorage.setItem('pavoneo-gate','ok');
+    openApp();
+  } else {
+    document.getElementById('gateErr').style.display = 'block';
+  }
+}
+function openApp(){
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  loadAll();
+}
+if(sessionStorage.getItem('pavoneo-gate') === 'ok') openApp();
+else document.getElementById('gateKey').focus();
+
+/* ═══ DATA ═══ */
+async function fetchJSON(url, bust){
+  const u = bust ? url + (url.includes('?')?'&':'?') + 't=' + Date.now() : url;
+  const r = await fetch(u, { cache:'no-store' });
+  if(!r.ok) throw new Error(r.status + ' ' + url);
+  return r.json();
+}
+
+async function loadAll(bust){
+  const notice = document.getElementById('notice');
+  notice.style.display = 'none';
+  try{
+    const manifest = await fetchJSON('../data/artistas/index.json', bust);
+    const artistas = await Promise.all(
+      (manifest.artistas || []).map(async a => {
+        let exp = null;
+        try { exp = await fetchJSON('../' + a.expediente, bust); }
+        catch(e){ console.warn('Sin expediente para', a.id, e); }
+        return { meta:a, exp };
+      })
+    );
+    render(artistas, manifest);
+  }catch(e){
+    notice.style.display = 'block';
+    notice.innerHTML = '⚠️ No se pudieron cargar los datos (<code>' + e.message + '</code>).' +
+      ' Si estás abriendo el archivo en local (file://), sirve la carpeta con un servidor' +
+      ' (<code>python -m http.server</code>) o usa la URL de GitHub Pages.';
+  }
+}
+
+/* ═══ RENDER ═══ */
+function stepStatus(exp, id){
+  if(!exp || !exp.steps || !exp.steps[id]) return 'todo';
+  return exp.steps[id].status || 'todo';
+}
+function doneCount(exp){
+  return STEPS.filter(s => stepStatus(exp, s.id) === 'done').length;
+}
+function currentStepLabel(exp){
+  const active = STEPS.find(s => stepStatus(exp, s.id) === 'active');
+  if(active) return active.label;
+  if(doneCount(exp) === STEPS.length) return 'Completado';
+  const c = STEPS.find(s => s.id === (exp && exp.currentStep));
+  return c ? c.label : '—';
+}
+
+function render(artistas, manifest){
+  /* KPIs */
+  const total = artistas.length;
+  const totalDone = artistas.reduce((n,a) => n + doneCount(a.exp), 0);
+  const totalSteps = total * STEPS.length;
+  const enCierre = artistas.filter(a => stepStatus(a.exp,'cierre') !== 'todo').length;
+  const premium = artistas.filter(a => (a.exp?.pack || a.meta.pack) === 'premium').length;
+  const totalDocs = artistas.reduce((n,a) => n + (a.meta.documentos||[]).length, 0);
+
+  document.getElementById('kpis').innerHTML = `
+    <div class="kpi"><div class="k-label">Artistas activos</div><div class="k-value">${total}</div><div class="k-note">${premium} premium · ${total-premium} básico</div></div>
+    <div class="kpi"><div class="k-label">Progreso global</div><div class="k-value">${totalSteps? Math.round(totalDone/totalSteps*100):0}%</div><div class="k-note">${totalDone} de ${totalSteps} pasos completados</div></div>
+    <div class="kpi"><div class="k-label">En fase de cierre</div><div class="k-value">${enCierre}</div><div class="k-note">proyectos llegando al final</div></div>
+    <div class="kpi"><div class="k-label">Documentos publicados</div><div class="k-value">${totalDocs}</div><div class="k-note">info maestras, dashboards, paneles</div></div>
+    <div class="kpi"><div class="k-label">Última sincronización</div><div class="k-value" style="font-size:17px;padding-top:6px">${manifest.updatedAt || '—'}</div><div class="k-note">manifest de artistas</div></div>`;
+
+  /* Pipeline */
+  document.getElementById('pipeline').innerHTML = STEPS.map(s => {
+    const aqui = artistas.filter(a => stepStatus(a.exp, s.id) === 'active');
+    return `<div class="pl-col">
+      <div class="pl-col-head"><span class="n">${s.n}</span>${s.label}</div>
+      ${aqui.map(a => `<div class="pl-artist" onclick="document.getElementById('card-${a.meta.id}').scrollIntoView({behavior:'smooth',block:'center'})">
+         <span class="pe">${a.meta.emoji || '🎤'}</span>${a.meta.nombre}</div>`).join('')}
+    </div>`;
+  }).join('');
+
+  /* Cards */
+  document.getElementById('cards').innerHTML = artistas.map(a => {
+    const exp = a.exp, m = a.meta;
+    const done = doneCount(exp);
+    const pct = Math.round(done / STEPS.length * 100);
+    const pack = exp?.pack || m.pack || 'basico';
+    const docs = (m.documentos || []).map((d,i) =>
+      `<a class="doc-link ${i===0?'primary':''}" href="../${d.url}" target="_blank">${DOC_ICON[d.tipo]||'📄'} ${d.nombre}</a>`
+    ).join('');
+    const dots = STEPS.map(s => {
+      const st = stepStatus(exp, s.id);
+      return `<div class="dot ${st}"><span>${s.n}</span><span class="tip">${s.label} · ${st==='done'?'completado':st==='active'?'en curso':'pendiente'}</span></div>`;
+    }).join('');
+    return `<div class="card" id="card-${m.id}">
+      <div class="c-head">
+        <div class="c-avatar">${m.emoji || '🎤'}</div>
+        <div><div class="c-name">${m.nombre}</div><div class="c-desc">${m.descripcion || ''}</div></div>
+        <div class="c-badges">
+          <span class="badge ${pack==='premium'?'premium':'basico'}">${pack}</span>
+          ${m.tier ? `<span class="badge tier">${m.tier}</span>` : ''}
+        </div>
+      </div>
+      <div class="c-body">
+        <div class="prog-row"><div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div><div class="prog-pct">${pct}%</div></div>
+        <div class="steps-dots">${dots}</div>
+        <div class="c-current">Paso actual: <strong>${currentStepLabel(exp)}</strong></div>
+        <div class="c-updated">Expediente actualizado: ${exp?.updatedAt || 'sin expediente'}</div>
+      </div>
+      <div class="c-docs">${docs || '<span style="font-size:11px;color:var(--ink-light)">Sin documentos registrados</span>'}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('footInfo').textContent =
+    'Repo: pavoneo-360 · main · ' + total + ' artista(s) · manifest ' + (manifest.updatedAt || '');
+}
+</script>
+</body>
+</html>

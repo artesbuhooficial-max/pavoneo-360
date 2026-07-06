@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "updatedAt": "2026-07-06",
+  "descripcion": "Manifest central de artistas Pavoneo 360. Alimenta el dashboard general de oficina (oficina/global.html). Al dar de alta un artista, añadir aquí su entrada. URLs relativas a la raíz del repo.",
+  "artistas": [
+    {
+      "id": "epiybrass",
+      "nombre": "Epi&Brass",
+      "descripcion": "Brass House · Madrid",
+      "pack": "premium",
+      "tier": "pavoneo",
+      "emoji": "🎺",
+      "expediente": "data/artistas/epiybrass.json",
+      "documentos": [
+        { "tipo": "info-maestra", "nombre": "Info Maestra", "url": "artistas/epiybrass/" },
+        { "tipo": "dashboard", "nombre": "Dashboard Inversión en Redes", "url": "artistas/epiybrass/dashboard-redes.html" },
+        { "tipo": "panel", "nombre": "Panel de proceso", "url": "artistas/?id=epiybrass" }
+      ]
+    },
+    {
+      "id": "mario-cassado",
+      "nombre": "Mario Cassado",
+      "descripcion": "Pack Premium · En producción",
+      "pack": "premium",
+      "tier": "pavoneo",
+      "emoji": "🎵",
+      "expediente": "data/artistas/mario-cassado.json",
+      "documentos": [
+        { "tipo": "info-maestra", "nombre": "Info Maestra", "url": "artistas/mario-cassado/" },
+        { "tipo": "panel", "nombre": "Panel de proceso", "url": "artistas/?id=mario-cassado" }
+      ]
+    }
+  ]
+}
