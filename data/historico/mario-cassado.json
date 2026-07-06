@@ -1,0 +1,16 @@
+[
+  {
+    "fecha": "2026-06-24",
+    "currentStep": "contacto",
+    "steps": {
+      "contacto": "active",
+      "formulario": "active",
+      "briefing": "todo",
+      "grabacion": "todo",
+      "postproduccion": "todo",
+      "lanzamiento": "todo",
+      "inversion": "todo",
+      "cierre": "todo"
+    }
+  }
+]

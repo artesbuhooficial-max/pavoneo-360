@@ -1,0 +1,88 @@
+name: Histórico de progreso de artistas
+
+# Registra un snapshot en data/historico/{slug}.json cada vez que cambia un
+# expediente (o una vez al día como red de seguridad). El dashboard general
+# usa este histórico para calcular cuántos días lleva cada artista en su fase.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "data/artistas/*.json"
+  schedule:
+    - cron: "15 6 * * *"   # diario a las 06:15 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Registrar snapshots
+        shell: python
+        run: |
+          import json, datetime
+          from pathlib import Path
+
+          hoy = datetime.date.today().isoformat()
+          dir_art = Path("data/artistas")
+          dir_hist = Path("data/historico")
+          dir_hist.mkdir(exist_ok=True)
+          cambios = False
+
+          for f in sorted(dir_art.glob("*.json")):
+              if f.name == "index.json":
+                  continue
+              try:
+                  exp = json.loads(f.read_text(encoding="utf-8"))
+              except Exception as e:
+                  print(f"AVISO: {f} no parsea: {e}")
+                  continue
+              slug = exp.get("artistId") or f.stem
+              steps = {k: (v or {}).get("status", "todo")
+                       for k, v in (exp.get("steps") or {}).items()}
+              firma = json.dumps({"c": exp.get("currentStep"), "s": steps},
+                                 sort_keys=True)
+
+              hf = dir_hist / f"{slug}.json"
+              hist = []
+              if hf.exists():
+                  try:
+                      hist = json.loads(hf.read_text(encoding="utf-8"))
+                  except Exception:
+                      hist = []
+
+              ultima = hist[-1] if hist else None
+              firma_ultima = json.dumps(
+                  {"c": ultima.get("currentStep"), "s": ultima.get("steps", {})},
+                  sort_keys=True) if ultima else None
+
+              if firma != firma_ultima:
+                  hist.append({"fecha": hoy,
+                               "currentStep": exp.get("currentStep"),
+                               "steps": steps})
+                  hf.write_text(json.dumps(hist, indent=2, ensure_ascii=False) + "\n",
+                                encoding="utf-8")
+                  print(f"Snapshot añadido: {slug} ({exp.get('currentStep')})")
+                  cambios = True
+              else:
+                  print(f"Sin cambios: {slug}")
+
+          Path("cambios.flag").write_text("1" if cambios else "0")
+
+      - name: Commit del histórico
+        run: |
+          if [ "$(cat cambios.flag)" = "1" ]; then
+            git config user.name "pavoneo-bot"
+            git config user.email "actions@github.com"
+            rm cambios.flag
+            git add data/historico/
+            git commit -m "historico: snapshot automático de expedientes"
+            git push
+          else
+            echo "Sin cambios que registrar."
+          fi

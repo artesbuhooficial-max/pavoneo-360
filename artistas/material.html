@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pavoneo 360 · Entrega de material</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:#F7F2E5; --cream2:#FFF8E8;
+  --ink:#071C48; --ink-mid:#24406E; --ink-light:#6A7EA6;
+  --blue:#0757D8; --blue-deep:#043C9F; --blue-soft:#EAF2FF; --teal-l:#3E83FF;
+  --gold:#E8B83E; --gold-pale:#FFF5D7; --terra:#D59A18;
+  --green:#1E8A5E; --green-pale:#E8F7F1;
+  --red:#C0392B;
+  --border:#D8E3F5;
+  --sh:0 10px 28px rgba(7,28,72,.07); --sh-md:0 18px 52px rgba(7,28,72,.13);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,#f8fbff 0%,#fff 44%,#fff8e8 100%);color:var(--ink);font-size:15px;line-height:1.6;min-height:100vh}
+.wrap{max-width:860px;margin:0 auto;padding:28px 22px 90px}
+
+.masthead{background:linear-gradient(135deg,#071C48 0%,#0B3E9A 60%,#0757D8 100%);color:#fff;padding:32px 38px 26px;border-radius:18px;margin-bottom:24px;position:relative;overflow:hidden;box-shadow:var(--sh-md)}
+.masthead::before{content:'📦';position:absolute;right:38px;top:50%;transform:translateY(-50%);font-size:74px;opacity:.1}
+.mh-eye{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);font-weight:800;margin-bottom:8px}
+.mh-title{font-size:30px;font-weight:900;line-height:1.05;letter-spacing:-.03em;margin-bottom:8px}
+.mh-title em{color:var(--gold);font-style:normal}
+.mh-sub{font-size:13px;color:rgba(255,255,255,.7);max-width:520px}
+
+.progress-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px 22px;box-shadow:var(--sh);margin-bottom:22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.prog-bar{flex:1;min-width:180px;height:12px;background:var(--blue-soft);border-radius:8px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--teal-l));border-radius:8px;transition:width .4s}
+.prog-label{font-weight:800;font-size:14px;white-space:nowrap}
+.btn{display:inline-flex;align-items:center;gap:7px;border:none;border-radius:9px;padding:10px 18px;font-size:13px;font-weight:800;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;transition:.15s}
+.btn-gold{background:var(--gold);color:var(--ink)}
+.btn-gold:hover{background:var(--terra);color:#fff}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-blue:hover{background:var(--blue-deep)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+.group{background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.g-head{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border);background:var(--cream2)}
+.g-ico{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;font-size:17px;background:var(--blue-soft)}
+.g-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:700}
+.g-sub{font-size:11px;color:var(--ink-light)}
+.item{display:flex;align-items:flex-start;gap:13px;padding:13px 20px;border-bottom:1px solid #EEF3FB;cursor:pointer;transition:background .12s}
+.item:last-child{border-bottom:none}
+.item:hover{background:#FAFCFF}
+.item.done .i-name{text-decoration:line-through;color:var(--ink-light)}
+.check{width:22px;height:22px;border:2px solid var(--border);border-radius:6px;flex-shrink:0;display:grid;place-items:center;font-size:13px;color:#fff;margin-top:2px;transition:.15s}
+.item.done .check{background:var(--green);border-color:var(--green)}
+.i-name{font-weight:700;font-size:14px}
+.i-desc{font-size:12px;color:var(--ink-light)}
+
+.upload-card{background:linear-gradient(135deg,var(--gold-pale),#fff);border:1.5px solid var(--gold);border-radius:14px;padding:22px 24px;margin:24px 0;text-align:center}
+.upload-card h3{font-family:'Playfair Display',serif;font-size:19px;margin-bottom:6px}
+.upload-card p{font-size:12.5px;color:var(--ink-mid);margin-bottom:14px}
+.saved-note{font-size:12px;font-weight:700;margin-left:6px}
+.saved-note.ok{color:var(--green)} .saved-note.err{color:var(--red)}
+.footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--border);font-size:11px;color:var(--ink-light);text-align:center}
+#loading{text-align:center;padding:60px 0;color:var(--ink-light)}
+@media(max-width:600px){.masthead{padding:24px 20px}.mh-title{font-size:23px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="loading">Cargando tu portal de material…</div>
+  <div id="app" style="display:none">
+
+    <div class="masthead">
+      <div class="mh-eye">Pavoneo 360° · Artes Búho</div>
+      <div class="mh-title">Entrega de <em>material</em></div>
+      <div class="mh-sub" id="mhSub">Todo lo que necesitamos de ti para arrancar tu proyecto. Marca cada elemento cuando lo hayas subido.</div>
+    </div>
+
+    <div class="progress-card">
+      <div class="prog-label" id="progLabel">0 / 0</div>
+      <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+      <button class="btn btn-blue" id="btnGuardar" onclick="guardar()">💾 Guardar y avisar a la oficina</button>
+      <span class="saved-note" id="savedNote"></span>
+    </div>
+
+    <div id="groups"></div>
+
+    <div class="upload-card">
+      <h3>📤 ¿Dónde subo los archivos?</h3>
+      <p id="uploadText">Sube todo a tu carpeta compartida de Drive. Si aún no tienes el enlace, pídeselo a tu gestor de proyecto.</p>
+      <a class="btn btn-gold" id="uploadBtn" href="#" target="_blank" style="display:none">↗ Abrir mi carpeta de Drive</a>
+    </div>
+
+    <div class="footer"><strong>Artes Búho</strong> · artesbuho.oficial@gmail.com · Pavoneo 360°</div>
+  </div>
+</div>
+
+<script>
+const WEBHOOK = 'https://artesbuho.app.n8n.cloud/webhook/pavoneo-sync';
+const CHECKLIST = [
+  { grupo:'Identidad visual', ico:'🎨', items:[
+    { id:'logo-vector',   nombre:'Logo en vectorial (AI/SVG/EPS)', desc:'Si no lo tienes, vale la versión en PNG a máxima resolución.' },
+    { id:'logo-png',      nombre:'Logo en PNG con fondo transparente', desc:'Para vídeos, miniaturas y redes.' },
+    { id:'referencias',   nombre:'Referencias visuales', desc:'3-5 imágenes o enlaces de la estética que te inspira.' }
+  ]},
+  { grupo:'Fotografía', ico:'📸', items:[
+    { id:'fotos-prensa',  nombre:'Fotos de prensa en alta resolución', desc:'Las más recientes que tengas del proyecto.' },
+    { id:'fotos-directo', nombre:'Fotos de directo', desc:'Conciertos, ensayos, backstage — lo que muestre tu energía en vivo.' }
+  ]},
+  { grupo:'Textos', ico:'✍️', items:[
+    { id:'bio',           nombre:'Biografía (la que tengas)', desc:'Corta o larga, la puliremos juntos en la Info Maestra.' },
+    { id:'rider',         nombre:'Rider técnico o formación', desc:'Quiénes tocan y qué necesita cada uno en escena.' }
+  ]},
+  { grupo:'Música', ico:'🎵', items:[
+    { id:'canciones',     nombre:'Canciones para la live session', desc:'Maquetas, grabaciones de ensayo o partituras de las piezas elegidas.' },
+    { id:'ref-sonido',    nombre:'Referencias de sonido', desc:'2-3 producciones cuyo sonido te gustaría acercarte.' }
+  ]},
+  { grupo:'Redes y plataformas', ico:'📱', items:[
+    { id:'handles',       nombre:'Usuarios de redes sociales', desc:'Instagram, TikTok, YouTube, Spotify — los enlaces públicos de tu proyecto.' }
+  ]}
+];
+
+let artistId = new URLSearchParams(location.search).get('id') || '';
+let expediente = null;
+let estado = {};
+
+function lsKey(){ return 'pavoneo-material-' + artistId; }
+
+async function init(){
+  if(artistId){
+    try{
+      const r = await fetch(`../data/artistas/${artistId}.json?t=${Date.now()}`, {cache:'no-store'});
+      if(r.ok) expediente = await r.json();
+    }catch(e){ console.warn(e); }
+  }
+  estado = JSON.parse(localStorage.getItem(lsKey()) || '{}');
+  if(expediente && expediente.materialChecklist) estado = { ...expediente.materialChecklist, ...estado };
+
+  if(expediente) document.getElementById('mhSub').textContent =
+    `Hola, ${expediente.displayName} 👋 — esto es todo lo que necesitamos para arrancar tu proyecto. Marca cada elemento cuando lo hayas subido.`;
+
+  const drive = expediente?.publicLinks?.materialesPublicos;
+  if(drive){
+    const b = document.getElementById('uploadBtn');
+    b.href = drive; b.style.display = 'inline-flex';
+    document.getElementById('uploadText').textContent = 'Sube todo a tu carpeta compartida de Drive y luego marca aquí lo entregado.';
+  }
+
+  render();
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+}
+
+function render(){
+  document.getElementById('groups').innerHTML = CHECKLIST.map(g => `
+    <div class="group">
+      <div class="g-head"><div class="g-ico">${g.ico}</div>
+        <div><div class="g-name">${g.grupo}</div><div class="g-sub">${g.items.length} elemento(s)</div></div></div>
+      ${g.items.map(it => `
+        <div class="item ${estado[it.id]?'done':''}" onclick="toggle('${it.id}')">
+          <div class="check">${estado[it.id]?'✓':''}</div>
+          <div><div class="i-name">${it.nombre}</div><div class="i-desc">${it.desc}</div></div>
+        </div>`).join('')}
+    </div>`).join('');
+
+  const total = CHECKLIST.reduce((n,g)=>n+g.items.length,0);
+  const done = Object.values(estado).filter(Boolean).length;
+  document.getElementById('progLabel').textContent = `${done} / ${total}`;
+  document.getElementById('progFill').style.width = (total? done/total*100 : 0) + '%';
+}
+
+function toggle(id){
+  estado[id] = !estado[id];
+  localStorage.setItem(lsKey(), JSON.stringify(estado));
+  render();
+}
+
+async function guardar(){
+  const note = document.getElementById('savedNote');
+  const btn = document.getElementById('btnGuardar');
+  localStorage.setItem(lsKey(), JSON.stringify(estado));
+  if(!expediente){
+    note.className = 'saved-note ok'; note.textContent = '✓ Guardado en este dispositivo';
+    return;
+  }
+  btn.disabled = true; note.className = 'saved-note'; note.textContent = 'Enviando…';
+  try{
+    const payload = { ...expediente, materialChecklist: estado, updatedAt: new Date().toISOString().slice(0,10) };
+    const r = await fetch(WEBHOOK, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+    if(!r.ok) throw new Error(r.status);
+    note.className = 'saved-note ok'; note.textContent = '✓ Enviado a la oficina';
+  }catch(e){
+    note.className = 'saved-note err'; note.textContent = '✗ No se pudo enviar (guardado en este dispositivo)';
+  }finally{ btn.disabled = false; }
+}
+
+init();
+</script>
+</body>
+</html>

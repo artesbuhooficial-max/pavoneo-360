@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pavoneo 360 · Calendario editorial</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:#F7F2E5; --cream2:#FFF8E8;
+  --ink:#071C48; --ink-mid:#24406E; --ink-light:#6A7EA6;
+  --blue:#0757D8; --blue-deep:#043C9F; --blue-soft:#EAF2FF; --teal-l:#3E83FF;
+  --gold:#E8B83E; --gold-pale:#FFF5D7; --terra:#D59A18;
+  --green:#1E8A5E; --green-pale:#E8F7F1;
+  --red:#C0392B;
+  --border:#D8E3F5;
+  --sh:0 10px 28px rgba(7,28,72,.07); --sh-md:0 18px 52px rgba(7,28,72,.13);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,#f8fbff 0%,#fff 44%,#fff8e8 100%);color:var(--ink);font-size:15px;line-height:1.6;min-height:100vh}
+.wrap{max-width:900px;margin:0 auto;padding:28px 22px 90px}
+
+.masthead{background:linear-gradient(135deg,#071C48 0%,#0B3E9A 60%,#0757D8 100%);color:#fff;padding:32px 38px 26px;border-radius:18px;margin-bottom:24px;position:relative;overflow:hidden;box-shadow:var(--sh-md)}
+.masthead::before{content:'📅';position:absolute;right:38px;top:50%;transform:translateY(-50%);font-size:74px;opacity:.1}
+.mh-eye{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);font-weight:800;margin-bottom:8px}
+.mh-title{font-size:30px;font-weight:900;line-height:1.05;letter-spacing:-.03em;margin-bottom:8px}
+.mh-title em{color:var(--gold);font-style:normal}
+.mh-sub{font-size:13px;color:rgba(255,255,255,.7);max-width:560px}
+
+.bar{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 20px;box-shadow:var(--sh);margin-bottom:22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;font-weight:700}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.swatch{width:12px;height:12px;border-radius:4px;display:inline-block}
+.btn{display:inline-flex;align-items:center;gap:7px;border:none;border-radius:9px;padding:10px 18px;font-size:13px;font-weight:800;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s;margin-left:auto}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-blue:hover{background:var(--blue-deep)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.saved-note{font-size:12px;font-weight:700}
+.saved-note.ok{color:var(--green)} .saved-note.err{color:var(--red)}
+
+.week{margin-bottom:22px}
+.w-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid var(--border)}
+.w-name{font-family:'Playfair Display',serif;font-size:18px;font-weight:700}
+.w-count{font-size:10px;font-weight:800;background:var(--blue-soft);color:var(--blue);padding:3px 10px;border-radius:20px}
+.post{background:#fff;border:1px solid var(--border);border-left:4px solid var(--border);border-radius:11px;padding:14px 18px;margin-bottom:9px;box-shadow:var(--sh);display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.post[data-st="Pendiente"]{border-left-color:#C9D6EC}
+.post[data-st="Programado"]{border-left-color:var(--gold)}
+.post[data-st="Publicado"]{border-left-color:var(--green)}
+.p-day{min-width:74px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-light)}
+.p-main{flex:1;min-width:200px}
+.p-type{font-weight:800;font-size:14.5px}
+.p-note{font-size:12px;color:var(--ink-light)}
+.p-platform{font-size:10px;font-weight:800;background:var(--cream2);border:1px solid var(--border);padding:3px 10px;border-radius:20px;color:var(--ink-mid)}
+.p-status{border:none;border-radius:8px;padding:8px 14px;font-size:11.5px;font-weight:800;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:110px;transition:.15s}
+.p-status.Pendiente{background:#EDF2FA;color:var(--ink-light)}
+.p-status.Programado{background:var(--gold-pale);color:var(--terra);border:1px solid var(--gold)}
+.p-status.Publicado{background:var(--green-pale);color:var(--green);border:1px solid var(--green)}
+.hint{font-size:11px;color:var(--ink-light);text-align:center;margin-top:4px}
+.footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--border);font-size:11px;color:var(--ink-light);text-align:center}
+#loading{text-align:center;padding:60px 0;color:var(--ink-light)}
+#empty{display:none;text-align:center;padding:50px 20px;background:#fff;border:1px dashed var(--border);border-radius:14px;color:var(--ink-light)}
+@media(max-width:600px){.masthead{padding:24px 20px}.mh-title{font-size:23px}.btn{margin-left:0;width:100%;justify-content:center}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="loading">Cargando tu calendario editorial…</div>
+  <div id="app" style="display:none">
+
+    <div class="masthead">
+      <div class="mh-eye">Pavoneo 360° · Artes Búho</div>
+      <div class="mh-title">Calendario <em>editorial</em></div>
+      <div class="mh-sub" id="mhSub">El plan de publicaciones de tu lanzamiento. Toca el estado de cada pieza para actualizarlo — la oficina lo ve al momento.</div>
+    </div>
+
+    <div class="bar">
+      <div class="legend">
+        <span><i class="swatch" style="background:#C9D6EC"></i> Pendiente</span>
+        <span><i class="swatch" style="background:var(--gold)"></i> Programado</span>
+        <span><i class="swatch" style="background:var(--green)"></i> Publicado</span>
+      </div>
+      <button class="btn btn-blue" id="btnGuardar" onclick="guardar()">💾 Guardar cambios</button>
+      <span class="saved-note" id="savedNote"></span>
+    </div>
+
+    <div id="weeks"></div>
+    <div id="empty">Tu calendario editorial aún no está definido. La oficina lo publicará aquí cuando entres en la fase de lanzamiento. 🚀</div>
+    <div class="hint">Toca el botón de estado de cada publicación para pasarla de Pendiente → Programado → Publicado.</div>
+
+    <div class="footer"><strong>Artes Búho</strong> · artesbuho.oficial@gmail.com · Pavoneo 360°</div>
+  </div>
+</div>
+
+<script>
+const WEBHOOK = 'https://artesbuho.app.n8n.cloud/webhook/pavoneo-sync';
+const CICLO = ['Pendiente','Programado','Publicado'];
+const artistId = new URLSearchParams(location.search).get('id') || '';
+let expediente = null;
+
+async function init(){
+  if(artistId){
+    try{
+      const r = await fetch(`../data/artistas/${artistId}.json?t=${Date.now()}`, {cache:'no-store'});
+      if(r.ok) expediente = await r.json();
+    }catch(e){ console.warn(e); }
+  }
+  if(expediente) document.getElementById('mhSub').textContent =
+    `Hola, ${expediente.displayName} 👋 — este es el plan de publicaciones de tu lanzamiento. Toca el estado de cada pieza para actualizarlo.`;
+  render();
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+}
+
+function render(){
+  const cal = expediente?.editorialCalendar || [];
+  const cont = document.getElementById('weeks');
+  if(!cal.length){
+    cont.innerHTML = '';
+    document.getElementById('empty').style.display = 'block';
+    document.getElementById('btnGuardar').disabled = true;
+    return;
+  }
+  const semanas = {};
+  cal.forEach((p,i) => { (semanas[p.week] = semanas[p.week] || []).push({...p, _i:i}); });
+  cont.innerHTML = Object.keys(semanas).sort((a,b)=>a-b).map(w => `
+    <div class="week">
+      <div class="w-head"><div class="w-name">Semana ${w}</div>
+        <span class="w-count">${semanas[w].length} publicación(es)</span></div>
+      ${semanas[w].map(p => {
+        const st = CICLO.includes(p.status) ? p.status : 'Pendiente';
+        return `<div class="post" data-st="${st}">
+          <div class="p-day">${p.day || ''}</div>
+          <div class="p-main"><div class="p-type">${p.type || 'Publicación'}</div>
+            <div class="p-note">${p.note || ''}</div></div>
+          <span class="p-platform">${p.platform || ''}</span>
+          <button class="p-status ${st}" onclick="ciclar(${p._i})">${st==='Publicado'?'✓ ':''}${st}</button>
+        </div>`;
+      }).join('')}
+    </div>`).join('');
+}
+
+function ciclar(i){
+  const p = expediente.editorialCalendar[i];
+  const actual = CICLO.indexOf(CICLO.includes(p.status) ? p.status : 'Pendiente');
+  p.status = CICLO[(actual + 1) % CICLO.length];
+  render();
+}
+
+async function guardar(){
+  const note = document.getElementById('savedNote');
+  const btn = document.getElementById('btnGuardar');
+  if(!expediente){ note.className='saved-note err'; note.textContent='Sin expediente cargado'; return; }
+  btn.disabled = true; note.className='saved-note'; note.textContent='Enviando…';
+  try{
+    const payload = { ...expediente, updatedAt: new Date().toISOString().slice(0,10) };
+    const r = await fetch(WEBHOOK, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+    if(!r.ok) throw new Error(r.status);
+    note.className='saved-note ok'; note.textContent='✓ Guardado — la oficina ya lo ve';
+  }catch(e){
+    note.className='saved-note err'; note.textContent='✗ No se pudo guardar, inténtalo de nuevo';
+  }finally{ btn.disabled = false; }
+}
+
+init();
+</script>
+</body>
+</html>

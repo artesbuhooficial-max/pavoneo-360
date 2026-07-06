@@ -12,13 +12,17 @@ pavoneo-360/
 │   ├── index.html          Panel interno de gestión de expedientes
 │   └── global.html         Dashboard general: todos los artistas, pipeline y documentos
 ├── artistas/
-│   └── index.html          Vista del artista (misma app, modo cliente forzado por URL)
+│   ├── index.html          Vista del artista (misma app, modo cliente forzado por URL)
+│   ├── material.html       Portal de entrega de material del artista (?id={slug})
+│   └── calendario.html     Calendario editorial interactivo del artista (?id={slug})
 ├── mezcla/
 │   └── index.html          App React de revisión de mezcla / Mix Studio
 ├── data/
-│   └── artistas/
-│       ├── index.json        Manifest de artistas (alimenta oficina/global.html)
-│       └── {slug}.json       JSON público por artista (fuente de verdad publicada)
+│   ├── artistas/
+│   │   ├── index.json        Manifest de artistas (alimenta oficina/global.html)
+│   │   └── {slug}.json       JSON público por artista (fuente de verdad publicada)
+│   └── historico/
+│       └── {slug}.json       Snapshots automáticos de progreso (GitHub Action diaria)
 ├── inbox/                  Staging local — los .json aquí nunca se commitean
 ├── private/                Material sensible local — nunca se publica
 └── scripts/
@@ -198,6 +202,9 @@ inbox/*.json         ← nunca se publica (.gitignored)
 | App Mix Studio (mezcla/) | Completa |
 | Dashboard general de oficina (oficina/global.html) | Completo |
 | Manifest de artistas (data/artistas/index.json) | Activo |
+| Portal de entrega de material (artistas/material.html) | Completo |
+| Calendario editorial interactivo (artistas/calendario.html) | Completo |
+| Histórico de progreso (.github/workflows/historico.yml) | Activo |
 | JSON publico por artista (formato y ejemplo) | Definido |
 | Script Sincronizar_Pavoneo.ps1 (alternativa local) | Pendiente |
 

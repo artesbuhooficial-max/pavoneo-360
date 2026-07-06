@@ -1,0 +1,16 @@
+[
+  {
+    "fecha": "2026-07-06",
+    "currentStep": "cierre",
+    "steps": {
+      "contacto": "done",
+      "formulario": "done",
+      "briefing": "done",
+      "grabacion": "done",
+      "postproduccion": "done",
+      "lanzamiento": "done",
+      "inversion": "done",
+      "cierre": "active"
+    }
+  }
+]

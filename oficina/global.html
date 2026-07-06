@@ -217,10 +217,12 @@ async function loadAll(bust){
     const manifest = await fetchJSON('../data/artistas/index.json', bust);
     const artistas = await Promise.all(
       (manifest.artistas || []).map(async a => {
-        let exp = null;
+        let exp = null, hist = null;
         try { exp = await fetchJSON('../' + a.expediente, bust); }
         catch(e){ console.warn('Sin expediente para', a.id, e); }
-        return { meta:a, exp };
+        try { hist = await fetchJSON('../data/historico/' + a.id + '.json', bust); }
+        catch(e){ /* histórico opcional */ }
+        return { meta:a, exp, hist };
       })
     );
     render(artistas, manifest);
@@ -239,6 +241,24 @@ function stepStatus(exp, id){
 }
 function doneCount(exp){
   return STEPS.filter(s => stepStatus(exp, s.id) === 'done').length;
+}
+function diasEnFase(hist, exp){
+  if(!hist || !hist.length || !exp) return null;
+  const actual = exp.currentStep;
+  let desde = null;
+  for(let i = hist.length - 1; i >= 0; i--){
+    if(hist[i].currentStep === actual) desde = hist[i].fecha;
+    else break;
+  }
+  if(!desde) return null;
+  const dias = Math.max(0, Math.round((Date.now() - new Date(desde)) / 86400000));
+  return { desde, dias };
+}
+function materialProgress(exp){
+  const mc = exp && exp.materialChecklist;
+  if(!mc) return null;
+  const vals = Object.values(mc);
+  return { done: vals.filter(Boolean).length, total: vals.length };
 }
 function currentStepLabel(exp){
   const active = STEPS.find(s => stepStatus(exp, s.id) === 'active');
@@ -280,9 +300,13 @@ function render(artistas, manifest){
     const done = doneCount(exp);
     const pct = Math.round(done / STEPS.length * 100);
     const pack = exp?.pack || m.pack || 'basico';
-    const docs = (m.documentos || []).map((d,i) =>
+    let docs = (m.documentos || []).map((d,i) =>
       `<a class="doc-link ${i===0?'primary':''}" href="../${d.url}" target="_blank">${DOC_ICON[d.tipo]||'📄'} ${d.nombre}</a>`
     ).join('');
+    docs += `<a class="doc-link" href="../artistas/material.html?id=${m.id}" target="_blank">📦 Material</a>` +
+            `<a class="doc-link" href="../artistas/calendario.html?id=${m.id}" target="_blank">📅 Calendario</a>`;
+    const fase = diasEnFase(a.hist, exp);
+    const mat = materialProgress(exp);
     const dots = STEPS.map(s => {
       const st = stepStatus(exp, s.id);
       return `<div class="dot ${st}"><span>${s.n}</span><span class="tip">${s.label} · ${st==='done'?'completado':st==='active'?'en curso':'pendiente'}</span></div>`;
@@ -299,7 +323,8 @@ function render(artistas, manifest){
       <div class="c-body">
         <div class="prog-row"><div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div><div class="prog-pct">${pct}%</div></div>
         <div class="steps-dots">${dots}</div>
-        <div class="c-current">Paso actual: <strong>${currentStepLabel(exp)}</strong></div>
+        <div class="c-current">Paso actual: <strong>${currentStepLabel(exp)}</strong>${fase ? ` · en esta fase <strong>${fase.dias} día${fase.dias===1?'':'s'}</strong> (desde ${fase.desde})` : ''}</div>
+        ${mat ? `<div class="c-current">Material entregado: <strong>${mat.done}/${mat.total}</strong></div>` : ''}
         <div class="c-updated">Expediente actualizado: ${exp?.updatedAt || 'sin expediente'}</div>
       </div>
       <div class="c-docs">${docs || '<span style="font-size:11px;color:var(--ink-light)">Sin documentos registrados</span>'}</div>
