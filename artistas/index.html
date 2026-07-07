@@ -1569,6 +1569,16 @@
       render();
     }
 
+    // Paleta genérica de referencia; se sustituye por la del expediente (data.palette)
+    const DEFAULT_PALETTE = [
+      { hex:"#1c2020", name:"Negro urbano" },
+      { hex:"#2b6565", name:"Verde bronce" },
+      { hex:"#f8f4ee", name:"Crema" },
+      { hex:"#b0c4b0", name:"Oliva claro" },
+      { hex:"#d4a830", name:"Latón dorado" }
+    ];
+    let artistPalette = null;
+
     function renderInfoMaestraVisualBlock(infoHref){
       return `
         <div class="reference-panel">
@@ -1583,13 +1593,13 @@
             <div class="reference-card">
               <div class="block-title">Paleta visual de referencia</div>
               <div class="swatch-row">
-                <span class="swatch" style="background:#1c2020" title="Negro urbano"></span>
-                <span class="swatch" style="background:#2b6565" title="Verde bronce"></span>
-                <span class="swatch" style="background:#f8f4ee" title="Crema"></span>
-                <span class="swatch" style="background:#b0c4b0" title="Oliva claro"></span>
-                <span class="swatch" style="background:#d4a830" title="Laton dorado"></span>
+                ${(artistPalette && artistPalette.length ? artistPalette : DEFAULT_PALETTE).map(c =>
+                  `<span class="swatch" style="background:${c.hex}" title="${(c.name || c.hex).replace(/"/g,'&quot;')}"></span>`
+                ).join("")}
               </div>
-              <div class="reference-note">Usar como guia hasta que la hoja de estetica de la Info Maestra quede cerrada al 100%.</div>
+              <div class="reference-note">${artistPalette && artistPalette.length
+                ? "Paleta oficial del artista — sincronizada desde su Info Maestra."
+                : "Paleta genérica de referencia. Se sustituirá por la oficial cuando la Info Maestra quede cerrada."}</div>
             </div>
             <div class="reference-card">
               <div class="block-title">Decisiones para grabacion</div>
@@ -2036,6 +2046,8 @@
 
     function applyPublishedArtistData(data){
       if(!data) return;
+      // Paleta oficial del artista (definida en su Info Maestra y volcada al expediente)
+      if(Array.isArray(data.palette) && data.palette.length) artistPalette = data.palette;
       if(data.displayName) document.getElementById("artistName").value = data.displayName;
       if(data.pack) document.getElementById("artistPack").value = normalizePack(data.pack);
       if(data.publicLinks && data.publicLinks.artifactCloud) document.getElementById("artifactLink").value = data.publicLinks.artifactCloud;

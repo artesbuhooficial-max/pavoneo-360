@@ -4,7 +4,14 @@
   "pack": "premium",
   "currentStep": "cierre",
   "unlockedUntil": "cierre",
-  "updatedAt": "2026-07-06",
+  "updatedAt": "2026-07-07",
+  "palette": [
+    { "hex": "#1C2020", "name": "Negro urbano" },
+    { "hex": "#2B6565", "name": "Verde bronce" },
+    { "hex": "#F8F4EE", "name": "Crema" },
+    { "hex": "#B0C4B0", "name": "Oliva claro" },
+    { "hex": "#D4A830", "name": "Latón dorado" }
+  ],
   "publicLinks": {
     "infoMaestra": "https://artesbuhooficial-max.github.io/pavoneo-360/artistas/epiybrass/",
     "materialesPublicos": "",

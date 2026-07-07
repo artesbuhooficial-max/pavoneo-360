@@ -1015,6 +1015,17 @@
     const OFFICE_PASSWORD = "pavoneo360";
     const OFFICE_UNLOCK_KEY = "pavoneo360-office-unlocked";
     const SYNC_WEBHOOK_URL = 'https://artesbuho.app.n8n.cloud/webhook/pavoneo-sync';
+
+    // Paleta genérica de referencia; se sustituye por la del expediente (data.palette)
+    const DEFAULT_PALETTE = [
+      { hex:"#1c2020", name:"Negro urbano" },
+      { hex:"#2b6565", name:"Verde bronce" },
+      { hex:"#f8f4ee", name:"Crema" },
+      { hex:"#b0c4b0", name:"Oliva claro" },
+      { hex:"#d4a830", name:"Latón dorado" }
+    ];
+    let artistPalette = null;      // paleta oficial del artista (desde su JSON publicado)
+    let publishedExtra = {};       // campos del expediente publicado que este panel no edita
     const ARTIST_ROUTE = /\/artistas\//.test(window.location.pathname);
     let currentFilter = "all";
     let currentPageId = "contacto";
@@ -1633,13 +1644,13 @@
             <div class="reference-card">
               <div class="block-title">Paleta visual de referencia</div>
               <div class="swatch-row">
-                <span class="swatch" style="background:#1c2020" title="Negro urbano"></span>
-                <span class="swatch" style="background:#2b6565" title="Verde bronce"></span>
-                <span class="swatch" style="background:#f8f4ee" title="Crema"></span>
-                <span class="swatch" style="background:#b0c4b0" title="Oliva claro"></span>
-                <span class="swatch" style="background:#d4a830" title="Laton dorado"></span>
+                ${(artistPalette && artistPalette.length ? artistPalette : DEFAULT_PALETTE).map(c =>
+                  `<span class="swatch" style="background:${c.hex}" title="${(c.name || c.hex).replace(/"/g,'&quot;')}"></span>`
+                ).join("")}
               </div>
-              <div class="reference-note">Usar como guia hasta que la hoja de estetica de la Info Maestra quede cerrada al 100%.</div>
+              <div class="reference-note">${artistPalette && artistPalette.length
+                ? "Paleta oficial del artista — sincronizada desde su Info Maestra."
+                : "Paleta genérica de referencia. Se sustituirá por la oficial cuando la Info Maestra quede cerrada."}</div>
             </div>
             <div class="reference-card">
               <div class="block-title">Decisiones para grabacion</div>
@@ -2096,6 +2107,14 @@
 
     function applyPublishedArtistData(data){
       if(!data) return;
+      // Paleta oficial del artista (definida en su Info Maestra y volcada al expediente)
+      if(Array.isArray(data.palette) && data.palette.length) artistPalette = data.palette;
+      // Conserva campos que este panel no edita para no perderlos al publicar
+      publishedExtra = {
+        palette: data.palette,
+        materialChecklist: data.materialChecklist,
+        publicLinks: data.publicLinks || {}
+      };
       if(data.displayName) document.getElementById("artistName").value = data.displayName;
       if(data.pack) document.getElementById("artistPack").value = normalizePack(data.pack);
       if(data.publicLinks && data.publicLinks.artifactCloud) document.getElementById("artifactLink").value = data.publicLinks.artifactCloud;
@@ -2152,7 +2171,7 @@
         stepData[step.id] = { status: step.status };
         if(stepChecks[step.id]) stepData[step.id].checks = stepChecks[step.id];
       });
-      return {
+      const json = {
         artistId,
         displayName: document.getElementById("artistName").value || "Nombre del artista",
         pack,
@@ -2160,8 +2179,8 @@
         unlockedUntil: firstPendingStep().id,
         updatedAt: new Date().toISOString().slice(0, 10),
         publicLinks: {
-          infoMaestra: document.getElementById("infoMaestraLink").value || "",
-          materialesPublicos: "",
+          ...(publishedExtra.publicLinks || {}),
+          infoMaestra: document.getElementById("infoMaestraLink").value || (publishedExtra.publicLinks || {}).infoMaestra || "",
           artifactCloud: (()=>{ try{ const u=new URL(document.getElementById("artifactLink").value||""); u.searchParams.delete("ouid"); u.searchParams.delete("usp"); return u.toString(); }catch(_){ return document.getElementById("artifactLink").value||""; } })(),
           mixApp: document.getElementById("mixAppLink").value || ""
         },
@@ -2169,6 +2188,10 @@
         editorialCalendar,
         steps: stepData
       };
+      // Campos gestionados fuera de este panel (Info Maestra, portal de material)
+      if(publishedExtra.palette) json.palette = publishedExtra.palette;
+      if(publishedExtra.materialChecklist) json.materialChecklist = publishedExtra.materialChecklist;
+      return json;
     }
 
     function exportCurrentArtistJson(){

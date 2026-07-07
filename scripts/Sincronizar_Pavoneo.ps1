@@ -88,6 +88,11 @@ foreach ($File in $Files) {
   ConvertTo-StableJson $Json | Set-Content -LiteralPath $Target -Encoding UTF8
   $Updated += "data/artistas/$ArtistId.json"
   Write-Host "Actualizado data/artistas/$ArtistId.json" -ForegroundColor Green
+
+  # Archiva el JSON procesado para no reprocesarlo (inbox/ esta gitignored)
+  $Procesados = Join-Path $Inbox "procesados"
+  if (-not (Test-Path $Procesados)) { New-Item -ItemType Directory -Path $Procesados | Out-Null }
+  Move-Item -LiteralPath $File.FullName -Destination (Join-Path $Procesados $File.Name) -Force
 }
 
 $HasGit = Test-Path (Join-Path $Root ".git")
@@ -113,7 +118,9 @@ if ($Updated.Count -eq 1) {
 git commit -m $Message
 
 if ($Push) {
-  git push
+  # Este equipo tiene problema de certificados SSL con GitHub: usar siempre el flag
+  git -c http.sslVerify=false pull origin main --rebase
+  git -c http.sslVerify=false push origin main
 }
 
 Write-Host ""
