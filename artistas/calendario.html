@@ -93,7 +93,7 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,#f8fbff 
 
 <script>
 // Publicador Google Apps Script (misma URL /exec que usa la oficina). Vacío = solo local.
-const WEBHOOK = '';
+const WEBHOOK = 'https://script.google.com/macros/s/AKfycbz2gTZgugtG4hi2Ju7KRryZrOO24-CNDEzylyMjVGuR9cDJ3N1r1zRbrm7QM4UjM2o-gg/exec';
 const CICLO = ['Pendiente','Programado','Publicado'];
 const artistId = new URLSearchParams(location.search).get('id') || '';
 let expediente = null;
