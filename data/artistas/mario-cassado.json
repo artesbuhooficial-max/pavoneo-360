@@ -6,11 +6,26 @@
   "unlockedUntil": "contacto",
   "updatedAt": "2026-07-07",
   "palette": [
-    { "hex": "#D72638", "name": "Rojo Mario" },
-    { "hex": "#8B1E2D", "name": "Rojo oscuro" },
-    { "hex": "#FFFFFF", "name": "Blanco puro" },
-    { "hex": "#D9D9D9", "name": "Gris mundo" },
-    { "hex": "#333333", "name": "Gris oscuro" }
+    {
+      "hex": "#D72638",
+      "name": "Rojo Mario"
+    },
+    {
+      "hex": "#8B1E2D",
+      "name": "Rojo oscuro"
+    },
+    {
+      "hex": "#FFFFFF",
+      "name": "Blanco puro"
+    },
+    {
+      "hex": "#D9D9D9",
+      "name": "Gris mundo"
+    },
+    {
+      "hex": "#333333",
+      "name": "Gris oscuro"
+    }
   ],
   "publicLinks": {
     "infoMaestra": "https://artesbuhooficial-max.github.io/pavoneo-360/artistas/mario-cassado/",
