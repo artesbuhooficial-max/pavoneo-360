@@ -37,25 +37,25 @@
       "detail": "Grabacion de la primera y segunda pieza musical con toma de seguridad."
     },
     {
-      "time": "13:15",
-      "block": "Pausa y fotos",
-      "owner": "Oficina",
-      "detail": "Descanso breve, seleccion de fondos y sesion fotografica en estudio."
+      "time": "12:30",
+      "block": "Pausa y montaje ",
+      "owner": "David + Álvaro ",
+      "detail": "Descanso breve. Sesion fotografica en estudio."
+    },
+    {
+      "time": "12:40",
+      "block": "Fotos ",
+      "owner": "Álvaro + Artista",
+      "detail": "Sesión de fotos con el vestuario y en el estudio."
+    },
+    {
+      "time": "13:30",
+      "block": "Entrevista Pavoneate",
+      "owner": "David + Álvaro + Miriam ",
+      "detail": "40 minutos preguntas pautada + improvisación y Pavoneo "
     },
     {
       "time": "14:15",
-      "block": "Live session 2",
-      "owner": "David + artista",
-      "detail": "Grabacion de la segunda pieza o alternativa definida en briefing."
-    },
-    {
-      "time": "15:30",
-      "block": "Making off y spot prescriptor",
-      "owner": "Oficina + artista",
-      "detail": "Recursos de proceso, planos cortos, testimonio y mensajes para redes."
-    },
-    {
-      "time": "16:30",
       "block": "Cierre de grabacion",
       "owner": "David + oficina",
       "detail": "Confirmar archivos, naming, copia de seguridad y siguientes pasos de postproduccion."
