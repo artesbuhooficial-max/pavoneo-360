@@ -25,39 +25,39 @@
       "detail": "Montaje de microfonia, pruebas de camara, escucha de referencias y ajuste de set."
     },
     {
-      "time": "10:45",
-      "block": "Entrevista base",
-      "owner": "David + artista",
-      "detail": "Preguntas principales, relato del proyecto y frases utiles para piezas cortas."
+      "time": "10:30",
+      "block": "Check Cámaras + Sonido",
+      "owner": "David + Álvaro Técnico de Cámara",
+      "detail": "Líneas, Steady, Focos, chases..."
     },
     {
-      "time": "12:00",
-      "block": "Live session 1",
-      "owner": "David + artista",
-      "detail": "Grabacion de la primera pieza musical con toma de seguridad."
+      "time": "11:00",
+      "block": "Llegada del Artista",
+      "owner": "David",
+      "detail": "Recepción del artista, reconocimiento del espacio."
     },
     {
-      "time": "13:15",
-      "block": "Pausa y fotos",
-      "owner": "Oficina",
-      "detail": "Descanso breve, seleccion de fondos y sesion fotografica en estudio."
+      "time": "11:30",
+      "block": "Live Session 1 y Live Session 2",
+      "owner": "David + Álvaro ",
+      "detail": "Descanso breve, y sesion fotografica en estudio."
+    },
+    {
+      "time": "12.30",
+      "block": "Entrevista Pavoneate con Miriam",
+      "owner": "Miriam redes + artista",
+      "detail": "Montaje del sel set de grabación + grabación. Máximo grabación 40 minutos formato horizontal YouTube + Instagram."
+    },
+    {
+      "time": "13:30",
+      "block": "Spot prescriptor (Miriam) Recogida y desmontaje",
+      "owner": "David + Álvaro técnico ",
+      "detail": "Miriam en aula Sala de Control graba Spot Prescriptor de Mario. Todo recogida."
     },
     {
       "time": "14:15",
-      "block": "Live session 2",
-      "owner": "David + artista",
-      "detail": "Grabacion de la segunda pieza o alternativa definida en briefing."
-    },
-    {
-      "time": "15:30",
-      "block": "Making off y spot prescriptor",
-      "owner": "Oficina + artista",
-      "detail": "Recursos de proceso, planos cortos, testimonio y mensajes para redes."
-    },
-    {
-      "time": "16:30",
       "block": "Cierre de grabacion",
-      "owner": "David + oficina",
+      "owner": "David + oficina.",
       "detail": "Confirmar archivos, naming, copia de seguridad y siguientes pasos de postproduccion."
     }
   ],
@@ -152,7 +152,14 @@
       ]
     },
     "grabacion": {
-      "status": "active"
+      "status": "active",
+      "checks": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
     },
     "postproduccion": {
       "status": "todo"
