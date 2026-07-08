@@ -155,7 +155,7 @@
       "status": "active",
       "checks": [
         true,
-        false,
+        true,
         false,
         false,
         false
