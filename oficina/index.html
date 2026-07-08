@@ -1014,7 +1014,10 @@
     const PRECONSULTORIA_FORM_URL = "https://docs.google.com/forms/d/1DU4ijRq93Lo5yqssmkpXDme8t-3pqkIWsdrnd6Nrip0/edit?usp=drive_web&ouid=103619232809009489616";
     const OFFICE_PASSWORD = "pavoneo360";
     const OFFICE_UNLOCK_KEY = "pavoneo360-office-unlocked";
-    const SYNC_WEBHOOK_URL = 'https://artesbuho.app.n8n.cloud/webhook/pavoneo-sync';
+    // Publicador Google Apps Script (reemplaza al webhook n8n). Pegar aquí la URL /exec
+    // que devuelve "Implementar → Aplicación web". Mientras esté vacío, el botón
+    // "Publicar cambios" descarga el JSON como alternativa (flujo local con el .bat).
+    const SYNC_WEBHOOK_URL = '';
 
     // Paleta genérica de referencia; se sustituye por la del expediente (data.palette)
     const DEFAULT_PALETTE = [
@@ -2216,25 +2219,24 @@
       try{
         const payload = buildCurrentArtistJson();
         console.log("[Pavoneo] Payload enviado:", JSON.stringify(payload, null, 2));
+        // text/plain evita el preflight CORS que bloquea las webapps de Apps Script
         const res = await fetch(SYNC_WEBHOOK_URL, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify(payload)
         });
-        if(res.ok){
+        // Apps Script responde siempre 200: el veredicto real va en body.status
+        const body = await res.json().catch(() => null);
+        if(res.ok && body && body.status === "ok"){
           showToast("Publicado ✓");
         } else {
-          let detail = "";
-          try{
-            const body = await res.json();
-            const violations = body?.validation?.violations || body?.violations || [];
-            if(violations.length) detail = " — " + violations[0];
-          }catch(_){}
+          const violations = (body && (body.violations || (body.validation && body.validation.violations))) || [];
+          const detail = violations.length ? " — " + violations[0] : (body && body.message ? " — " + body.message : "");
           console.warn("[Pavoneo] Error publicar:", detail);
-          showToast("Error al publicar (" + res.status + ")" + detail);
+          showToast("Error al publicar" + detail);
         }
       }catch(err){
-        showToast("Error al publicar");
+        showToast("Error al publicar (conexión)");
       }finally{
         if(btn){ btn.disabled = false; btn.textContent = "Publicar cambios"; }
       }

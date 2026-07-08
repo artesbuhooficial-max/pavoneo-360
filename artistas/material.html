@@ -93,7 +93,8 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,#f8fbff 
 </div>
 
 <script>
-const WEBHOOK = 'https://artesbuho.app.n8n.cloud/webhook/pavoneo-sync';
+// Publicador Google Apps Script (misma URL /exec que usa la oficina). Vacío = solo local.
+const WEBHOOK = '';
 const CHECKLIST = [
   { grupo:'Identidad visual', ico:'🎨', items:[
     { id:'logo-vector',   nombre:'Logo en vectorial (AI/SVG/EPS)', desc:'Si no lo tienes, vale la versión en PNG a máxima resolución.' },
@@ -176,16 +177,21 @@ async function guardar(){
   const note = document.getElementById('savedNote');
   const btn = document.getElementById('btnGuardar');
   localStorage.setItem(lsKey(), JSON.stringify(estado));
-  if(!expediente){
+  if(!expediente || !WEBHOOK){
     note.className = 'saved-note ok'; note.textContent = '✓ Guardado en este dispositivo';
     return;
   }
   btn.disabled = true; note.className = 'saved-note'; note.textContent = 'Enviando…';
   try{
     const payload = { ...expediente, materialChecklist: estado, updatedAt: new Date().toISOString().slice(0,10) };
-    const r = await fetch(WEBHOOK, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
-    if(!r.ok) throw new Error(r.status);
-    note.className = 'saved-note ok'; note.textContent = '✓ Enviado a la oficina';
+    // text/plain evita el preflight CORS de las webapps de Apps Script
+    const r = await fetch(WEBHOOK, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(payload) });
+    const body = await r.json().catch(() => null);
+    if(r.ok && body && body.status === 'ok'){
+      note.className = 'saved-note ok'; note.textContent = '✓ Enviado a la oficina';
+    }else{
+      throw new Error((body && body.message) || r.status);
+    }
   }catch(e){
     note.className = 'saved-note err'; note.textContent = '✗ No se pudo enviar (guardado en este dispositivo)';
   }finally{ btn.disabled = false; }
