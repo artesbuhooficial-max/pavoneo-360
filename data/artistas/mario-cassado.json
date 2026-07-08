@@ -2,8 +2,8 @@
   "artistId": "mario-cassado",
   "displayName": "Mario Cassado",
   "pack": "premium",
-  "currentStep": "contacto",
-  "unlockedUntil": "formulario",
+  "currentStep": "formulario",
+  "unlockedUntil": "briefing",
   "updatedAt": "2026-07-08",
   "publicLinks": {
     "infoMaestra": "https://artesbuhooficial-max.github.io/pavoneo-360/artistas/mario-cassado/",
@@ -132,13 +132,13 @@
       ]
     },
     "formulario": {
-      "status": "active",
+      "status": "done",
       "checks": [
         true,
         true,
         true,
         true,
-        false
+        true
       ]
     },
     "briefing": {
