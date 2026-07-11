@@ -65,7 +65,7 @@ import * as THREE from "three";
 import htm from "htm";
 
 const html = htm.bind(React.createElement);
-const STORE = "pavoneo-iluminacion-v6";
+const STORE = "pavoneo-iluminacion-v7";
 const uid = () => Math.random().toString(36).slice(2, 9);
 const clamp = (v, a, b) => { v = Number(v); if (!isFinite(v)) v = a; return Math.max(a, Math.min(b, v)); };
 
@@ -143,8 +143,8 @@ const STAND_H = 2.0; // altura por defecto del truss de pie
 function seed() {
   return {
     fixtures: [
-      mkFixture("movil", { name:"Móvil izq",  x:-1.6, y:2.0, z:-2.0, color:"#0757D8", intensity:80, beam:16, panRange:26, tiltRange:15, speed:26, tilt:42, standStyle:"scrim", standColor:"#B98CFF", link:"A" }),
-      mkFixture("movil", { name:"Móvil der",  x: 1.6, y:2.0, z:-2.0, color:"#0757D8", intensity:80, beam:16, panRange:26, tiltRange:15, speed:26, tilt:42, standStyle:"scrim", standColor:"#B98CFF", link:"A", mirror:true }),
+      mkFixture("movil", { name:"Móvil izq",  x:-1.6, y:2.0, z:-2.0, color:"#0757D8", intensity:80, beam:16, move:true, speed:22, ax:-1.2, az:0.3, bx:1.2, bz:0.3, standStyle:"scrim", standColor:"#B98CFF", link:"A" }),
+      mkFixture("movil", { name:"Móvil der",  x: 1.6, y:2.0, z:-2.0, color:"#0757D8", intensity:80, beam:16, move:true, speed:22, ax:-1.2, az:0.3, bx:1.2, bz:0.3, standStyle:"scrim", standColor:"#B98CFF", link:"A", mirror:true }),
       mkFixture("fijo",  { name:"Recorte artista", x:0, y:2.0, z:2.2, color:"#FFF6E2", intensity:90, beam:26, tx:0, tz:0.4 }),
       mkFixture("fijo",  { name:"Contra izq", x:-1.6, y:2.0, z:-3.2, color:"#0757D8", intensity:55, beam:30, tx:-0.7, tz:-1.4 }),
       mkFixture("suelo", { name:"Uplight izq", x:-2.2, y:0.12, z:-3.6, color:"#0757D8", intensity:65, beam:26, tilt:8, rotY:0 }),
@@ -169,8 +169,10 @@ function mkFixture(type, o={}) {
     color: o.color || "#FFFFFF", intensity: o.intensity ?? 75,
     beam: o.beam ?? (type==="suelo"?24:18),      // fijo / movil / suelo
     tx: o.tx ?? 0, tz: o.tz ?? 0, // aim fijo
-    tilt: o.tilt ?? (type==="suelo"?12:35), panRange: o.panRange ?? 30, tiltRange: o.tiltRange ?? 18,
-    speed: o.speed ?? 28, phase: o.phase ?? 0,   // movil
+    tilt: o.tilt ?? (type==="suelo"?12:35),      // inclinación del foco de suelo
+    move: o.move ?? true, speed: o.speed ?? 26,  // móvil: estático o en movimiento
+    ax: o.ax ?? 0, az: o.az ?? 0.5,  // punto A (reposo / inicio del recorrido) sobre el suelo
+    bx: o.bx ?? 0, bz: o.bz ?? -1.5, // punto B (destino del recorrido)
     length: o.length ?? (type==="tubo"?2.0:4), rotY: o.rotY ?? 0, // barra / tubo / orientación suelo
     standStyle: o.standStyle ?? "truss", standColor: o.standColor ?? "#B98CFF", standGlow: o.standGlow ?? 70, // totem
     link: o.link ?? "", mirror: o.mirror ?? false, // enlace de focos / movimiento en espejo
@@ -246,6 +248,23 @@ function createEngine(mount, getState, onPick) {
   /* selección */
   const selHelper = new THREE.BoxHelper(new THREE.Mesh(new THREE.BoxGeometry(0.01,0.01,0.01)), 0xE8B83E);
   selHelper.visible = false; scene.add(selHelper);
+
+  /* manejadores de "punto de luz" para móviles (arrastrables sobre el suelo) */
+  const mkHandle = (col) => {
+    const g = new THREE.Group();
+    const disc = new THREE.Mesh(new THREE.CircleGeometry(0.3, 28),
+      new THREE.MeshBasicMaterial({ color:col, transparent:true, opacity:0.35, depthTest:false, side:THREE.DoubleSide }));
+    disc.rotation.x = -Math.PI/2;
+    const ring = new THREE.Mesh(new THREE.RingGeometry(0.3, 0.38, 28),
+      new THREE.MeshBasicMaterial({ color:col, transparent:true, opacity:0.95, depthTest:false, side:THREE.DoubleSide }));
+    ring.rotation.x = -Math.PI/2;
+    g.add(disc, ring); g.renderOrder = 6; g.visible = false; scene.add(g);
+    return g;
+  };
+  const handleA = mkHandle(0xE8B83E), handleB = mkHandle(0x0757D8);
+  const handleLine = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]),
+    new THREE.LineDashedMaterial({ color:0x8aa6d8, transparent:true, opacity:0.7, depthTest:false, dashSize:0.2, gapSize:0.15 }));
+  handleLine.visible = false; handleLine.renderOrder = 5; scene.add(handleLine);
 
   /* mapas */
   const fmap = new Map();  // id -> rig
@@ -436,15 +455,18 @@ function createEngine(mount, getState, onPick) {
         const from = new THREE.Vector3(fx.x, fx.y, fx.z);
         const to = new THREE.Vector3();
         if (rig.type === "movil") {
-          const swing = Math.sin(now * fx.speed/60) * (fx.panRange*Math.PI/180) * (fx.mirror ? -1 : 1);
-          const pan = (fx.phase*Math.PI/180) + swing;
-          const tilt = (fx.tilt*Math.PI/180) + Math.sin(now * fx.speed/60 * 0.7 + fx.phase*Math.PI/180) * (fx.tiltRange*Math.PI/180);
-          const hor = Math.sin(Math.max(0.02, tilt));
-          const dist = fx.y / Math.max(0.15, Math.cos(tilt));
+          // el foco apunta a un punto del suelo: reposo (A) o recorrido A→B; el espejo refleja en X
+          const sgn = fx.mirror ? -1 : 1;
+          let px, pz;
+          if (fx.move) {
+            const t01 = (Math.sin(now * (fx.speed||26)/60) + 1) / 2;   // vaivén suave 0..1
+            px = fx.ax + (fx.bx - fx.ax) * t01;
+            pz = fx.az + (fx.bz - fx.az) * t01;
+          } else { px = fx.ax; pz = fx.az; }
           to.set(
-            Math.max(-ROOM.W/2, Math.min(ROOM.W/2, fx.x + Math.sin(pan)*hor*dist)),
+            Math.max(-ROOM.W/2, Math.min(ROOM.W/2, sgn * px)),
             0,
-            Math.max(-ROOM.D/2, Math.min(ROOM.D/2, fx.z - Math.cos(pan)*hor*dist))
+            Math.max(-ROOM.D/2, Math.min(ROOM.D/2, pz))
           );
         } else if (rig.type === "suelo") {
           const tilt = clamp(fx.tilt, 0, 80) * Math.PI/180;   // 0 = recto hacia arriba
@@ -517,6 +539,18 @@ function createEngine(mount, getState, onPick) {
     }
     if (selMesh) { selHelper.visible = true; selHelper.setFromObject(selMesh); }
     else selHelper.visible = false;
+
+    // manejadores de punto de luz del móvil seleccionado
+    const selFx = selected && fixtures.find(f => f.id === selected);
+    if (selFx && selFx.type === "movil") {
+      const sgn = selFx.mirror ? -1 : 1;
+      handleA.position.set(sgn * selFx.ax, 0.04, selFx.az); handleA.visible = true;
+      if (selFx.move) {
+        handleB.position.set(sgn * selFx.bx, 0.04, selFx.bz); handleB.visible = true;
+        handleLine.geometry.setFromPoints([handleA.position.clone(), handleB.position.clone()]);
+        handleLine.computeLineDistances(); handleLine.visible = true;
+      } else { handleB.visible = false; handleLine.visible = false; }
+    } else { handleA.visible = false; handleB.visible = false; handleLine.visible = false; }
   }
 
   /* ── interacción: órbita + arrastre ── */
@@ -539,9 +573,30 @@ function createEngine(mount, getState, onPick) {
     const hit = ray.intersectObjects(targets, false)[0];
     return hit ? { id: hit.object.userData.pickId, kind: hit.object.userData.pickKind } : null;
   }
+  function pickHandle(e){
+    setNdc(e); ray.setFromCamera(ndc, camera);
+    const hs = [];
+    if (handleA.visible) hs.push(handleA);
+    if (handleB.visible) hs.push(handleB);
+    if (!hs.length) return null;
+    const hit = ray.intersectObjects(hs, true)[0];
+    if (!hit) return null;
+    let o = hit.object; while (o && o !== handleA && o !== handleB) o = o.parent;
+    return o === handleB ? "B" : "A";
+  }
+  function floorHit(e){
+    setNdc(e); ray.setFromCamera(ndc, camera);
+    const p = new THREE.Vector3();
+    if (!ray.ray.intersectPlane(floorPlane, p)) return null;
+    p.x = Math.max(-ROOM.W/2+0.2, Math.min(ROOM.W/2-0.2, p.x));
+    p.z = Math.max(-ROOM.D/2+0.2, Math.min(ROOM.D/2-0.2, p.z));
+    return p;
+  }
   function onDown(e){
     e.preventDefault();
     last = { x:e.clientX, y:e.clientY };
+    const h = pickHandle(e);
+    if (h) { mode = "handle"; dragHandle = h; return; }
     const hit = pickAt(e);
     if (hit && !e.shiftKey) {
       onPick(hit.id);
@@ -556,21 +611,19 @@ function createEngine(mount, getState, onPick) {
     if (mode === "orbit") {
       const dx = e.clientX - last.x, dy = e.clientY - last.y;
       orbit.theta -= dx*0.006; orbit.phi -= dy*0.006; updateCam();
+    } else if (mode === "handle") {
+      const p = floorHit(e);
+      if (p) onHandle(dragHandle, p.x, p.z);
     } else if (mode === "drag" && dragId) {
-      setNdc(e); ray.setFromCamera(ndc, camera);
-      const p = new THREE.Vector3();
-      if (ray.ray.intersectPlane(floorPlane, p)) {
-        p.x = Math.max(-ROOM.W/2+0.3, Math.min(ROOM.W/2-0.3, p.x));
-        p.z = Math.max(-ROOM.D/2+0.3, Math.min(ROOM.D/2-0.3, p.z));
-        onDrag(dragId, dragKind, p.x, p.z);
-      }
+      const p = floorHit(e);
+      if (p) onDrag(dragId, dragKind, p.x, p.z);
     }
     last = { x:e.clientX, y:e.clientY };
   }
-  function onUp(){ mode = null; dragId = null; dragKind = null; }
+  function onUp(){ mode = null; dragId = null; dragKind = null; dragHandle = null; }
   function onWheel(e){ e.preventDefault(); orbit.radius *= (1 + Math.sign(e.deltaY)*0.08); updateCam(); }
 
-  let onDrag = () => {};
+  let onDrag = () => {}, onHandle = () => {}, dragHandle = null;
 
   const el = renderer.domElement;
   el.style.touchAction = "none";
@@ -592,6 +645,7 @@ function createEngine(mount, getState, onPick) {
   return {
     syncFixtures, syncObjects,
     setOnDrag(fn){ onDrag = fn; },
+    setOnHandle(fn){ onHandle = fn; },
     frame(theta){ orbit.theta = theta; updateCam(); },
     resetView(){ orbit.theta = 0; orbit.phi = 1.08; orbit.radius = 8.5; orbit.target.set(0, 0.95, 0.2); updateCam(); },
     dispose(){ alive = false; cancelAnimationFrame(raf); ro.disconnect();
@@ -602,11 +656,12 @@ function createEngine(mount, getState, onPick) {
 }
 
 /* ─────────────────────────── Viewport React ─────────────────────────── */
-function Viewport({ stateRef, onPick, onDrag, engineRef }) {
+function Viewport({ stateRef, onPick, onDrag, onHandle, engineRef }) {
   const mountRef = useRef(null);
   useEffect(() => {
     const eng = createEngine(mountRef.current, () => stateRef.current, onPick);
     eng.setOnDrag(onDrag);
+    eng.setOnHandle(onHandle);
     engineRef.current = eng;
     return () => { eng.dispose(); engineRef.current = null; };
   }, []);
@@ -707,12 +762,27 @@ function FixtureEditor({ fx, patch, remove, dup }) {
         <${Slider} label="Orientación" value=${fx.rotY} min=0 max=360 unit="°" onChange=${v=>patch({rotY:v})} />
       </div>`}
       ${fx.type==="movil" && html`<div>
-        <div style=${{ fontSize:11, textTransform:"uppercase", letterSpacing:".06em", color:C.dorado, margin:"10px 0 8px" }}>Movimiento automático</div>
-        <${Slider} label="Inclinación base" value=${fx.tilt} min=5 max=70 unit="°" onChange=${v=>patch({tilt:v})} />
-        <${Slider} label="Barrido horizontal" value=${fx.panRange} min=0 max=80 unit="°" onChange=${v=>patch({panRange:v})} />
-        <${Slider} label="Barrido vertical" value=${fx.tiltRange} min=0 max=45 unit="°" onChange=${v=>patch({tiltRange:v})} />
-        <${Slider} label="Velocidad" value=${fx.speed} min=2 max=90 onChange=${v=>patch({speed:v})} />
-        <${Slider} label="Desfase" value=${fx.phase} min=0 max=360 unit="°" onChange=${v=>patch({phase:v})} />
+        <div style=${{ fontSize:11, textTransform:"uppercase", letterSpacing:".06em", color:C.dorado, margin:"10px 0 8px" }}>Movimiento · arrastra los puntos de luz en el 3D</div>
+        <div style=${{ display:"flex", gap:6, marginBottom:10 }}>
+          ${[[false,"Estático"],[true,"En movimiento"]].map(([v,l]) => html`<button key=${String(v)}
+            onClick=${()=>patch({move:v})} style=${{ flex:1, padding:"7px", borderRadius:7, cursor:"pointer",
+              background: (!!fx.move===v)?C.azul:C.panel2, color:(!!fx.move===v)?C.crema:C.sub,
+              border:`1px solid ${(!!fx.move===v)?C.azul:C.border}`, fontSize:12, fontWeight:600 }}>${l}</button>`)}
+        </div>
+        <div style=${{ fontSize:11, textTransform:"uppercase", letterSpacing:".05em", color:C.dorado, marginBottom:6 }}>
+          <span style=${{ display:"inline-block", width:9, height:9, borderRadius:9, background:"#E8B83E", marginRight:5 }}></span>${fx.move?"Punto A (inicio)":"Objetivo (reposo)"}
+        </div>
+        <${Slider} label="Luz · Izq · Der (X)" value=${round(fx.ax)} min=${-2.5} max=2.5 step=0.05 unit=" m" onChange=${v=>patch({ax:v})} />
+        <${Slider} label="Luz · Fondo · Frente (Z)" value=${round(fx.az)} min=${-4.1} max=4.1 step=0.05 unit=" m" onChange=${v=>patch({az:v})} />
+        ${fx.move && html`<div>
+          <div style=${{ fontSize:11, textTransform:"uppercase", letterSpacing:".05em", color:C.azul, margin:"8px 0 6px" }}>
+            <span style=${{ display:"inline-block", width:9, height:9, borderRadius:9, background:"#0757D8", marginRight:5 }}></span>Punto B (destino)
+          </div>
+          <${Slider} label="Luz · Izq · Der (X)" value=${round(fx.bx)} min=${-2.5} max=2.5 step=0.05 unit=" m" onChange=${v=>patch({bx:v})} />
+          <${Slider} label="Luz · Fondo · Frente (Z)" value=${round(fx.bz)} min=${-4.1} max=4.1 step=0.05 unit=" m" onChange=${v=>patch({bz:v})} />
+          <${Slider} label="Velocidad" value=${fx.speed} min=2 max=90 onChange=${v=>patch({speed:v})} />
+        </div>`}
+        ${fx.mirror && html`<div style=${{ fontSize:10, color:C.muted, marginTop:4 }}>Este foco está en espejo: la luz se refleja en X respecto al centro de la sala.</div>`}
       </div>`}
     </div>`}
 
@@ -1029,7 +1099,7 @@ function App() {
   }, [state]);
 
   const up = useCallback(patch => setState(s => ({ ...s, ...patch })), []);
-  const LINK_SHARE = ["color","tilt","panRange","tiltRange","speed","phase","beam"]; // se copia a los focos enlazados
+  const LINK_SHARE = ["color","beam","move","speed","ax","az","bx","bz","tilt"]; // se copia a los focos enlazados (no la posición ni el espejo)
   const patchFixture = (id, p) => setState(s => {
     const f0 = s.fixtures.find(x => x.id===id);
     const grp = f0 && f0.link;
@@ -1055,6 +1125,16 @@ function App() {
   }, []);
 
   const onPick = useCallback(id => setState(s => ({ ...s, selected:id })), []);
+  const onHandle = useCallback((which, wx, wz) => setState(s => {
+    const id = s.selected; const f = id && s.fixtures.find(x => x.id===id);
+    if (!f || f.type!=="movil") return s;
+    const sgn = f.mirror ? -1 : 1;                       // el handle se ve reflejado → deshacemos el espejo al guardar
+    const p = which==="B" ? { bx: sgn*wx, bz: wz } : { ax: sgn*wx, az: wz };
+    const grp = f.link;
+    const shared = {}; ["ax","az","bx","bz"].forEach(k => { if (k in p) shared[k] = p[k]; });
+    return { ...s, fixtures: s.fixtures.map(ff =>
+      ff.id===id ? { ...ff, ...p } : (grp && ff.link===grp ? { ...ff, ...shared } : ff)) };
+  }), []);
   const onDrag = useCallback((id, kind, x, z) => {
     setState(s => kind==="fixture"
       ? { ...s, fixtures: s.fixtures.map(f => f.id===id ? { ...f, x, z } : f) }
@@ -1101,10 +1181,10 @@ function App() {
     <div style=${{ flex:1, display:"flex", minHeight:0 }}>
       <!-- Visor -->
       <div style=${{ flex:1, position:"relative", minWidth:0 }}>
-        <${Viewport} stateRef=${stateRef} onPick=${onPick} onDrag=${onDrag} engineRef=${engineRef} />
+        <${Viewport} stateRef=${stateRef} onPick=${onPick} onDrag=${onDrag} onHandle=${onHandle} engineRef=${engineRef} />
         <${Toolbar} st=${st} patchSetting=${patchSetting} engineRef=${engineRef} />
         <div style=${{ position:"absolute", left:14, bottom:12, fontSize:11, color:C.muted, background:"rgba(4,10,24,.6)", padding:"5px 9px", borderRadius:7, pointerEvents:"none" }}>
-          Arrastra un elemento para moverlo · arrastra el fondo para orbitar · rueda para zoom
+          Arrastra un elemento para moverlo · en un móvil, arrastra sus puntos de luz (●) para fijar dónde apunta · el fondo orbita · rueda para zoom
         </div>
       </div>
       <!-- Panel -->
