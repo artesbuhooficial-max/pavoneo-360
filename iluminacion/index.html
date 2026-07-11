@@ -67,6 +67,51 @@ import htm from "htm";
 const html = htm.bind(React.createElement);
 const STORE = "pavoneo-iluminacion-v4";
 const uid = () => Math.random().toString(36).slice(2, 9);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, Number(v) || a));
+
+/* ── Mesa Stairville DMX-Master I · mapeo MIDI Note On (del manual) ──
+   Escenas: nota = (banco−1)×8 + (escena−1)  → bancos 1-15 × escenas 1-8 = notas 0-119
+   Chases 1-6 = notas 120-125 · Blackout = nota 126 */
+function deskNote(d) {
+  if (!d || d.mode === "none") return null;
+  if (d.mode === "blackout") return 126;
+  if (d.mode === "chase") return 119 + clamp(d.chase, 1, 6);
+  return (clamp(d.bank, 1, 15) - 1) * 8 + (clamp(d.scene, 1, 8) - 1);
+}
+function deskLabel(d) {
+  if (!d || d.mode === "none") return "— sin asignar —";
+  if (d.mode === "blackout") return "Blackout";
+  if (d.mode === "chase") return `Chase ${clamp(d.chase,1,6)}`;
+  return `Banco ${clamp(d.bank,1,15)} · Escena ${clamp(d.scene,1,8)}`;
+}
+/* Escribe un Standard MIDI File (.mid) con las notas de la mesa en el tiempo de cada cue */
+function buildSMF(cues, channel) {
+  const bpm = 120, PPQ = 480, ch = clamp(channel, 1, 16) - 1;
+  const tick = s => Math.max(0, Math.round(s * (bpm/60) * PPQ));
+  const evs = [];
+  cues.slice().sort((a,b)=>a.time-b.time).forEach(c => {
+    const note = deskNote(c.desk); if (note === null) return;
+    evs.push({ t:tick(c.time), on:true, note });
+    evs.push({ t:tick(c.time + 0.15), on:false, note });
+  });
+  if (!evs.length) return null;
+  evs.sort((a,b)=> a.t-b.t || (a.on===b.on?0:a.on?1:-1));
+  const vlq = n => { const b=[n&127]; while(n>>=7) b.unshift(n&127|128); return b; };
+  const bytes = [];
+  const name = "Iluminacion Pavoneo 360 - Mesa DMX";
+  const nb = Array.from(name).map(c=>c.charCodeAt(0)&127);
+  bytes.push(0,255,3,...vlq(nb.length),...nb);
+  const usq = Math.round(6e7/bpm);
+  bytes.push(0,255,81,3, usq>>16&255, usq>>8&255, usq&255);
+  let last = 0;
+  evs.forEach(ev => { bytes.push(...vlq(ev.t-last)); last=ev.t; bytes.push((ev.on?144:128)|ch, ev.note, ev.on?127:0); });
+  bytes.push(...vlq(0),255,47,0);
+  const head = [77,84,104,100,0,0,0,6,0,0,0,1, PPQ>>8&255, PPQ&255];
+  const L = bytes.length;
+  const trk = [77,84,114,107, L>>>24&255, L>>16&255, L>>8&255, L&255];
+  return new Uint8Array([...head,...trk,...bytes]);
+}
+const fmtTime = s => { s = Math.max(0, s||0); return Math.floor(s/60) + ":" + String(Math.floor(s%60)).padStart(2,"0"); };
 
 /* ─────────────────────────── Paleta Artes Búho ─────────────────────────── */
 const C = {
@@ -109,6 +154,8 @@ function seed() {
       mkObject("caja", { name:"Armario", x:-1.7, z:-2.6, w:1.0, h:2.0, d:0.55, color:"#5A4632" }),
     ],
     settings: { ambient:0.14, floorColor:"#141b28", wallColor:"#0d1420", showBeams:true, blackout:false, playing:true, shadows:"alta", fog:true },
+    cues: [],
+    midi: { channel: 1 },
     selected: null,
   };
 }
@@ -673,6 +720,195 @@ function ObjectEditor({ o, patch, remove, dup }) {
 
 const round = n => Math.round(n*10)/10;
 
+/* ─────────────────────────── Timeline + MIDI (mesa DMX) ─────────────────────────── */
+function DeskEditor({ cue, upCue, del, captureInto, channel }) {
+  const d = cue.desk || { mode:"none" };
+  const num = (val, min, max, onCh) => html`<input value=${val} inputMode="numeric"
+    onInput=${e=>onCh(clamp(e.target.value, min, max))} style=${{ width:52, textAlign:"center",
+      background:C.panel2, border:`1px solid ${C.border}`, color:C.text, borderRadius:7, padding:"6px 4px", fontSize:13 }} />`;
+  const note = deskNote(d);
+  return html`<div style=${{ display:"flex", flexWrap:"wrap", alignItems:"flex-end", gap:12 }}>
+    <label style=${{ display:"block" }}>
+      <div style=${{ fontSize:10.5, textTransform:"uppercase", letterSpacing:".05em", color:C.sub, marginBottom:4 }}>Nombre del cambio</div>
+      <input value=${cue.name} onInput=${e=>upCue({name:e.target.value})} style=${{ width:150, background:C.panel2, border:`1px solid ${C.border}`, color:C.text, borderRadius:7, padding:"6px 9px", fontSize:13 }} />
+    </label>
+    <label style=${{ display:"block" }}>
+      <div style=${{ fontSize:10.5, textTransform:"uppercase", letterSpacing:".05em", color:C.sub, marginBottom:4 }}>Tiempo (s)</div>
+      ${num(cue.time, 0, 99999, v=>upCue({time:v}))}
+    </label>
+    <label style=${{ display:"block" }}>
+      <div style=${{ fontSize:10.5, textTransform:"uppercase", letterSpacing:".05em", color:C.sub, marginBottom:4 }}>Acción en la mesa</div>
+      <select value=${d.mode} onChange=${e=>upCue({desk:{...d, mode:e.target.value}})} style=${{ background:C.panel2, border:`1px solid ${C.border}`, color:C.text, borderRadius:7, padding:"6px 9px", fontSize:13 }}>
+        <option value="scene">Escena de banco</option>
+        <option value="chase">Chase</option>
+        <option value="blackout">Blackout</option>
+        <option value="none">Ninguna</option>
+      </select>
+    </label>
+    ${d.mode==="scene" && html`<div style=${{ display:"flex", gap:10 }}>
+      <label><div style=${{ fontSize:10.5, textTransform:"uppercase", color:C.sub, marginBottom:4 }}>Banco (1-15)</div>${num(d.bank||1,1,15,v=>upCue({desk:{...d,bank:v}}))}</label>
+      <label><div style=${{ fontSize:10.5, textTransform:"uppercase", color:C.sub, marginBottom:4 }}>Escena (1-8)</div>${num(d.scene||1,1,8,v=>upCue({desk:{...d,scene:v}}))}</label>
+    </div>`}
+    ${d.mode==="chase" && html`<label><div style=${{ fontSize:10.5, textTransform:"uppercase", color:C.sub, marginBottom:4 }}>Chase (1-6)</div>${num(d.chase||1,1,6,v=>upCue({desk:{...d,chase:v}}))}</label>`}
+    <div style=${{ fontSize:12, color:C.text, background:C.panel2, border:`1px solid ${C.border}`, borderRadius:7, padding:"6px 10px" }}>
+      ${note===null ? "Sin nota" : html`Nota MIDI <b style=${{color:C.dorado}}>${note}</b> · canal ${channel}`}
+    </div>
+    <button onClick=${captureInto} title="Guardar el aspecto actual del 3D en este cue" style=${{
+      background: cue.look?C.azul:C.panel2, color: cue.look?C.crema:C.text, border:`1px solid ${cue.look?C.azul:C.border}`,
+      borderRadius:7, padding:"7px 11px", fontSize:12.5, fontWeight:600, cursor:"pointer" }}>
+      ${cue.look? "◉ Look capturado" : "◎ Capturar look 3D"}</button>
+    <button onClick=${del} style=${{ background:"#4a1420", color:"#ff9db0", border:"1px solid #4a1420", borderRadius:7, padding:"7px 11px", fontSize:12.5, fontWeight:600, cursor:"pointer" }}>🗑 Borrar</button>
+  </div>`;
+}
+
+function TimelineDock({ cues, setCues, midi, setMidi, captureLook, applyLook }) {
+  const [open, setOpen] = useState(true);
+  const [songName, setSongName] = useState("");
+  const [playing, setPlaying] = useState(false);
+  const [dur, setDur] = useState(0);
+  const [cur, setCur] = useState(0);
+  const [selId, setSelId] = useState(null);
+  const [outputs, setOutputs] = useState([]);
+  const [outId, setOutId] = useState("");
+  const [status, setStatus] = useState("init");
+  const [activeId, setActiveId] = useState(null);
+  const audioRef = useRef(null);
+  const rafRef = useRef(0);
+  const lastRef = useRef(0);
+  const headRef = useRef(null);
+  const trackRef = useRef(null);
+  const cuesRef = useRef(cues); cuesRef.current = cues;
+  const outRef = useRef({ outputs:[], outId:"", channel:1 });
+  outRef.current = { outputs, outId, channel: midi.channel };
+
+  useEffect(() => {
+    if (!navigator.requestMIDIAccess) { setStatus("unsupported"); return; }
+    navigator.requestMIDIAccess({ sysex:false }).then(acc => {
+      setStatus("ready");
+      const upd = () => { const outs = [...acc.outputs.values()]; setOutputs(outs); setOutId(id => id || (outs[0] ? outs[0].id : "")); };
+      acc.onstatechange = upd; upd();
+    }).catch(() => setStatus("denied"));
+  }, []);
+
+  const sendDesk = desk => {
+    const note = deskNote(desk); if (note === null) return;
+    const { outputs:outs, outId:oid, channel } = outRef.current;
+    const out = outs.find(o => o.id === oid); if (!out) return;
+    const ch = clamp(channel, 1, 16) - 1;
+    try { out.send([0x90|ch, note, 127]); setTimeout(() => { try { out.send([0x80|ch, note, 0]); } catch {} }, 150); } catch {}
+  };
+
+  const fire = (t0, t1) => {
+    if (t1 < t0) return;
+    cuesRef.current.forEach(c => { if (c.time > t0 && c.time <= t1) { if (c.look) applyLook(c.look); sendDesk(c.desk); setActiveId(c.id); } });
+  };
+
+  useEffect(() => {
+    if (!playing) { cancelAnimationFrame(rafRef.current); return; }
+    const loop = () => {
+      const a = audioRef.current;
+      if (a) {
+        const now = a.currentTime;
+        fire(lastRef.current, now); lastRef.current = now;
+        if (headRef.current && dur > 0) headRef.current.style.left = (now/dur*100) + "%";
+        if (a.ended) { setPlaying(false); return; }
+      }
+      rafRef.current = requestAnimationFrame(loop);
+    };
+    rafRef.current = requestAnimationFrame(loop);
+    const clk = setInterval(() => { if (audioRef.current) setCur(audioRef.current.currentTime); }, 250);
+    return () => { cancelAnimationFrame(rafRef.current); clearInterval(clk); };
+  }, [playing, dur]);
+
+  const onFile = e => { const f = e.target.files[0]; if (!f) return; const a = audioRef.current; a.src = URL.createObjectURL(f); setSongName(f.name); a.load(); e.target.value = ""; };
+  const play = () => { const a = audioRef.current; if (!a || !a.src) return; lastRef.current = a.currentTime; a.play(); setPlaying(true); };
+  const pause = () => { audioRef.current && audioRef.current.pause(); setPlaying(false); };
+  const stop = () => { const a = audioRef.current; if (a) { a.pause(); a.currentTime = 0; } lastRef.current = 0; setCur(0); setPlaying(false); if (headRef.current) headRef.current.style.left = "0%"; };
+  const seekTo = tt => { const a = audioRef.current; if (!a) return; tt = Math.max(0, Math.min(dur||tt, tt)); a.currentTime = tt; lastRef.current = tt; setCur(tt); if (headRef.current && dur>0) headRef.current.style.left = (tt/dur*100)+"%"; };
+
+  const addCueAt = tt => {
+    const c = { id:uid(), time:Math.max(0, Math.round(tt*100)/100), name:"Cambio "+(cues.length+1),
+      desk:{ mode:"scene", bank:1, scene:Math.min(8, cues.length+1) }, look:null };
+    setCues([...cues, c].sort((a,b)=>a.time-b.time)); setSelId(c.id);
+  };
+  const onTrackClick = e => {
+    if (!dur) { addCueAt(cur); return; }
+    const r = trackRef.current.getBoundingClientRect();
+    addCueAt(((e.clientX - r.left)/r.width) * dur);
+  };
+  const upCue = (id, p) => setCues(cues.map(c => c.id===id ? { ...c, ...p } : c).sort((a,b)=>a.time-b.time));
+  const delCue = id => { setCues(cues.filter(c => c.id!==id)); if (selId===id) setSelId(null); };
+  const exportMid = () => {
+    const u8 = buildSMF(cues, midi.channel);
+    if (!u8) { alert("Asigna una escena, chase o blackout a algún cue antes de exportar el .mid."); return; }
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([u8], { type:"audio/midi" }));
+    a.download = "iluminacion-pavoneo-mesa-dmx.mid"; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+  };
+
+  const sel = cues.find(c => c.id === selId);
+  const statusTxt = { init:"Iniciando MIDI…", ready:"MIDI listo", unsupported:"Web MIDI solo en Chrome/Edge", denied:"Permiso MIDI denegado" }[status];
+  const ctrlBtn = (label, onClick, active) => html`<button onClick=${onClick} style=${{
+    background: active?C.dorado:C.panel2, color: active?C.tinta:C.text, border:`1px solid ${active?C.dorado:C.border}`,
+    borderRadius:8, padding:"7px 11px", fontSize:14, fontWeight:700, cursor:"pointer", minWidth:40 }}>${label}</button>`;
+
+  if (!open) {
+    return html`<div style=${{ background:C.panel, borderTop:`1px solid ${C.border}`, padding:"6px 16px", display:"flex", alignItems:"center", gap:10 }}>
+      <button onClick=${()=>setOpen(true)} style=${{ background:C.panel2, color:C.dorado, border:`1px solid ${C.border}`, borderRadius:8, padding:"5px 12px", fontSize:12.5, fontWeight:700, cursor:"pointer" }}>▴ Timeline · Directo</button>
+      <span style=${{ fontSize:11.5, color:C.sub }}>${cues.length} cambios · ${songName||"sin canción"}</span>
+    </div>`;
+  }
+
+  return html`<div style=${{ background:C.panel, borderTop:`1px solid ${C.border}`, padding:"10px 16px 12px", display:"flex", flexDirection:"column", gap:9 }}>
+    <audio ref=${audioRef} onLoadedMetadata=${e=>setDur(e.target.duration||0)} onEnded=${()=>setPlaying(false)} style=${{ display:"none" }} />
+    <!-- fila transporte + midi -->
+    <div style=${{ display:"flex", alignItems:"center", gap:9, flexWrap:"wrap" }}>
+      <button onClick=${()=>setOpen(false)} title="Contraer" style=${{ background:"transparent", color:C.sub, border:`1px solid ${C.border}`, borderRadius:8, padding:"6px 9px", cursor:"pointer", fontSize:12 }}>▾</button>
+      <span class="ff-serif" style=${{ fontSize:15, color:C.dorado, fontWeight:700 }}>Timeline · Directo</span>
+      ${ctrlBtn(playing?"⏸":"▶", playing?pause:play, playing)}
+      ${ctrlBtn("⏹", stop)}
+      <label style=${{ background:C.panel2, border:`1px solid ${C.border}`, borderRadius:8, padding:"7px 11px", fontSize:12.5, fontWeight:600, cursor:"pointer", color:C.text }}>
+        ⭱ Subir canción<input type="file" accept="audio/*" onChange=${onFile} style=${{ display:"none" }} />
+      </label>
+      <span style=${{ fontSize:12.5, color:C.sub, minWidth:96, fontVariantNumeric:"tabular-nums" }}>${fmtTime(cur)} / ${fmtTime(dur)}</span>
+      <span style=${{ fontSize:12, color:C.muted, maxWidth:150, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>${songName}</span>
+
+      <div style=${{ marginLeft:"auto", display:"flex", alignItems:"center", gap:9, flexWrap:"wrap" }}>
+        <label style=${{ display:"flex", alignItems:"center", gap:6, fontSize:11.5, color:C.sub }}>Canal MIDI
+          <input value=${midi.channel} inputMode="numeric" onInput=${e=>setMidi({ channel: clamp(e.target.value,1,16) })}
+            style=${{ width:46, textAlign:"center", background:C.panel2, border:`1px solid ${C.border}`, color:C.text, borderRadius:7, padding:"5px", fontSize:13 }} /></label>
+        <label style=${{ display:"flex", alignItems:"center", gap:6, fontSize:11.5, color:C.sub }}>Salida
+          <select value=${outId} onChange=${e=>setOutId(e.target.value)} style=${{ maxWidth:160, background:C.panel2, border:`1px solid ${C.border}`, color:C.text, borderRadius:7, padding:"5px 7px", fontSize:12 }}>
+            ${outputs.length===0 && html`<option value="">(sin salidas MIDI)</option>`}
+            ${outputs.map(o=>html`<option key=${o.id} value=${o.id}>${o.name}</option>`)}
+          </select></label>
+        <span style=${{ fontSize:11, color: status==="ready"?"#6fe0a6":C.muted, border:`1px solid ${C.border}`, borderRadius:20, padding:"3px 9px" }}>● ${statusTxt}</span>
+        <button onClick=${exportMid} style=${{ background:C.dorado, color:C.tinta, border:`1px solid ${C.dorado}`, borderRadius:8, padding:"7px 11px", fontSize:12.5, fontWeight:700, cursor:"pointer" }}>⭳ Exportar .mid</button>
+      </div>
+    </div>
+
+    <!-- pista -->
+    <div style=${{ fontSize:10.5, color:C.muted }}>Click en la barra para añadir un cambio en ese punto · click en un marcador para editarlo</div>
+    <div ref=${trackRef} onClick=${onTrackClick} style=${{ position:"relative", height:44, background:C.panel2, border:`1px solid ${C.border}`, borderRadius:8, cursor:"copy", overflow:"hidden" }}>
+      ${[0.25,0.5,0.75].map(f=>html`<div key=${f} style=${{ position:"absolute", left:(f*100)+"%", top:0, bottom:0, width:1, background:"rgba(255,255,255,.06)" }} />`)}
+      ${cues.map(c=>{ const left = dur>0 ? (c.time/dur*100) : 0; const on = activeId===c.id; const isSel = selId===c.id;
+        return html`<button key=${c.id} onClick=${e=>{ e.stopPropagation(); setSelId(c.id); seekTo(c.time); }} title=${c.name+" · "+deskLabel(c.desk)}
+          style=${{ position:"absolute", left:left+"%", top:0, bottom:0, transform:"translateX(-50%)", width:isSel?4:3,
+            background: on?C.dorado:isSel?C.azul:"#4f6ea8", border:"none", cursor:"pointer", padding:0 }}>
+          <span style=${{ position:"absolute", top:2, left:5, whiteSpace:"nowrap", fontSize:10, color:isSel?C.crema:C.sub, background:"rgba(4,10,24,.7)", padding:"1px 4px", borderRadius:4 }}>${c.look?"◉ ":""}${deskLabel(c.desk).replace("Banco ","B").replace(" · Escena ",".").replace("Escena","E")}</span>
+        </button>`; })}
+      <div ref=${headRef} style=${{ position:"absolute", left:"0%", top:0, bottom:0, width:2, background:C.dorado, pointerEvents:"none", boxShadow:"0 0 6px "+C.dorado }} />
+    </div>
+
+    <!-- editor de cue seleccionado -->
+    ${sel ? html`<div style=${{ background:C.panel2, border:`1px solid ${C.border}`, borderRadius:8, padding:"10px 12px" }}>
+      <${DeskEditor} cue=${sel} channel=${midi.channel}
+        upCue=${p=>upCue(sel.id,p)} del=${()=>delCue(sel.id)} captureInto=${()=>upCue(sel.id,{look:captureLook()})} />
+    </div>` : html`<div style=${{ fontSize:12, color:C.muted, padding:"2px 0" }}>
+      Sube la canción, dale a ▶ y ve añadiendo cambios sobre la barra. En cada uno eliges qué escena/chase de la mesa Stairville dispara (calcula la nota MIDI sola) y puedes capturar el look del 3D para previsualizarlo. Exporta el .mid para tu DAW o envíalo en vivo por la salida MIDI.
+    </div>`}
+  </div>`;
+}
+
 /* ─────────────────────────── App ─────────────────────────── */
 function App() {
   const [state, setState] = useState(null);
@@ -709,6 +945,19 @@ function App() {
   const patchFixture = (id, p) => setState(s => ({ ...s, fixtures: s.fixtures.map(f => f.id===id ? { ...f, ...p } : f) }));
   const patchObject  = (id, p) => setState(s => ({ ...s, objects:  s.objects.map(o => o.id===id ? { ...o, ...p } : o) }));
   const patchSetting = p => setState(s => ({ ...s, settings: { ...s.settings, ...p } }));
+  const setCues = useCallback(cs => setState(s => ({ ...s, cues: cs })), []);
+  const setMidi = useCallback(p => setState(s => ({ ...s, midi: { ...s.midi, ...p } })), []);
+  const captureLook = useCallback(() => {
+    const s = stateRef.current;
+    return { fixtures: JSON.parse(JSON.stringify(s.fixtures)),
+      settings: { ambient:s.settings.ambient, blackout:s.settings.blackout, showBeams:s.settings.showBeams, fog:s.settings.fog } };
+  }, []);
+  const applyLook = useCallback(look => {
+    if (!look) return;
+    setState(s => ({ ...s,
+      fixtures: look.fixtures ? JSON.parse(JSON.stringify(look.fixtures)) : s.fixtures,
+      settings: { ...s.settings, ...(look.settings||{}) } }));
+  }, []);
 
   const onPick = useCallback(id => setState(s => ({ ...s, selected:id })), []);
   const onDrag = useCallback((id, kind, x, z) => {
@@ -787,6 +1036,8 @@ function App() {
         </div>
       </div>
     </div>
+    <${TimelineDock} cues=${state.cues||[]} setCues=${setCues} midi=${state.midi||{channel:1}} setMidi=${setMidi}
+      captureLook=${captureLook} applyLook=${applyLook} />
   </div>`;
 }
 
