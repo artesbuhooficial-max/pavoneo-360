@@ -65,7 +65,7 @@ import * as THREE from "three";
 import htm from "htm";
 
 const html = htm.bind(React.createElement);
-const STORE = "pavoneo-iluminacion-v2";
+const STORE = "pavoneo-iluminacion-v3";
 const uid = () => Math.random().toString(36).slice(2, 9);
 
 /* ─────────────────────────── Paleta Artes Búho ─────────────────────────── */
@@ -88,20 +88,22 @@ const OBJ_SHAPES = {
   cilindro: { label:"Cilindro",        desc:"Columna / forma circular en planta." },
 };
 
-/* Sala real de las Live Sessions: 5 m (ancho) × 8,3 m (fondo) ≈ 42 m² · techo 3,4 m */
-const ROOM = { W:5, D:8.3, H:3.4 };
+/* Sala real de las Live Sessions: 5 m (ancho) × 8,3 m (fondo) ≈ 42 m² · techo 2,30 m.
+   Sin truss colgado: los focos van sobre totems / truss de pie de ~2 m. */
+const ROOM = { W:5, D:8.3, H:2.3 };
+const STAND_H = 2.0; // altura por defecto del truss de pie
 
 /* ─────────────────────────── Semilla ─────────────────────────── */
 function seed() {
   return {
     fixtures: [
-      mkFixture("movil", { name:"Móvil izq",  x:-1.5, y:3.0, z:-1.4, color:"#0757D8", intensity:80, beam:16, panRange:26, tiltRange:15, speed:26, tilt:34 }),
-      mkFixture("movil", { name:"Móvil der",  x: 1.5, y:3.0, z:-1.4, color:"#E8B83E", intensity:80, beam:16, panRange:26, tiltRange:15, speed:26, tilt:34, phase:180 }),
-      mkFixture("fijo",  { name:"Recorte artista", x:0, y:3.1, z:1.7, color:"#FFF6E2", intensity:90, beam:24, tx:0, tz:0.3 }),
-      mkFixture("fijo",  { name:"Contra izq", x:-1.5, y:3.0, z:-3.1, color:"#0757D8", intensity:55, beam:28, tx:-0.7, tz:-1.1 }),
-      mkFixture("barra", { name:"Barra fondo", x:0, y:0.14, z:-3.9, color:"#0757D8", intensity:70, length:4, rotY:0 }),
-      mkFixture("tubo",  { name:"Tubo izq", x:-2.2, y:1.35, z:-3.95, color:"#E8B83E", intensity:75, length:2.4 }),
-      mkFixture("tubo",  { name:"Tubo der", x: 2.2, y:1.35, z:-3.95, color:"#E8B83E", intensity:75, length:2.4 }),
+      mkFixture("movil", { name:"Móvil izq",  x:-1.6, y:2.0, z:-2.0, color:"#0757D8", intensity:80, beam:16, panRange:26, tiltRange:15, speed:26, tilt:42 }),
+      mkFixture("movil", { name:"Móvil der",  x: 1.6, y:2.0, z:-2.0, color:"#E8B83E", intensity:80, beam:16, panRange:26, tiltRange:15, speed:26, tilt:42, phase:180 }),
+      mkFixture("fijo",  { name:"Recorte artista", x:0, y:2.0, z:2.2, color:"#FFF6E2", intensity:90, beam:26, tx:0, tz:0.4 }),
+      mkFixture("fijo",  { name:"Contra izq", x:-1.6, y:2.0, z:-3.2, color:"#0757D8", intensity:55, beam:30, tx:-0.7, tz:-1.4 }),
+      mkFixture("barra", { name:"Barra fondo", x:0, y:0.14, z:-3.95, color:"#0757D8", intensity:70, length:4, rotY:0 }),
+      mkFixture("tubo",  { name:"Tubo izq", x:-2.3, y:1.0, z:-3.98, color:"#E8B83E", intensity:75, length:2.0 }),
+      mkFixture("tubo",  { name:"Tubo der", x: 2.3, y:1.0, z:-3.98, color:"#E8B83E", intensity:75, length:2.0 }),
     ],
     objects: [
       mkObject("caja", { name:"Armario", x:-1.7, z:-2.6, w:1.0, h:2.0, d:0.55, color:"#5A4632" }),
@@ -113,13 +115,13 @@ function seed() {
 function mkFixture(type, o={}) {
   return {
     id: uid(), type, name: o.name || FIXTURE_TYPES[type].label,
-    x: o.x ?? 0, y: o.y ?? (type==="barra"?0.14:type==="tubo"?1.35:3.0), z: o.z ?? -2,
+    x: o.x ?? 0, y: o.y ?? (type==="barra"?0.14:type==="tubo"?1.0:STAND_H), z: o.z ?? -2,
     color: o.color || "#FFFFFF", intensity: o.intensity ?? 75,
     beam: o.beam ?? 18,           // fijo / movil
     tx: o.tx ?? 0, tz: o.tz ?? 0, // aim fijo
     tilt: o.tilt ?? 35, panRange: o.panRange ?? 30, tiltRange: o.tiltRange ?? 18,
     speed: o.speed ?? 28, phase: o.phase ?? 0,   // movil
-    length: o.length ?? (type==="tubo"?2.4:4), rotY: o.rotY ?? 0, // barra / tubo
+    length: o.length ?? (type==="tubo"?2.0:4), rotY: o.rotY ?? 0, // barra / tubo
   };
 }
 function mkObject(shape, o={}) {
@@ -143,7 +145,7 @@ function createEngine(mount, getState, onPick) {
   const camera = new THREE.PerspectiveCamera(48, 1, 0.1, 200);
 
   /* órbita */
-  const orbit = { theta: 0, phi: 1.02, radius: 9.5, target: new THREE.Vector3(0, 1.2, 0.2) };
+  const orbit = { theta: 0, phi: 1.08, radius: 8.5, target: new THREE.Vector3(0, 0.95, 0.2) };
   function updateCam() {
     orbit.phi = Math.max(0.15, Math.min(1.52, orbit.phi));
     orbit.radius = Math.max(3.5, Math.min(24, orbit.radius));
@@ -180,12 +182,7 @@ function createEngine(mount, getState, onPick) {
   const wallR = new THREE.Mesh(new THREE.PlaneGeometry(ROOM.D, ROOM.H), matWall.clone());
   wallR.rotation.y = -Math.PI/2; wallR.position.set(ROOM.W/2, ROOM.H/2, 0); wallR.receiveShadow = true; scene.add(wallR);
 
-  /* truss superior */
-  const trussMat = new THREE.MeshStandardMaterial({ color:0x2a3547, metalness:0.6, roughness:0.5 });
-  [-3, 0, 3].forEach(z => {
-    const t = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, ROOM.W-0.4, 8), trussMat);
-    t.rotation.z = Math.PI/2; t.position.set(0, ROOM.H-0.28, z); scene.add(t);
-  });
+  /* sin truss colgado: los focos elevados llevan su propio totem de pie (ver buildStand) */
 
   /* piso "escenario" sutil */
   const stageDisc = new THREE.Mesh(
@@ -205,6 +202,27 @@ function createEngine(mount, getState, onPick) {
   const DOWN = new THREE.Vector3(0, -1, 0);
   const beamGeo = new THREE.ConeGeometry(1, 1, 24, 1, true); beamGeo.translate(0, -0.5, 0);
   const housingMat = new THREE.MeshStandardMaterial({ color:0x1a2233, metalness:0.5, roughness:0.5 });
+  const standMat = new THREE.MeshStandardMaterial({ color:0x20293a, metalness:0.55, roughness:0.5 });
+
+  /* totem / truss de pie de altura unitaria (se escala a la altura del foco) */
+  function buildStand() {
+    const g = new THREE.Group();
+    const base = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.03, 0.42), standMat);
+    base.position.y = 0.015; base.castShadow = true; base.receiveShadow = true;
+    g.add(base);
+    const meshes = [base];
+    [[-0.09,-0.09],[0.09,-0.09],[-0.09,0.09],[0.09,0.09]].forEach(([x,z]) => {
+      const v = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 1, 6), standMat);
+      v.position.set(x, 0.5, z); v.castShadow = true; g.add(v); meshes.push(v);
+    });
+    [0.34, 0.68].forEach(y => {
+      const ring = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.02, 0.24), standMat);
+      ring.position.y = y; g.add(ring);
+    });
+    const top = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.04, 0.28), standMat);
+    top.position.y = 1; top.castShadow = true; g.add(top); meshes.push(top);
+    return { g, meshes };
+  }
 
   let shadowBudget = 8;
 
@@ -234,6 +252,8 @@ function createEngine(mount, getState, onPick) {
       scene.add(beam);
       rig.yoke = yoke; rig.lens = lens; rig.spot = spot; rig.beam = beam; rig.beamMat = beamMat;
       rig.meshes.push(body, lens);
+      const st = buildStand(); scene.add(st.g); rig.stand = st.g;
+      st.meshes.forEach(m => rig.meshes.push(m));
     }
     else if (fx.type === "barra") {
       const bar = new THREE.Mesh(new THREE.BoxGeometry(fx.length, 0.16, 0.16),
@@ -278,6 +298,7 @@ function createEngine(mount, getState, onPick) {
     scene.remove(rig.group);
     if (rig.beam) scene.remove(rig.beam);
     if (rig.spot && rig.spot.target) scene.remove(rig.spot.target);
+    if (rig.stand) { scene.remove(rig.stand); rig.stand.traverse(o => { o.geometry?.dispose?.(); }); }
     rig.group.traverse(o => { if (o.geometry) o.geometry.dispose?.(); if (o.material) o.material.dispose?.(); });
   }
 
@@ -380,6 +401,11 @@ function createEngine(mount, getState, onPick) {
         rig.beam.scale.set(R, len, R);
         rig.beamMat.color.copy(scratchCol);
         rig.beamMat.opacity = settings.showBeams ? k*0.14 : 0;
+        if (rig.stand) {
+          rig.stand.visible = fx.y > 0.55;
+          rig.stand.position.set(fx.x, 0, fx.z);
+          rig.stand.scale.y = Math.max(0.2, fx.y - 0.12);
+        }
       }
       else if (rig.type === "barra") {
         rig.group.rotation.y = (fx.rotY||0)*Math.PI/180;
@@ -487,7 +513,7 @@ function createEngine(mount, getState, onPick) {
     syncFixtures, syncObjects,
     setOnDrag(fn){ onDrag = fn; },
     frame(theta){ orbit.theta = theta; updateCam(); },
-    resetView(){ orbit.theta = 0; orbit.phi = 1.02; orbit.radius = 9.5; orbit.target.set(0, 1.2, 0.2); updateCam(); },
+    resetView(){ orbit.theta = 0; orbit.phi = 1.08; orbit.radius = 8.5; orbit.target.set(0, 0.95, 0.2); updateCam(); },
     dispose(){ alive = false; cancelAnimationFrame(raf); ro.disconnect();
       el.removeEventListener("pointerdown", onDown); window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp); el.removeEventListener("wheel", onWheel);
@@ -556,7 +582,7 @@ function FixtureEditor({ fx, patch, remove, dup }) {
     <div style=${{ fontSize:11, textTransform:"uppercase", letterSpacing:".06em", color:C.dorado, marginBottom:8 }}>Posición en la sala</div>
     <${Slider} label="Izq · Der (X)" value=${round(fx.x)} min=${-2.5} max=2.5 step=0.05 unit=" m" onChange=${v=>patch({x:v})} />
     <${Slider} label="Fondo · Frente (Z)" value=${round(fx.z)} min=${-4.1} max=4.1 step=0.05 unit=" m" onChange=${v=>patch({z:v})} />
-    <${Slider} label="Altura (Y)" value=${round(fx.y)} min=0 max=3.4 step=0.05 unit=" m" onChange=${v=>patch({y:v})} />
+    <${Slider} label="Altura (Y)" value=${round(fx.y)} min=0 max=2.3 step=0.05 unit=" m" onChange=${v=>patch({y:v})} />
 
     ${isSpot && html`<div>
       <div style=${{ height:1, background:C.border, margin:"12px 0" }} />
@@ -601,12 +627,12 @@ function ObjectEditor({ o, patch, remove, dup }) {
     <div style=${{ fontSize:11, textTransform:"uppercase", letterSpacing:".06em", color:C.dorado, margin:"10px 0 8px" }}>Tamaño</div>
     ${o.shape==="cilindro" && html`<div>
       <${Slider} label="Radio" value=${round(o.r)} min=0.15 max=1.5 step=0.05 unit=" m" onChange=${v=>patch({r:v})} />
-      <${Slider} label="Altura" value=${round(o.h)} min=0.2 max=3.2 step=0.1 unit=" m" onChange=${v=>patch({h:v})} />
+      <${Slider} label="Altura" value=${round(o.h)} min=0.2 max=2.3 step=0.1 unit=" m" onChange=${v=>patch({h:v})} />
     </div>`}
-    ${o.shape==="cubo" && html`<${Slider} label="Lado" value=${round(o.w)} min=0.2 max=2.5 step=0.1 unit=" m" onChange=${v=>patch({w:v})} />`}
+    ${o.shape==="cubo" && html`<${Slider} label="Lado" value=${round(o.w)} min=0.2 max=2.2 step=0.1 unit=" m" onChange=${v=>patch({w:v})} />`}
     ${o.shape==="caja" && html`<div>
       <${Slider} label="Ancho" value=${round(o.w)} min=0.2 max=3 step=0.1 unit=" m" onChange=${v=>patch({w:v})} />
-      <${Slider} label="Alto" value=${round(o.h)} min=0.2 max=3.2 step=0.1 unit=" m" onChange=${v=>patch({h:v})} />
+      <${Slider} label="Alto" value=${round(o.h)} min=0.2 max=2.3 step=0.1 unit=" m" onChange=${v=>patch({h:v})} />
       <${Slider} label="Fondo" value=${round(o.d)} min=0.2 max=3 step=0.1 unit=" m" onChange=${v=>patch({d:v})} />
     </div>`}
     <div style=${{ display:"flex", gap:8, marginTop:16 }}>
@@ -743,7 +769,7 @@ function Header({ state, patchSetting }) {
       <span class="ff-serif" style=${{ fontSize:22, color:C.crema, fontWeight:700 }}>Iluminación</span>
       <span class="ff-serif" style=${{ fontSize:22, color:C.dorado, fontWeight:700 }}>Pavoneo 360º</span>
     </div>
-    <span style=${{ fontSize:11.5, color:C.sub }}>Live Sessions · Artes Búho · Sala ${ROOM.W} × ${ROOM.D} m (${Math.round(ROOM.W*ROOM.D)} m²)</span>
+    <span style=${{ fontSize:11.5, color:C.sub }}>Live Sessions · Artes Búho · Sala ${ROOM.W} × ${ROOM.D} m · techo ${ROOM.H} m (${Math.round(ROOM.W*ROOM.D)} m²)</span>
     <div style=${{ marginLeft:"auto", display:"flex", gap:8, alignItems:"center" }}>
       <${Btn} small active=${st.playing} onClick=${()=>patchSetting({playing:!st.playing})}>${st.playing?"⏸ Movimiento":"▶ Movimiento"}<//>
       <${Btn} small danger=${st.blackout} onClick=${()=>patchSetting({blackout:!st.blackout})}>${st.blackout?"● Blackout":"○ Blackout"}<//>
