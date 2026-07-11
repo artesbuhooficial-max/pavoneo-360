@@ -759,6 +759,18 @@ function ObjectEditor({ o, patch, remove, dup }) {
 const round = n => Math.round(n*10)/10;
 
 /* ─────────────────────────── Timeline + MIDI (mesa DMX) ─────────────────────────── */
+/* Input numérico que permite escribir libremente y solo ajusta el rango al salir del campo
+   (evita que el clamp por tecla impida teclear valores como 130 cuando el mínimo es 20). */
+function NumInput({ value, min, max, onCommit, width=52 }) {
+  const [draft, setDraft] = useState(String(value));
+  useEffect(() => { setDraft(String(value)); }, [value]);
+  const commit = () => { const n = clamp(draft === "" || draft === "-" ? min : draft, min, max); onCommit(n); setDraft(String(n)); };
+  return html`<input value=${draft} inputMode="numeric"
+    onInput=${e => { const t = e.target.value; setDraft(t); const n = Number(t); if (t !== "" && isFinite(n) && n >= min && n <= max) onCommit(n); }}
+    onBlur=${commit}
+    onKeyDown=${e => { if (e.key === "Enter") e.target.blur(); }}
+    style=${{ width, textAlign:"center", background:C.panel2, border:`1px solid ${C.border}`, color:C.text, borderRadius:7, padding:"5px", fontSize:13 }} />`;
+}
 function DeskEditor({ cue, upCue, del, captureInto, testFire, channel, barInfo }) {
   const d = cue.desk || { mode:"none" };
   const num = (val, min, max, onCh) => html`<input value=${val} inputMode="numeric"
@@ -930,19 +942,15 @@ function TimelineDock({ cues, setCues, midi, setMidi, captureLook, applyLook }) 
       <span style=${{ fontSize:12, color:C.muted, maxWidth:150, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>${songName}</span>
 
       <label style=${{ display:"flex", alignItems:"center", gap:6, fontSize:11.5, color:C.sub }} title="Tempo de la canción — dibuja los compases en la barra">BPM
-        <input value=${midi.bpm||120} inputMode="numeric" onInput=${e=>setMidi({ bpm: clamp(e.target.value,20,300) })}
-          style=${{ width:52, textAlign:"center", background:C.panel2, border:`1px solid ${C.border}`, color:C.text, borderRadius:7, padding:"5px", fontSize:13 }} /></label>
+        <${NumInput} value=${midi.bpm||120} min=${20} max=${300} width=${52} onCommit=${v=>setMidi({ bpm:v })} /></label>
       <label style=${{ display:"flex", alignItems:"center", gap:6, fontSize:11.5, color:C.sub }} title="Tiempos por compás (numerador del compás, p. ej. 4 para 4/4)">Compás
-        <input value=${midi.sig||4} inputMode="numeric" onInput=${e=>setMidi({ sig: clamp(e.target.value,1,12) })}
-          style=${{ width:40, textAlign:"center", background:C.panel2, border:`1px solid ${C.border}`, color:C.text, borderRadius:7, padding:"5px", fontSize:13 }} />/4</label>
+        <${NumInput} value=${midi.sig||4} min=${1} max=${12} width=${40} onCommit=${v=>setMidi({ sig:v })} />/4</label>
 
       <div style=${{ marginLeft:"auto", display:"flex", alignItems:"center", gap:9, flexWrap:"wrap" }}>
         <label style=${{ display:"flex", alignItems:"center", gap:6, fontSize:11.5, color:C.sub }}>Canal MIDI
-          <input value=${midi.channel} inputMode="numeric" onInput=${e=>setMidi({ channel: clamp(e.target.value,1,16) })}
-            style=${{ width:46, textAlign:"center", background:C.panel2, border:`1px solid ${C.border}`, color:C.text, borderRadius:7, padding:"5px", fontSize:13 }} /></label>
+          <${NumInput} value=${midi.channel} min=${1} max=${16} width=${46} onCommit=${v=>setMidi({ channel:v })} /></label>
         <label style=${{ display:"flex", alignItems:"center", gap:6, fontSize:11.5, color:C.sub }} title="Adelanta el disparo MIDI para compensar el retardo del sistema (mesa/interfaz). Positivo = dispara antes.">Compensación
-          <input value=${midi.offset||0} inputMode="numeric" onInput=${e=>setMidi({ offset: clamp(e.target.value,-1000,1000) })}
-            style=${{ width:56, textAlign:"center", background:C.panel2, border:`1px solid ${C.border}`, color:C.text, borderRadius:7, padding:"5px", fontSize:13 }} />ms</label>
+          <${NumInput} value=${midi.offset||0} min=${-1000} max=${1000} width=${56} onCommit=${v=>setMidi({ offset:v })} />ms</label>
         <label style=${{ display:"flex", alignItems:"center", gap:6, fontSize:11.5, color:C.sub }}>Salida
           <select value=${outId} onChange=${e=>setOutId(e.target.value)} style=${{ maxWidth:160, background:C.panel2, border:`1px solid ${C.border}`, color:C.text, borderRadius:7, padding:"5px 7px", fontSize:12 }}>
             ${outputs.length===0 && html`<option value="">(sin salidas MIDI)</option>`}
