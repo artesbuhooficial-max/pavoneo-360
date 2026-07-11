@@ -67,7 +67,7 @@ import htm from "htm";
 const html = htm.bind(React.createElement);
 const STORE = "pavoneo-iluminacion-v4";
 const uid = () => Math.random().toString(36).slice(2, 9);
-const clamp = (v, a, b) => Math.max(a, Math.min(b, Number(v) || a));
+const clamp = (v, a, b) => { v = Number(v); if (!isFinite(v)) v = a; return Math.max(a, Math.min(b, v)); };
 
 /* ── Mesa Stairville DMX-Master I · mapeo MIDI Note On (del manual) ──
    Escenas: nota = (banco−1)×8 + (escena−1)  → bancos 1-15 × escenas 1-8 = notas 0-119
@@ -155,7 +155,7 @@ function seed() {
     ],
     settings: { ambient:0.14, floorColor:"#141b28", wallColor:"#0d1420", showBeams:true, blackout:false, playing:true, shadows:"alta", fog:true },
     cues: [],
-    midi: { channel: 1 },
+    midi: { channel: 1, offset: 0 },
     selected: null,
   };
 }
@@ -772,6 +772,7 @@ function TimelineDock({ cues, setCues, midi, setMidi, captureLook, applyLook }) 
   const [outId, setOutId] = useState("");
   const [status, setStatus] = useState("init");
   const [activeId, setActiveId] = useState(null);
+  const [drag, setDrag] = useState(null);
   const audioRef = useRef(null);
   const rafRef = useRef(0);
   const lastRef = useRef(0);
@@ -779,7 +780,8 @@ function TimelineDock({ cues, setCues, midi, setMidi, captureLook, applyLook }) 
   const trackRef = useRef(null);
   const cuesRef = useRef(cues); cuesRef.current = cues;
   const outRef = useRef({ outputs:[], outId:"", channel:1 });
-  outRef.current = { outputs, outId, channel: midi.channel };
+  outRef.current = { outputs, outId, channel: midi.channel, offset: midi.offset || 0 };
+  const offSec = () => (outRef.current.offset || 0) / 1000;
 
   useEffect(() => {
     if (!navigator.requestMIDIAccess) { setStatus("unsupported"); return; }
@@ -809,7 +811,8 @@ function TimelineDock({ cues, setCues, midi, setMidi, captureLook, applyLook }) 
       const a = audioRef.current;
       if (a) {
         const now = a.currentTime;
-        fire(lastRef.current, now); lastRef.current = now;
+        const t1 = now + offSec();          // compensación de latencia: anticipa el disparo
+        fire(lastRef.current, t1); lastRef.current = t1;
         if (headRef.current && dur > 0) headRef.current.style.left = (now/dur*100) + "%";
         if (a.ended) { setPlaying(false); return; }
       }
@@ -821,10 +824,10 @@ function TimelineDock({ cues, setCues, midi, setMidi, captureLook, applyLook }) 
   }, [playing, dur]);
 
   const onFile = e => { const f = e.target.files[0]; if (!f) return; const a = audioRef.current; a.src = URL.createObjectURL(f); setSongName(f.name); a.load(); e.target.value = ""; };
-  const play = () => { const a = audioRef.current; if (!a || !a.src) return; lastRef.current = a.currentTime; a.play(); setPlaying(true); };
+  const play = () => { const a = audioRef.current; if (!a || !a.src) return; lastRef.current = a.currentTime + offSec(); a.play(); setPlaying(true); };
   const pause = () => { audioRef.current && audioRef.current.pause(); setPlaying(false); };
   const stop = () => { const a = audioRef.current; if (a) { a.pause(); a.currentTime = 0; } lastRef.current = 0; setCur(0); setPlaying(false); if (headRef.current) headRef.current.style.left = "0%"; };
-  const seekTo = tt => { const a = audioRef.current; if (!a) return; tt = Math.max(0, Math.min(dur||tt, tt)); a.currentTime = tt; lastRef.current = tt; setCur(tt); if (headRef.current && dur>0) headRef.current.style.left = (tt/dur*100)+"%"; };
+  const seekTo = tt => { const a = audioRef.current; if (!a) return; tt = Math.max(0, Math.min(dur||tt, tt)); a.currentTime = tt; lastRef.current = tt + offSec(); setCur(tt); if (headRef.current && dur>0) headRef.current.style.left = (tt/dur*100)+"%"; };
 
   const addCueAt = tt => {
     const c = { id:uid(), time:Math.max(0, Math.round(tt*100)/100), name:"Cambio "+(cues.length+1),
@@ -839,7 +842,9 @@ function TimelineDock({ cues, setCues, midi, setMidi, captureLook, applyLook }) 
   const upCue = (id, p) => setCues(cues.map(c => c.id===id ? { ...c, ...p } : c).sort((a,b)=>a.time-b.time));
   const delCue = id => { setCues(cues.filter(c => c.id!==id)); if (selId===id) setSelId(null); };
   const exportMid = () => {
-    const u8 = buildSMF(cues, midi.channel);
+    const off = (midi.offset||0)/1000;
+    const shifted = cues.map(c => ({ ...c, time: Math.max(0, c.time - off) }));
+    const u8 = buildSMF(shifted, midi.channel);
     if (!u8) { alert("Asigna una escena, chase o blackout a algún cue antes de exportar el .mid."); return; }
     const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([u8], { type:"audio/midi" }));
     a.download = "iluminacion-pavoneo-mesa-dmx.mid"; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
@@ -876,6 +881,9 @@ function TimelineDock({ cues, setCues, midi, setMidi, captureLook, applyLook }) 
         <label style=${{ display:"flex", alignItems:"center", gap:6, fontSize:11.5, color:C.sub }}>Canal MIDI
           <input value=${midi.channel} inputMode="numeric" onInput=${e=>setMidi({ channel: clamp(e.target.value,1,16) })}
             style=${{ width:46, textAlign:"center", background:C.panel2, border:`1px solid ${C.border}`, color:C.text, borderRadius:7, padding:"5px", fontSize:13 }} /></label>
+        <label style=${{ display:"flex", alignItems:"center", gap:6, fontSize:11.5, color:C.sub }} title="Adelanta el disparo MIDI para compensar el retardo del sistema (mesa/interfaz). Positivo = dispara antes.">Compensación
+          <input value=${midi.offset||0} inputMode="numeric" onInput=${e=>setMidi({ offset: clamp(e.target.value,-1000,1000) })}
+            style=${{ width:56, textAlign:"center", background:C.panel2, border:`1px solid ${C.border}`, color:C.text, borderRadius:7, padding:"5px", fontSize:13 }} />ms</label>
         <label style=${{ display:"flex", alignItems:"center", gap:6, fontSize:11.5, color:C.sub }}>Salida
           <select value=${outId} onChange=${e=>setOutId(e.target.value)} style=${{ maxWidth:160, background:C.panel2, border:`1px solid ${C.border}`, color:C.text, borderRadius:7, padding:"5px 7px", fontSize:12 }}>
             ${outputs.length===0 && html`<option value="">(sin salidas MIDI)</option>`}
@@ -887,15 +895,21 @@ function TimelineDock({ cues, setCues, midi, setMidi, captureLook, applyLook }) 
     </div>
 
     <!-- pista -->
-    <div style=${{ fontSize:10.5, color:C.muted }}>Click en la barra para añadir un cambio en ese punto · click en un marcador para editarlo</div>
+    <div style=${{ fontSize:10.5, color:C.muted }}>Click en la barra para añadir un cambio · click en un marcador para editarlo · arrastra el marcador para moverlo en el tiempo</div>
     <div ref=${trackRef} onClick=${onTrackClick} style=${{ position:"relative", height:44, background:C.panel2, border:`1px solid ${C.border}`, borderRadius:8, cursor:"copy", overflow:"hidden" }}>
       ${[0.25,0.5,0.75].map(f=>html`<div key=${f} style=${{ position:"absolute", left:(f*100)+"%", top:0, bottom:0, width:1, background:"rgba(255,255,255,.06)" }} />`)}
-      ${cues.map(c=>{ const left = dur>0 ? (c.time/dur*100) : 0; const on = activeId===c.id; const isSel = selId===c.id;
-        return html`<button key=${c.id} onClick=${e=>{ e.stopPropagation(); setSelId(c.id); seekTo(c.time); }} title=${c.name+" · "+deskLabel(c.desk)}
-          style=${{ position:"absolute", left:left+"%", top:0, bottom:0, transform:"translateX(-50%)", width:isSel?4:3,
-            background: on?C.dorado:isSel?C.azul:"#4f6ea8", border:"none", cursor:"pointer", padding:0 }}>
-          <span style=${{ position:"absolute", top:2, left:5, whiteSpace:"nowrap", fontSize:10, color:isSel?C.crema:C.sub, background:"rgba(4,10,24,.7)", padding:"1px 4px", borderRadius:4 }}>${c.look?"◉ ":""}${deskLabel(c.desk).replace("Banco ","B").replace(" · Escena ",".").replace("Escena","E")}</span>
-        </button>`; })}
+      ${cues.map(c=>{ const shown = (drag && drag.id===c.id) ? drag.time : c.time; const left = dur>0 ? (shown/dur*100) : 0; const on = activeId===c.id; const isSel = selId===c.id;
+        return html`<div key=${c.id}
+          onClick=${e=>e.stopPropagation()}
+          onPointerDown=${e=>{ e.stopPropagation(); setSelId(c.id); seekTo(c.time); if (dur>0) { setDrag({ id:c.id, time:c.time }); e.currentTarget.setPointerCapture(e.pointerId); } }}
+          onPointerMove=${e=>{ if (!drag || drag.id!==c.id || dur<=0) return; const r=trackRef.current.getBoundingClientRect(); const tt=Math.max(0, Math.min(dur, ((e.clientX-r.left)/r.width)*dur)); setDrag({ id:c.id, time:Math.round(tt*100)/100 }); }}
+          onPointerUp=${e=>{ if (drag && drag.id===c.id) { upCue(c.id, { time:drag.time }); setDrag(null); } }}
+          title=${c.name+" · "+deskLabel(c.desk)}
+          style=${{ position:"absolute", left:left+"%", top:0, bottom:0, transform:"translateX(-50%)", width:10,
+            display:"flex", justifyContent:"center", cursor: dur>0?"ew-resize":"pointer", touchAction:"none", background:"transparent", border:"none", padding:0 }}>
+          <div style=${{ width:isSel?4:3, height:"100%", background: on?C.dorado:isSel?C.azul:"#4f6ea8" }} />
+          <span style=${{ position:"absolute", top:2, left:8, whiteSpace:"nowrap", fontSize:10, color:isSel?C.crema:C.sub, background:"rgba(4,10,24,.7)", padding:"1px 4px", borderRadius:4, pointerEvents:"none" }}>${c.look?"◉ ":""}${deskLabel(c.desk).replace("Banco ","B").replace(" · Escena ",".").replace("Escena","E")}</span>
+        </div>`; })}
       <div ref=${headRef} style=${{ position:"absolute", left:"0%", top:0, bottom:0, width:2, background:C.dorado, pointerEvents:"none", boxShadow:"0 0 6px "+C.dorado }} />
     </div>
 
