@@ -65,7 +65,7 @@ import * as THREE from "three";
 import htm from "htm";
 
 const html = htm.bind(React.createElement);
-const STORE = "pavoneo-iluminacion-v1";
+const STORE = "pavoneo-iluminacion-v2";
 const uid = () => Math.random().toString(36).slice(2, 9);
 
 /* ─────────────────────────── Paleta Artes Búho ─────────────────────────── */
@@ -88,23 +88,23 @@ const OBJ_SHAPES = {
   cilindro: { label:"Cilindro",        desc:"Columna / forma circular en planta." },
 };
 
-/* Sala */
-const ROOM = { W:16, D:12, H:7 };
+/* Sala real de las Live Sessions: 5 m (ancho) × 8,3 m (fondo) ≈ 42 m² · techo 3,4 m */
+const ROOM = { W:5, D:8.3, H:3.4 };
 
 /* ─────────────────────────── Semilla ─────────────────────────── */
 function seed() {
   return {
     fixtures: [
-      mkFixture("movil", { name:"Móvil izq",  x:-3, y:6.2, z:-4, color:"#0757D8", intensity:80, beam:14, panRange:35, tiltRange:22, speed:30, tilt:38 }),
-      mkFixture("movil", { name:"Móvil der",  x: 3, y:6.2, z:-4, color:"#E8B83E", intensity:80, beam:14, panRange:35, tiltRange:22, speed:30, tilt:38, phase:180 }),
-      mkFixture("fijo",  { name:"Recorte artista", x:0, y:6.4, z:3, color:"#FFF6E2", intensity:90, beam:20, tx:0, tz:0 }),
-      mkFixture("fijo",  { name:"Contra izq", x:-4.5, y:6.2, z:-5, color:"#0757D8", intensity:55, beam:24, tx:-2.5, tz:-2 }),
-      mkFixture("barra", { name:"Barra fondo", x:0, y:0.15, z:-5.4, color:"#0757D8", intensity:70, length:8, rotY:0 }),
-      mkFixture("tubo",  { name:"Tubo izq", x:-6.5, y:1.6, z:-5.7, color:"#E8B83E", intensity:75, length:3 }),
-      mkFixture("tubo",  { name:"Tubo der", x: 6.5, y:1.6, z:-5.7, color:"#E8B83E", intensity:75, length:3 }),
+      mkFixture("movil", { name:"Móvil izq",  x:-1.5, y:3.0, z:-1.4, color:"#0757D8", intensity:80, beam:16, panRange:26, tiltRange:15, speed:26, tilt:34 }),
+      mkFixture("movil", { name:"Móvil der",  x: 1.5, y:3.0, z:-1.4, color:"#E8B83E", intensity:80, beam:16, panRange:26, tiltRange:15, speed:26, tilt:34, phase:180 }),
+      mkFixture("fijo",  { name:"Recorte artista", x:0, y:3.1, z:1.7, color:"#FFF6E2", intensity:90, beam:24, tx:0, tz:0.3 }),
+      mkFixture("fijo",  { name:"Contra izq", x:-1.5, y:3.0, z:-3.1, color:"#0757D8", intensity:55, beam:28, tx:-0.7, tz:-1.1 }),
+      mkFixture("barra", { name:"Barra fondo", x:0, y:0.14, z:-3.9, color:"#0757D8", intensity:70, length:4, rotY:0 }),
+      mkFixture("tubo",  { name:"Tubo izq", x:-2.2, y:1.35, z:-3.95, color:"#E8B83E", intensity:75, length:2.4 }),
+      mkFixture("tubo",  { name:"Tubo der", x: 2.2, y:1.35, z:-3.95, color:"#E8B83E", intensity:75, length:2.4 }),
     ],
     objects: [
-      mkObject("caja", { name:"Armario", x:-4.5, z:-3, w:1.6, h:2.1, d:0.7, color:"#5A4632" }),
+      mkObject("caja", { name:"Armario", x:-1.7, z:-2.6, w:1.0, h:2.0, d:0.55, color:"#5A4632" }),
     ],
     settings: { ambient:0.14, floorColor:"#141b28", wallColor:"#0d1420", showBeams:true, blackout:false, playing:true, shadows:"alta", fog:true },
     selected: null,
@@ -113,13 +113,13 @@ function seed() {
 function mkFixture(type, o={}) {
   return {
     id: uid(), type, name: o.name || FIXTURE_TYPES[type].label,
-    x: o.x ?? 0, y: o.y ?? (type==="barra"?0.15:type==="tubo"?1.6:6.2), z: o.z ?? -4,
+    x: o.x ?? 0, y: o.y ?? (type==="barra"?0.14:type==="tubo"?1.35:3.0), z: o.z ?? -2,
     color: o.color || "#FFFFFF", intensity: o.intensity ?? 75,
     beam: o.beam ?? 18,           // fijo / movil
     tx: o.tx ?? 0, tz: o.tz ?? 0, // aim fijo
     tilt: o.tilt ?? 35, panRange: o.panRange ?? 30, tiltRange: o.tiltRange ?? 18,
     speed: o.speed ?? 28, phase: o.phase ?? 0,   // movil
-    length: o.length ?? (type==="tubo"?3:8), rotY: o.rotY ?? 0, // barra / tubo
+    length: o.length ?? (type==="tubo"?2.4:4), rotY: o.rotY ?? 0, // barra / tubo
   };
 }
 function mkObject(shape, o={}) {
@@ -143,10 +143,10 @@ function createEngine(mount, getState, onPick) {
   const camera = new THREE.PerspectiveCamera(48, 1, 0.1, 200);
 
   /* órbita */
-  const orbit = { theta: 0, phi: 1.05, radius: 20, target: new THREE.Vector3(0, 1.6, -1) };
+  const orbit = { theta: 0, phi: 1.02, radius: 9.5, target: new THREE.Vector3(0, 1.2, 0.2) };
   function updateCam() {
     orbit.phi = Math.max(0.15, Math.min(1.52, orbit.phi));
-    orbit.radius = Math.max(6, Math.min(45, orbit.radius));
+    orbit.radius = Math.max(3.5, Math.min(24, orbit.radius));
     const st = Math.sin(orbit.phi), ct = Math.cos(orbit.phi);
     camera.position.set(
       orbit.target.x + orbit.radius * st * Math.sin(orbit.theta),
@@ -168,7 +168,8 @@ function createEngine(mount, getState, onPick) {
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(ROOM.W, ROOM.D), matFloor);
   floor.rotation.x = -Math.PI/2; floor.receiveShadow = true; floor.name = "__floor";
   scene.add(floor);
-  const grid = new THREE.GridHelper(ROOM.W, ROOM.W, 0x24406e, 0x142a4d);
+  const grid = new THREE.GridHelper(ROOM.D, Math.round(ROOM.D), 0x24406e, 0x142a4d);
+  grid.scale.x = ROOM.W / ROOM.D;   // cubre justo el suelo rectangular
   grid.position.y = 0.012; scene.add(grid);
 
   const matWall = new THREE.MeshStandardMaterial({ color:0x0d1420, roughness:1, metalness:0 });
@@ -181,17 +182,17 @@ function createEngine(mount, getState, onPick) {
 
   /* truss superior */
   const trussMat = new THREE.MeshStandardMaterial({ color:0x2a3547, metalness:0.6, roughness:0.5 });
-  [-4, 0, 4].forEach(z => {
-    const t = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, ROOM.W-0.6, 8), trussMat);
-    t.rotation.z = Math.PI/2; t.position.set(0, ROOM.H-0.35, z); scene.add(t);
+  [-3, 0, 3].forEach(z => {
+    const t = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, ROOM.W-0.4, 8), trussMat);
+    t.rotation.z = Math.PI/2; t.position.set(0, ROOM.H-0.28, z); scene.add(t);
   });
 
   /* piso "escenario" sutil */
   const stageDisc = new THREE.Mesh(
-    new THREE.CircleGeometry(2.4, 40),
+    new THREE.CircleGeometry(1.5, 40),
     new THREE.MeshStandardMaterial({ color:0x1a2740, roughness:0.85, transparent:true, opacity:0.6 })
   );
-  stageDisc.rotation.x = -Math.PI/2; stageDisc.position.set(0, 0.014, 0.5); scene.add(stageDisc);
+  stageDisc.rotation.x = -Math.PI/2; stageDisc.position.set(0, 0.014, 0.3); scene.add(stageDisc);
 
   /* selección */
   const selHelper = new THREE.BoxHelper(new THREE.Mesh(new THREE.BoxGeometry(0.01,0.01,0.01)), 0xE8B83E);
@@ -338,7 +339,7 @@ function createEngine(mount, getState, onPick) {
     const black = settings.blackout;
     ambient.intensity = black ? 0.03 : settings.ambient;
     fill.intensity = black ? 0.02 : 0.12;
-    scene.fog = settings.fog ? new THREE.Fog(0x040a18, 14, 46) : null;
+    scene.fog = settings.fog ? new THREE.Fog(0x040a18, 5, 20) : null;
     matFloor.color.set(settings.floorColor);
     [back, wallL, wallR].forEach(w => w.material.color.set(settings.wallColor));
 
@@ -486,7 +487,7 @@ function createEngine(mount, getState, onPick) {
     syncFixtures, syncObjects,
     setOnDrag(fn){ onDrag = fn; },
     frame(theta){ orbit.theta = theta; updateCam(); },
-    resetView(){ orbit.theta = 0; orbit.phi = 1.05; orbit.radius = 20; updateCam(); },
+    resetView(){ orbit.theta = 0; orbit.phi = 1.02; orbit.radius = 9.5; orbit.target.set(0, 1.2, 0.2); updateCam(); },
     dispose(){ alive = false; cancelAnimationFrame(raf); ro.disconnect();
       el.removeEventListener("pointerdown", onDown); window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp); el.removeEventListener("wheel", onWheel);
@@ -553,17 +554,17 @@ function FixtureEditor({ fx, patch, remove, dup }) {
     <${Slider} label="Intensidad" value=${fx.intensity} min=0 max=100 unit="%" onChange=${v=>patch({intensity:v})} />
     <div style=${{ height:1, background:C.border, margin:"12px 0" }} />
     <div style=${{ fontSize:11, textTransform:"uppercase", letterSpacing:".06em", color:C.dorado, marginBottom:8 }}>Posición en la sala</div>
-    <${Slider} label="Izq · Der (X)" value=${round(fx.x)} min=${-8} max=8 step=0.1 onChange=${v=>patch({x:v})} />
-    <${Slider} label="Fondo · Frente (Z)" value=${round(fx.z)} min=${-6} max=6 step=0.1 onChange=${v=>patch({z:v})} />
-    <${Slider} label="Altura (Y)" value=${round(fx.y)} min=0 max=7 step=0.1 onChange=${v=>patch({y:v})} />
+    <${Slider} label="Izq · Der (X)" value=${round(fx.x)} min=${-2.5} max=2.5 step=0.05 unit=" m" onChange=${v=>patch({x:v})} />
+    <${Slider} label="Fondo · Frente (Z)" value=${round(fx.z)} min=${-4.1} max=4.1 step=0.05 unit=" m" onChange=${v=>patch({z:v})} />
+    <${Slider} label="Altura (Y)" value=${round(fx.y)} min=0 max=3.4 step=0.05 unit=" m" onChange=${v=>patch({y:v})} />
 
     ${isSpot && html`<div>
       <div style=${{ height:1, background:C.border, margin:"12px 0" }} />
       <${Slider} label="Apertura del haz" value=${fx.beam} min=6 max=60 unit="°" onChange=${v=>patch({beam:v})} />
       ${fx.type==="fijo" && html`<div>
         <div style=${{ fontSize:11, textTransform:"uppercase", letterSpacing:".06em", color:C.dorado, margin:"10px 0 8px" }}>Apuntado (punto del suelo)</div>
-        <${Slider} label="Objetivo X" value=${round(fx.tx)} min=${-8} max=8 step=0.1 onChange=${v=>patch({tx:v})} />
-        <${Slider} label="Objetivo Z" value=${round(fx.tz)} min=${-6} max=6 step=0.1 onChange=${v=>patch({tz:v})} />
+        <${Slider} label="Objetivo X" value=${round(fx.tx)} min=${-2.5} max=2.5 step=0.05 unit=" m" onChange=${v=>patch({tx:v})} />
+        <${Slider} label="Objetivo Z" value=${round(fx.tz)} min=${-4.1} max=4.1 step=0.05 unit=" m" onChange=${v=>patch({tz:v})} />
       </div>`}
       ${fx.type==="movil" && html`<div>
         <div style=${{ fontSize:11, textTransform:"uppercase", letterSpacing:".06em", color:C.dorado, margin:"10px 0 8px" }}>Movimiento automático</div>
@@ -577,7 +578,7 @@ function FixtureEditor({ fx, patch, remove, dup }) {
 
     ${(fx.type==="barra"||fx.type==="tubo") && html`<div>
       <div style=${{ height:1, background:C.border, margin:"12px 0" }} />
-      <${Slider} label="Longitud" value=${round(fx.length)} min=1 max=12 step=0.2 unit=" m" onChange=${v=>patch({length:v})} />
+      <${Slider} label="Longitud" value=${round(fx.length)} min=0.6 max=5 step=0.1 unit=" m" onChange=${v=>patch({length:v})} />
       <${Slider} label="Rotación" value=${fx.rotY} min=0 max=90 unit="°" onChange=${v=>patch({rotY:v})} />
     </div>`}
 
@@ -594,19 +595,19 @@ function ObjectEditor({ o, patch, remove, dup }) {
     <${Field} label="Nombre"><${TextInput} value=${o.name} onChange=${v=>patch({name:v})} /><//>
     <${Field} label="Color / material"><${ColorInput} value=${o.color} onChange=${v=>patch({color:v})} /><//>
     <div style=${{ fontSize:11, textTransform:"uppercase", letterSpacing:".06em", color:C.dorado, margin:"6px 0 8px" }}>Posición</div>
-    <${Slider} label="Izq · Der (X)" value=${round(o.x)} min=${-8} max=8 step=0.1 onChange=${v=>patch({x:v})} />
-    <${Slider} label="Fondo · Frente (Z)" value=${round(o.z)} min=${-6} max=6 step=0.1 onChange=${v=>patch({z:v})} />
+    <${Slider} label="Izq · Der (X)" value=${round(o.x)} min=${-2.5} max=2.5 step=0.05 unit=" m" onChange=${v=>patch({x:v})} />
+    <${Slider} label="Fondo · Frente (Z)" value=${round(o.z)} min=${-4.1} max=4.1 step=0.05 unit=" m" onChange=${v=>patch({z:v})} />
     <${Slider} label="Giro" value=${o.rotY} min=0 max=180 unit="°" onChange=${v=>patch({rotY:v})} />
     <div style=${{ fontSize:11, textTransform:"uppercase", letterSpacing:".06em", color:C.dorado, margin:"10px 0 8px" }}>Tamaño</div>
     ${o.shape==="cilindro" && html`<div>
-      <${Slider} label="Radio" value=${round(o.r)} min=0.2 max=3 step=0.1 unit=" m" onChange=${v=>patch({r:v})} />
-      <${Slider} label="Altura" value=${round(o.h)} min=0.2 max=4 step=0.1 unit=" m" onChange=${v=>patch({h:v})} />
+      <${Slider} label="Radio" value=${round(o.r)} min=0.15 max=1.5 step=0.05 unit=" m" onChange=${v=>patch({r:v})} />
+      <${Slider} label="Altura" value=${round(o.h)} min=0.2 max=3.2 step=0.1 unit=" m" onChange=${v=>patch({h:v})} />
     </div>`}
-    ${o.shape==="cubo" && html`<${Slider} label="Lado" value=${round(o.w)} min=0.2 max=3 step=0.1 unit=" m" onChange=${v=>patch({w:v})} />`}
+    ${o.shape==="cubo" && html`<${Slider} label="Lado" value=${round(o.w)} min=0.2 max=2.5 step=0.1 unit=" m" onChange=${v=>patch({w:v})} />`}
     ${o.shape==="caja" && html`<div>
-      <${Slider} label="Ancho" value=${round(o.w)} min=0.2 max=4 step=0.1 unit=" m" onChange=${v=>patch({w:v})} />
-      <${Slider} label="Alto" value=${round(o.h)} min=0.2 max=4 step=0.1 unit=" m" onChange=${v=>patch({h:v})} />
-      <${Slider} label="Fondo" value=${round(o.d)} min=0.2 max=4 step=0.1 unit=" m" onChange=${v=>patch({d:v})} />
+      <${Slider} label="Ancho" value=${round(o.w)} min=0.2 max=3 step=0.1 unit=" m" onChange=${v=>patch({w:v})} />
+      <${Slider} label="Alto" value=${round(o.h)} min=0.2 max=3.2 step=0.1 unit=" m" onChange=${v=>patch({h:v})} />
+      <${Slider} label="Fondo" value=${round(o.d)} min=0.2 max=3 step=0.1 unit=" m" onChange=${v=>patch({d:v})} />
     </div>`}
     <div style=${{ display:"flex", gap:8, marginTop:16 }}>
       <${Btn} small onClick=${dup}>⧉ Duplicar<//>
@@ -742,7 +743,7 @@ function Header({ state, patchSetting }) {
       <span class="ff-serif" style=${{ fontSize:22, color:C.crema, fontWeight:700 }}>Iluminación</span>
       <span class="ff-serif" style=${{ fontSize:22, color:C.dorado, fontWeight:700 }}>Pavoneo 360º</span>
     </div>
-    <span style=${{ fontSize:11.5, color:C.sub }}>Live Sessions · Artes Búho</span>
+    <span style=${{ fontSize:11.5, color:C.sub }}>Live Sessions · Artes Búho · Sala ${ROOM.W} × ${ROOM.D} m (${Math.round(ROOM.W*ROOM.D)} m²)</span>
     <div style=${{ marginLeft:"auto", display:"flex", gap:8, alignItems:"center" }}>
       <${Btn} small active=${st.playing} onClick=${()=>patchSetting({playing:!st.playing})}>${st.playing?"⏸ Movimiento":"▶ Movimiento"}<//>
       <${Btn} small danger=${st.blackout} onClick=${()=>patchSetting({blackout:!st.blackout})}>${st.blackout?"● Blackout":"○ Blackout"}<//>
