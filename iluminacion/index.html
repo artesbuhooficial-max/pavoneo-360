@@ -902,6 +902,9 @@ function TimelineDock({ cues, setCues, midi, setMidi, captureLook, applyLook }) 
   const [status, setStatus] = useState("init");
   const [activeId, setActiveId] = useState(null);
   const [drag, setDrag] = useState(null);
+  const [dragRow, setDragRow] = useState(null);
+  const [overRow, setOverRow] = useState(null);
+  const dragRowRef = useRef(null);
   const audioRef = useRef(null);
   const rafRef = useRef(0);
   const lastRef = useRef(0);
@@ -983,6 +986,19 @@ function TimelineDock({ cues, setCues, midi, setMidi, captureLook, applyLook }) 
   const bpmV = clamp(midi.bpm || 120, 20, 300);
   const sigV = clamp(midi.sig || 4, 1, 12);
   const barSec = 60 / bpmV * sigV;
+  const dupCue = c => {
+    const n = { ...c, id:uid(), name:(c.name||"Cambio")+" copia", time: Math.round((c.time + (barSec||2))*100)/100,
+      desk:{ ...(c.desk||{mode:"none"}) }, look: c.look ? JSON.parse(JSON.stringify(c.look)) : null };
+    setCues([...cues, n].sort((a,b)=>a.time-b.time)); setSelId(n.id);
+  };
+  const reorderCue = (fromId, toId) => {
+    if (!fromId || fromId===toId) return;
+    const rest = cues.filter(c => c.id!==fromId).sort((a,b)=>a.time-b.time);
+    const toIdx = rest.findIndex(c => c.id===toId); if (toIdx<0) return;
+    const target = rest[toIdx], prev = rest[toIdx-1];
+    const nt = prev ? (prev.time + target.time)/2 : Math.max(0, target.time - (barSec||1));
+    setCues(cues.map(c => c.id===fromId ? { ...c, time: Math.round(nt*100)/100 } : c).sort((a,b)=>a.time-b.time));
+  };
   let barInfo = "";
   if (sel) {
     const idx = cues.findIndex(c => c.id === sel.id);
@@ -1069,14 +1085,22 @@ function TimelineDock({ cues, setCues, midi, setMidi, captureLook, applyLook }) 
         </div>
         <div style=${{ maxHeight:150, overflowY:"auto" }}>
           ${cues.length===0 && html`<div style=${{ fontSize:12, color:C.muted, padding:"10px 12px" }}>Sin cambios todavía. Pulsa «Nueva escena» o haz click en la barra.</div>`}
-          ${cues.map((c,i)=>{ const isSel=selId===c.id; const bar=Math.floor(c.time/barSec)+1;
-            return html`<div key=${c.id} onClick=${()=>{ setSelId(c.id); seekTo(c.time); }} style=${{
-              display:"flex", alignItems:"center", gap:8, padding:"7px 10px", cursor:"pointer",
-              background: isSel?C.azul:"transparent", borderBottom:`1px solid ${C.border}` }}>
-              <span style=${{ fontSize:11, color: isSel?C.crema:C.muted, width:16, textAlign:"right" }}>${i+1}</span>
-              <span style=${{ fontSize:11.5, color: isSel?C.crema:C.dorado, fontVariantNumeric:"tabular-nums", width:66 }}>${fmtTime(c.time)}·c${bar}</span>
+          ${cues.map((c,i)=>{ const isSel=selId===c.id; const bar=Math.floor(c.time/barSec)+1; const isOver=overRow===c.id && dragRow && dragRow!==c.id;
+            return html`<div key=${c.id} draggable=${true}
+              onDragStart=${e=>{ e.dataTransfer.effectAllowed="move"; dragRowRef.current=c.id; setDragRow(c.id); }}
+              onDragOver=${e=>{ e.preventDefault(); if(overRow!==c.id) setOverRow(c.id); }}
+              onDrop=${e=>{ e.preventDefault(); reorderCue(dragRowRef.current, c.id); dragRowRef.current=null; setDragRow(null); setOverRow(null); }}
+              onDragEnd=${()=>{ dragRowRef.current=null; setDragRow(null); setOverRow(null); }}
+              onClick=${()=>{ setSelId(c.id); seekTo(c.time); }} style=${{
+              display:"flex", alignItems:"center", gap:7, padding:"7px 8px", cursor:"grab",
+              background: isSel?C.azul:"transparent", borderBottom:`1px solid ${C.border}`,
+              borderTop: isOver?`2px solid ${C.dorado}`:"2px solid transparent", opacity: dragRow===c.id?0.45:1 }}>
+              <span style=${{ fontSize:12, color: isSel?C.crema:C.muted, cursor:"grab" }}>⋮⋮</span>
+              <span style=${{ fontSize:11, color: isSel?C.crema:C.muted, width:15, textAlign:"right" }}>${i+1}</span>
+              <span style=${{ fontSize:11.5, color: isSel?C.crema:C.dorado, fontVariantNumeric:"tabular-nums", width:62 }}>${fmtTime(c.time)}·c${bar}</span>
               <span style=${{ fontSize:12.5, color: isSel?C.crema:C.text, flex:1, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>${c.look?"◉ ":""}${c.name}</span>
               <span style=${{ fontSize:10.5, color: isSel?C.crema:C.sub, whiteSpace:"nowrap" }}>${deskLabel(c.desk).replace("Banco ","B").replace(" · Escena "," E").replace("Escena","E")}</span>
+              <button onClick=${e=>{ e.stopPropagation(); dupCue(c); }} title="Duplicar este cambio (copia su look y escena)" style=${{ background:"transparent", color: isSel?C.crema:C.muted, border:"none", cursor:"pointer", fontSize:12, padding:"0 2px" }}>⧉</button>
               <button onClick=${e=>{ e.stopPropagation(); delCue(c.id); }} title="Borrar este cambio" style=${{ background:"transparent", color: isSel?C.crema:C.muted, border:"none", cursor:"pointer", fontSize:13, padding:"0 2px" }}>✕</button>
             </div>`; })}
         </div>
