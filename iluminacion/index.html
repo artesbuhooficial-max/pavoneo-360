@@ -725,8 +725,8 @@ function FixtureEditor({ fx, patch, remove, dup }) {
 
     <div style=${{ height:1, background:C.border, margin:"12px 0" }} />
     <div style=${{ fontSize:11, textTransform:"uppercase", letterSpacing:".06em", color:C.dorado, marginBottom:8 }}>Enlace de focos</div>
-    <div style=${{ display:"flex", gap:6, marginBottom:8 }}>
-      ${linkBtn("","Sin")} ${linkBtn("A","A")} ${linkBtn("B","B")} ${linkBtn("C","C")}
+    <div style=${{ display:"flex", gap:5, marginBottom:8, flexWrap:"wrap" }}>
+      ${["","A","B","C","D","E","F"].map(g => linkBtn(g, g||"Sin"))}
     </div>
     ${fx.link && html`<div style=${{ fontSize:10, color:C.muted, marginBottom:8 }}>Los focos del mismo enlace comparten movimiento y apertura (no el color ni la posición).</div>`}
     ${canMirror && html`<label style=${{ display:"flex", alignItems:"center", gap:8, cursor:"pointer" }}>
@@ -841,7 +841,9 @@ function NumInput({ value, min, max, onCommit, width=52 }) {
     onKeyDown=${e => { if (e.key === "Enter") e.target.blur(); }}
     style=${{ width, textAlign:"center", background:C.panel2, border:`1px solid ${C.border}`, color:C.text, borderRadius:7, padding:"5px", fontSize:13 }} />`;
 }
-function DeskEditor({ cue, upCue, del, captureInto, testFire, channel, barInfo }) {
+function DeskEditor({ cue, upCue, del, captureInto, clearLook, testFire, channel, barInfo }) {
+  const [flash, setFlash] = useState(false);
+  const doCapture = () => { captureInto(); setFlash(true); setTimeout(() => setFlash(false), 1100); };
   const d = cue.desk || { mode:"none" };
   const num = (val, min, max, onCh) => html`<input value=${val} inputMode="numeric"
     onInput=${e=>onCh(clamp(e.target.value, min, max))} style=${{ width:52, textAlign:"center",
@@ -877,10 +879,13 @@ function DeskEditor({ cue, upCue, del, captureInto, testFire, channel, barInfo }
     <button onClick=${testFire} title="Envía la nota MIDI a la mesa ahora, sin reproducir la canción (para comprobar el patcheo de bancos/escenas)" style=${{
       background: deskNote(d)===null?C.panel2:"#0e3a1e", color: deskNote(d)===null?C.muted:"#8ef0b3",
       border:`1px solid ${deskNote(d)===null?C.border:"#1c6b39"}`, borderRadius:7, padding:"7px 11px", fontSize:12.5, fontWeight:700, cursor:"pointer" }}>▶ Probar disparo</button>
-    <button onClick=${captureInto} title="Guardar el aspecto actual del 3D en este cue" style=${{
-      background: cue.look?C.azul:C.panel2, color: cue.look?C.crema:C.text, border:`1px solid ${cue.look?C.azul:C.border}`,
+    <button onClick=${doCapture} title="Guarda el aspecto actual del 3D en este cambio. Vuelve a pulsar para actualizarlo con los últimos cambios del 3D." style=${{
+      background: flash ? "#0e3a1e" : (cue.look?C.azul:C.panel2), color: flash ? "#8ef0b3" : (cue.look?C.crema:C.text),
+      border:`1px solid ${flash ? "#1c6b39" : (cue.look?C.azul:C.border)}`,
       borderRadius:7, padding:"7px 11px", fontSize:12.5, fontWeight:600, cursor:"pointer" }}>
-      ${cue.look? "◉ Look capturado" : "◎ Capturar look 3D"}</button>
+      ${flash ? "✓ Look guardado" : (cue.look ? "↻ Actualizar look" : "◎ Capturar look 3D")}</button>
+    ${cue.look && html`<button onClick=${clearLook} title="Quitar el look guardado (el cambio seguirá disparando su nota MIDI)" style=${{
+      background:C.panel2, color:C.sub, border:`1px solid ${C.border}`, borderRadius:7, padding:"7px 9px", fontSize:12.5, fontWeight:600, cursor:"pointer" }}>✕ look</button>`}
     <button onClick=${del} style=${{ background:"#4a1420", color:"#ff9db0", border:"1px solid #4a1420", borderRadius:7, padding:"7px 11px", fontSize:12.5, fontWeight:600, cursor:"pointer" }}>🗑 Borrar</button>
   </div>`;
 }
@@ -1055,14 +1060,38 @@ function TimelineDock({ cues, setCues, midi, setMidi, captureLook, applyLook }) 
       <div ref=${headRef} style=${{ position:"absolute", left:"0%", top:0, bottom:0, width:2, background:C.dorado, pointerEvents:"none", boxShadow:"0 0 6px "+C.dorado }} />
     </div>
 
-    <!-- editor de cue seleccionado -->
-    ${sel ? html`<div style=${{ background:C.panel2, border:`1px solid ${C.border}`, borderRadius:8, padding:"10px 12px" }}>
-      <${DeskEditor} cue=${sel} channel=${midi.channel} barInfo=${barInfo}
-        upCue=${p=>upCue(sel.id,p)} del=${()=>delCue(sel.id)} captureInto=${()=>upCue(sel.id,{look:captureLook()})}
-        testFire=${()=>{ sendDesk(sel.desk); if (sel.look) applyLook(sel.look); setActiveId(sel.id); setTimeout(()=>setActiveId(null), 450); }} />
-    </div>` : html`<div style=${{ fontSize:12, color:C.muted, padding:"2px 0" }}>
-      Sube la canción, dale a ▶ y ve añadiendo cambios sobre la barra. En cada uno eliges qué escena/chase de la mesa Stairville dispara (calcula la nota MIDI sola) y puedes capturar el look del 3D para previsualizarlo. Exporta el .mid para tu DAW o envíalo en vivo por la salida MIDI.
-    </div>`}
+    <!-- lista de cambios + editor -->
+    <div style=${{ display:"flex", gap:12, alignItems:"stretch", flexWrap:"wrap" }}>
+      <div style=${{ flex:"1 1 320px", minWidth:280, maxWidth:440, display:"flex", flexDirection:"column", background:C.panel2, border:`1px solid ${C.border}`, borderRadius:8, overflow:"hidden" }}>
+        <div style=${{ display:"flex", alignItems:"center", gap:8, padding:"8px 10px", borderBottom:`1px solid ${C.border}` }}>
+          <span style=${{ fontSize:11.5, textTransform:"uppercase", letterSpacing:".05em", color:C.sub, fontWeight:700 }}>Cambios · ${cues.length}</span>
+          <button onClick=${()=>addCueAt(cur)} title="Crea un cambio en la posición actual del cabezal" style=${{ marginLeft:"auto", background:C.dorado, color:C.tinta, border:"none", borderRadius:7, padding:"6px 11px", fontSize:12.5, fontWeight:700, cursor:"pointer" }}>➕ Nueva escena</button>
+        </div>
+        <div style=${{ maxHeight:150, overflowY:"auto" }}>
+          ${cues.length===0 && html`<div style=${{ fontSize:12, color:C.muted, padding:"10px 12px" }}>Sin cambios todavía. Pulsa «Nueva escena» o haz click en la barra.</div>`}
+          ${cues.map((c,i)=>{ const isSel=selId===c.id; const bar=Math.floor(c.time/barSec)+1;
+            return html`<div key=${c.id} onClick=${()=>{ setSelId(c.id); seekTo(c.time); }} style=${{
+              display:"flex", alignItems:"center", gap:8, padding:"7px 10px", cursor:"pointer",
+              background: isSel?C.azul:"transparent", borderBottom:`1px solid ${C.border}` }}>
+              <span style=${{ fontSize:11, color: isSel?C.crema:C.muted, width:16, textAlign:"right" }}>${i+1}</span>
+              <span style=${{ fontSize:11.5, color: isSel?C.crema:C.dorado, fontVariantNumeric:"tabular-nums", width:66 }}>${fmtTime(c.time)}·c${bar}</span>
+              <span style=${{ fontSize:12.5, color: isSel?C.crema:C.text, flex:1, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>${c.look?"◉ ":""}${c.name}</span>
+              <span style=${{ fontSize:10.5, color: isSel?C.crema:C.sub, whiteSpace:"nowrap" }}>${deskLabel(c.desk).replace("Banco ","B").replace(" · Escena "," E").replace("Escena","E")}</span>
+              <button onClick=${e=>{ e.stopPropagation(); delCue(c.id); }} title="Borrar este cambio" style=${{ background:"transparent", color: isSel?C.crema:C.muted, border:"none", cursor:"pointer", fontSize:13, padding:"0 2px" }}>✕</button>
+            </div>`; })}
+        </div>
+      </div>
+      <div style=${{ flex:"2 1 420px", minWidth:320 }}>
+        ${sel ? html`<div style=${{ background:C.panel2, border:`1px solid ${C.border}`, borderRadius:8, padding:"10px 12px", height:"100%" }}>
+          <${DeskEditor} cue=${sel} channel=${midi.channel} barInfo=${barInfo}
+            upCue=${p=>upCue(sel.id,p)} del=${()=>delCue(sel.id)} captureInto=${()=>upCue(sel.id,{look:captureLook()})}
+            clearLook=${()=>upCue(sel.id,{look:null})}
+            testFire=${()=>{ sendDesk(sel.desk); if (sel.look) applyLook(sel.look); setActiveId(sel.id); setTimeout(()=>setActiveId(null), 450); }} />
+        </div>` : html`<div style=${{ fontSize:12, color:C.muted, padding:"12px", background:C.panel2, border:`1px solid ${C.border}`, borderRadius:8, height:"100%" }}>
+          Selecciona un cambio de la lista para editarlo, o pulsa «Nueva escena». En cada cambio eliges qué escena/chase de la mesa Stairville dispara (calcula la nota MIDI sola), puedes capturar el look del 3D y comprobarlo con «Probar disparo».
+        </div>`}
+      </div>
+    </div>
   </div>`;
 }
 
@@ -1157,6 +1186,12 @@ function App() {
     setPanel("objetos");
   };
   const removeFixture = id => setState(s => ({ ...s, fixtures: s.fixtures.filter(f=>f.id!==id), selected:null }));
+  const moveFixture = (id, dir) => setState(s => {
+    const i = s.fixtures.findIndex(f=>f.id===id); const j = i+dir;
+    if (i<0 || j<0 || j>=s.fixtures.length) return s;
+    const arr = s.fixtures.slice(); const [it] = arr.splice(i,1); arr.splice(j,0,it);
+    return { ...s, fixtures: arr };
+  });
   const removeObject  = id => setState(s => ({ ...s, objects:  s.objects.filter(o=>o.id!==id), selected:null }));
   const dupFixture = f => { const n = mkFixture(f.type, { ...f, name:f.name+" copia", x:f.x+0.6 }); n.id=uid(); setState(s=>({...s, fixtures:[...s.fixtures,n], selected:n.id})); };
   const dupObject  = o => { const n = mkObject(o.shape, { ...o, name:o.name+" copia", x:o.x+0.6 }); n.id=uid(); setState(s=>({...s, objects:[...s.objects,n], selected:n.id})); };
@@ -1199,7 +1234,7 @@ function App() {
         <div style=${{ flex:1, overflowY:"auto", padding:16 }}>
           ${panel==="focos" && html`<${FocosPanel}
             state=${state} sel=${sel} selFixture=${selFixture}
-            addFixture=${addFixture} onPick=${onPick}
+            addFixture=${addFixture} onPick=${onPick} moveFixture=${moveFixture}
             patch=${p=>patchFixture(sel,p)} remove=${()=>removeFixture(sel)} dup=${()=>dupFixture(selFixture)} />`}
           ${panel==="objetos" && html`<${ObjetosPanel}
             state=${state} sel=${sel} selObject=${selObject}
@@ -1244,7 +1279,7 @@ function Toolbar({ st, patchSetting, engineRef }) {
 }
 
 /* ── Panel focos ── */
-function FocosPanel({ state, sel, selFixture, addFixture, onPick, patch, remove, dup }) {
+function FocosPanel({ state, sel, selFixture, addFixture, onPick, moveFixture, patch, remove, dup }) {
   return html`<div>
     <div style=${{ fontSize:11, textTransform:"uppercase", letterSpacing:".06em", color:C.sub, marginBottom:8 }}>Añadir foco</div>
     <div style=${{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:16 }}>
@@ -1256,17 +1291,25 @@ function FocosPanel({ state, sel, selFixture, addFixture, onPick, patch, remove,
       </button>`)}
     </div>
     <div style=${{ fontSize:11, textTransform:"uppercase", letterSpacing:".06em", color:C.sub, marginBottom:8 }}>
-      Rig actual · ${state.fixtures.length} focos
+      Rig actual · ${state.fixtures.length} focos · usa ▲▼ para ordenar
     </div>
     <div style=${{ display:"flex", flexDirection:"column", gap:5, marginBottom:16 }}>
-      ${state.fixtures.map(f => html`<button key=${f.id} onClick=${()=>onPick(f.id)} style=${{
-        display:"flex", alignItems:"center", gap:9, padding:"8px 10px", borderRadius:8, cursor:"pointer", textAlign:"left",
-        background: sel===f.id?C.azul:C.panel2, border:`1px solid ${sel===f.id?C.azul:C.border}`, color:C.text }}>
-        <span style=${{ width:12, height:12, borderRadius:3, background:f.color, flexShrink:0, border:"1px solid rgba(255,255,255,.2)" }}></span>
-        <span style=${{ fontSize:15, color:C.dorado }}>${FIXTURE_TYPES[f.type].icon}</span>
-        <span style=${{ fontSize:13, flex:1, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>${f.name}</span>
-        <span style=${{ fontSize:10.5, color:C.muted }}>${f.intensity}%</span>
-      </button>`)}
+      ${state.fixtures.map((f,i) => html`<div key=${f.id} style=${{
+        display:"flex", alignItems:"center", gap:7, padding:"6px 8px", borderRadius:8,
+        background: sel===f.id?C.azul:C.panel2, border:`1px solid ${sel===f.id?C.azul:C.border}` }}>
+        <div onClick=${()=>onPick(f.id)} style=${{ display:"flex", alignItems:"center", gap:8, flex:1, minWidth:0, cursor:"pointer" }}>
+          <span style=${{ width:12, height:12, borderRadius:3, background:f.color, flexShrink:0, border:"1px solid rgba(255,255,255,.2)" }}></span>
+          <span style=${{ fontSize:15, color: sel===f.id?C.crema:C.dorado }}>${FIXTURE_TYPES[f.type].icon}</span>
+          <span style=${{ fontSize:13, flex:1, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", color: sel===f.id?C.crema:C.text }}>${f.name}</span>
+          ${f.link && html`<span title=${"Enlace "+f.link} style=${{ fontSize:10, fontWeight:700, color:C.tinta, background:C.dorado, borderRadius:4, padding:"0 5px", lineHeight:"16px" }}>${f.link}</span>`}
+          ${f.mirror && html`<span title="En espejo" style=${{ fontSize:11, color: sel===f.id?C.crema:C.sub }}>⇋</span>`}
+          <span style=${{ fontSize:10.5, color: sel===f.id?C.crema:C.muted }}>${f.intensity}%</span>
+        </div>
+        <div style=${{ display:"flex", flexDirection:"column", gap:1 }}>
+          <button onClick=${()=>moveFixture(f.id,-1)} disabled=${i===0} title="Subir" style=${{ background:"transparent", border:"none", color: i===0?C.border:(sel===f.id?C.crema:C.sub), cursor: i===0?"default":"pointer", fontSize:9, lineHeight:1, padding:"1px 3px" }}>▲</button>
+          <button onClick=${()=>moveFixture(f.id,1)} disabled=${i===state.fixtures.length-1} title="Bajar" style=${{ background:"transparent", border:"none", color: i===state.fixtures.length-1?C.border:(sel===f.id?C.crema:C.sub), cursor: i===state.fixtures.length-1?"default":"pointer", fontSize:9, lineHeight:1, padding:"1px 3px" }}>▼</button>
+        </div>
+      </div>`)}
     </div>
     ${selFixture ? html`<div style=${{ borderTop:`1px solid ${C.border}`, paddingTop:14 }}>
       <div style=${{ fontSize:11, textTransform:"uppercase", letterSpacing:".06em", color:C.dorado, marginBottom:12 }}>
