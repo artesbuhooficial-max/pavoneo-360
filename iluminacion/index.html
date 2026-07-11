@@ -65,7 +65,7 @@ import * as THREE from "three";
 import htm from "htm";
 
 const html = htm.bind(React.createElement);
-const STORE = "pavoneo-iluminacion-v5";
+const STORE = "pavoneo-iluminacion-v6";
 const uid = () => Math.random().toString(36).slice(2, 9);
 const clamp = (v, a, b) => { v = Number(v); if (!isFinite(v)) v = a; return Math.max(a, Math.min(b, v)); };
 
@@ -85,8 +85,8 @@ function deskLabel(d) {
   return `Banco ${clamp(d.bank,1,15)} · Escena ${clamp(d.scene,1,8)}`;
 }
 /* Escribe un Standard MIDI File (.mid) con las notas de la mesa en el tiempo de cada cue */
-function buildSMF(cues, channel) {
-  const bpm = 120, PPQ = 480, ch = clamp(channel, 1, 16) - 1;
+function buildSMF(cues, channel, bpmIn) {
+  const bpm = clamp(bpmIn || 120, 20, 300), PPQ = 480, ch = clamp(channel, 1, 16) - 1;
   const tick = s => Math.max(0, Math.round(s * (bpm/60) * PPQ));
   const evs = [];
   cues.slice().sort((a,b)=>a.time-b.time).forEach(c => {
@@ -144,7 +144,7 @@ function seed() {
   return {
     fixtures: [
       mkFixture("movil", { name:"Móvil izq",  x:-1.6, y:2.0, z:-2.0, color:"#0757D8", intensity:80, beam:16, panRange:26, tiltRange:15, speed:26, tilt:42, standStyle:"scrim", standColor:"#B98CFF", link:"A" }),
-      mkFixture("movil", { name:"Móvil der",  x: 1.6, y:2.0, z:-2.0, color:"#E8B83E", intensity:80, beam:16, panRange:26, tiltRange:15, speed:26, tilt:42, standStyle:"scrim", standColor:"#B98CFF", link:"A", mirror:true }),
+      mkFixture("movil", { name:"Móvil der",  x: 1.6, y:2.0, z:-2.0, color:"#0757D8", intensity:80, beam:16, panRange:26, tiltRange:15, speed:26, tilt:42, standStyle:"scrim", standColor:"#B98CFF", link:"A", mirror:true }),
       mkFixture("fijo",  { name:"Recorte artista", x:0, y:2.0, z:2.2, color:"#FFF6E2", intensity:90, beam:26, tx:0, tz:0.4 }),
       mkFixture("fijo",  { name:"Contra izq", x:-1.6, y:2.0, z:-3.2, color:"#0757D8", intensity:55, beam:30, tx:-0.7, tz:-1.4 }),
       mkFixture("suelo", { name:"Uplight izq", x:-2.2, y:0.12, z:-3.6, color:"#0757D8", intensity:65, beam:26, tilt:8, rotY:0 }),
@@ -158,7 +158,7 @@ function seed() {
     ],
     settings: { ambient:0.14, floorColor:"#141b28", wallColor:"#0d1420", showBeams:true, blackout:false, playing:true, shadows:"alta", fog:true },
     cues: [],
-    midi: { channel: 1, offset: 0 },
+    midi: { channel: 1, offset: 0, bpm: 120, sig: 4 },
     selected: null,
   };
 }
@@ -759,7 +759,7 @@ function ObjectEditor({ o, patch, remove, dup }) {
 const round = n => Math.round(n*10)/10;
 
 /* ─────────────────────────── Timeline + MIDI (mesa DMX) ─────────────────────────── */
-function DeskEditor({ cue, upCue, del, captureInto, testFire, channel }) {
+function DeskEditor({ cue, upCue, del, captureInto, testFire, channel, barInfo }) {
   const d = cue.desk || { mode:"none" };
   const num = (val, min, max, onCh) => html`<input value=${val} inputMode="numeric"
     onInput=${e=>onCh(clamp(e.target.value, min, max))} style=${{ width:52, textAlign:"center",
@@ -791,6 +791,7 @@ function DeskEditor({ cue, upCue, del, captureInto, testFire, channel }) {
     <div style=${{ fontSize:12, color:C.text, background:C.panel2, border:`1px solid ${C.border}`, borderRadius:7, padding:"6px 10px" }}>
       ${note===null ? "Sin nota" : html`Nota MIDI <b style=${{color:C.dorado}}>${note}</b> · canal ${channel}`}
     </div>
+    ${barInfo && html`<div style=${{ fontSize:12, color:C.sub, background:C.panel2, border:`1px solid ${C.border}`, borderRadius:7, padding:"6px 10px" }}>🎵 ${barInfo}</div>`}
     <button onClick=${testFire} title="Envía la nota MIDI a la mesa ahora, sin reproducir la canción (para comprobar el patcheo de bancos/escenas)" style=${{
       background: deskNote(d)===null?C.panel2:"#0e3a1e", color: deskNote(d)===null?C.muted:"#8ef0b3",
       border:`1px solid ${deskNote(d)===null?C.border:"#1c6b39"}`, borderRadius:7, padding:"7px 11px", fontSize:12.5, fontWeight:700, cursor:"pointer" }}>▶ Probar disparo</button>
@@ -885,13 +886,23 @@ function TimelineDock({ cues, setCues, midi, setMidi, captureLook, applyLook }) 
   const exportMid = () => {
     const off = (midi.offset||0)/1000;
     const shifted = cues.map(c => ({ ...c, time: Math.max(0, c.time - off) }));
-    const u8 = buildSMF(shifted, midi.channel);
+    const u8 = buildSMF(shifted, midi.channel, midi.bpm);
     if (!u8) { alert("Asigna una escena, chase o blackout a algún cue antes de exportar el .mid."); return; }
     const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([u8], { type:"audio/midi" }));
     a.download = "iluminacion-pavoneo-mesa-dmx.mid"; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
   };
 
   const sel = cues.find(c => c.id === selId);
+  const bpmV = clamp(midi.bpm || 120, 20, 300);
+  const sigV = clamp(midi.sig || 4, 1, 12);
+  const barSec = 60 / bpmV * sigV;
+  let barInfo = "";
+  if (sel) {
+    const idx = cues.findIndex(c => c.id === sel.id);
+    const next = cues[idx+1];
+    const endT = next ? next.time : (dur || sel.time);
+    barInfo = `Compás ${Math.floor(sel.time/barSec)+1} · ${Math.max(0,(endT-sel.time)/barSec).toFixed(1)} compases` + (next ? "" : " (hasta el final)");
+  }
   const statusTxt = { init:"Iniciando MIDI…", ready:"MIDI listo", unsupported:"Web MIDI solo en Chrome/Edge", denied:"Permiso MIDI denegado" }[status];
   const ctrlBtn = (label, onClick, active) => html`<button onClick=${onClick} style=${{
     background: active?C.dorado:C.panel2, color: active?C.tinta:C.text, border:`1px solid ${active?C.dorado:C.border}`,
@@ -918,6 +929,13 @@ function TimelineDock({ cues, setCues, midi, setMidi, captureLook, applyLook }) 
       <span style=${{ fontSize:12.5, color:C.sub, minWidth:96, fontVariantNumeric:"tabular-nums" }}>${fmtTime(cur)} / ${fmtTime(dur)}</span>
       <span style=${{ fontSize:12, color:C.muted, maxWidth:150, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>${songName}</span>
 
+      <label style=${{ display:"flex", alignItems:"center", gap:6, fontSize:11.5, color:C.sub }} title="Tempo de la canción — dibuja los compases en la barra">BPM
+        <input value=${midi.bpm||120} inputMode="numeric" onInput=${e=>setMidi({ bpm: clamp(e.target.value,20,300) })}
+          style=${{ width:52, textAlign:"center", background:C.panel2, border:`1px solid ${C.border}`, color:C.text, borderRadius:7, padding:"5px", fontSize:13 }} /></label>
+      <label style=${{ display:"flex", alignItems:"center", gap:6, fontSize:11.5, color:C.sub }} title="Tiempos por compás (numerador del compás, p. ej. 4 para 4/4)">Compás
+        <input value=${midi.sig||4} inputMode="numeric" onInput=${e=>setMidi({ sig: clamp(e.target.value,1,12) })}
+          style=${{ width:40, textAlign:"center", background:C.panel2, border:`1px solid ${C.border}`, color:C.text, borderRadius:7, padding:"5px", fontSize:13 }} />/4</label>
+
       <div style=${{ marginLeft:"auto", display:"flex", alignItems:"center", gap:9, flexWrap:"wrap" }}>
         <label style=${{ display:"flex", alignItems:"center", gap:6, fontSize:11.5, color:C.sub }}>Canal MIDI
           <input value=${midi.channel} inputMode="numeric" onInput=${e=>setMidi({ channel: clamp(e.target.value,1,16) })}
@@ -938,7 +956,12 @@ function TimelineDock({ cues, setCues, midi, setMidi, captureLook, applyLook }) 
     <!-- pista -->
     <div style=${{ fontSize:10.5, color:C.muted }}>Click en la barra para añadir un cambio · click en un marcador para editarlo · arrastra el marcador para moverlo en el tiempo</div>
     <div ref=${trackRef} onClick=${onTrackClick} style=${{ position:"relative", height:44, background:C.panel2, border:`1px solid ${C.border}`, borderRadius:8, cursor:"copy", overflow:"hidden" }}>
-      ${[0.25,0.5,0.75].map(f=>html`<div key=${f} style=${{ position:"absolute", left:(f*100)+"%", top:0, bottom:0, width:1, background:"rgba(255,255,255,.06)" }} />`)}
+      ${dur>0 ? (()=>{ const total=Math.floor(dur/barSec); const step= total>72?4:1; const out=[];
+        for(let i=1;i<=total;i++){ if(i%step) continue; const phrase=i%(step*4)===0; const lp=i*barSec/dur*100;
+          out.push(html`<div key=${'b'+i} style=${{ position:"absolute", left:lp+"%", top:0, bottom:0, width:1, background: phrase?"rgba(232,184,62,.28)":"rgba(255,255,255,.07)" }} />`);
+          if(phrase) out.push(html`<span key=${'n'+i} style=${{ position:"absolute", left:lp+"%", bottom:1, transform:"translateX(2px)", fontSize:9, color:C.muted, pointerEvents:"none" }}>${i}</span>`);
+        } return out; })()
+        : [0.25,0.5,0.75].map(f=>html`<div key=${f} style=${{ position:"absolute", left:(f*100)+"%", top:0, bottom:0, width:1, background:"rgba(255,255,255,.06)" }} />`)}
       ${cues.map(c=>{ const shown = (drag && drag.id===c.id) ? drag.time : c.time; const left = dur>0 ? (shown/dur*100) : 0; const on = activeId===c.id; const isSel = selId===c.id;
         return html`<div key=${c.id}
           onClick=${e=>e.stopPropagation()}
@@ -956,7 +979,7 @@ function TimelineDock({ cues, setCues, midi, setMidi, captureLook, applyLook }) 
 
     <!-- editor de cue seleccionado -->
     ${sel ? html`<div style=${{ background:C.panel2, border:`1px solid ${C.border}`, borderRadius:8, padding:"10px 12px" }}>
-      <${DeskEditor} cue=${sel} channel=${midi.channel}
+      <${DeskEditor} cue=${sel} channel=${midi.channel} barInfo=${barInfo}
         upCue=${p=>upCue(sel.id,p)} del=${()=>delCue(sel.id)} captureInto=${()=>upCue(sel.id,{look:captureLook()})}
         testFire=${()=>{ sendDesk(sel.desk); if (sel.look) applyLook(sel.look); setActiveId(sel.id); setTimeout(()=>setActiveId(null), 450); }} />
     </div>` : html`<div style=${{ fontSize:12, color:C.muted, padding:"2px 0" }}>
@@ -998,7 +1021,7 @@ function App() {
   }, [state]);
 
   const up = useCallback(patch => setState(s => ({ ...s, ...patch })), []);
-  const LINK_SHARE = ["tilt","panRange","tiltRange","speed","phase","beam"]; // se copia a los focos enlazados
+  const LINK_SHARE = ["color","tilt","panRange","tiltRange","speed","phase","beam"]; // se copia a los focos enlazados
   const patchFixture = (id, p) => setState(s => {
     const f0 = s.fixtures.find(x => x.id===id);
     const grp = f0 && f0.link;
