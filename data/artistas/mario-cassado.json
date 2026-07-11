@@ -2,31 +2,9 @@
   "artistId": "mario-cassado",
   "displayName": "Mario Cassado",
   "pack": "premium",
-  "currentStep": "contacto",
-  "unlockedUntil": "contacto",
-  "updatedAt": "2026-07-07",
-  "palette": [
-    {
-      "hex": "#D72638",
-      "name": "Rojo Mario"
-    },
-    {
-      "hex": "#8B1E2D",
-      "name": "Rojo oscuro"
-    },
-    {
-      "hex": "#FFFFFF",
-      "name": "Blanco puro"
-    },
-    {
-      "hex": "#D9D9D9",
-      "name": "Gris mundo"
-    },
-    {
-      "hex": "#333333",
-      "name": "Gris oscuro"
-    }
-  ],
+  "currentStep": "grabacion",
+  "unlockedUntil": "grabacion",
+  "updatedAt": "2026-07-08",
   "publicLinks": {
     "infoMaestra": "https://artesbuhooficial-max.github.io/pavoneo-360/artistas/mario-cassado/",
     "materialesPublicos": "",
@@ -36,48 +14,48 @@
   "recordingTiming": [
     {
       "time": "09:30",
-      "block": "Llegada y acogida",
-      "owner": "Oficina + artista",
-      "detail": "Recepcion, repaso del plan del dia, agua/cafe y revision rapida de vestuario."
+      "block": "Llegada Técnica",
+      "owner": "Oficina",
+      "detail": "Repaso del plan del dia."
     },
     {
       "time": "10:00",
       "block": "Preparacion tecnica",
-      "owner": "David",
+      "owner": "David + Álvaro Cámara ",
       "detail": "Montaje de microfonia, pruebas de camara, escucha de referencias y ajuste de set."
     },
     {
-      "time": "10:45",
-      "block": "Entrevista base",
+      "time": "10:45-11:00",
+      "block": "Llegada Artista",
       "owner": "David + artista",
-      "detail": "Preguntas principales, relato del proyecto y frases utiles para piezas cortas."
+      "detail": "Recepción Artista. Artista preparación vestuario y puesta en escena."
     },
     {
-      "time": "12:00",
-      "block": "Live session 1",
-      "owner": "David + artista",
-      "detail": "Grabacion de la primera pieza musical con toma de seguridad."
+      "time": "11:30",
+      "block": "Live session 1 y 2",
+      "owner": "David + artista + Álvaro Cámara ",
+      "detail": "Grabacion de la primera y segunda pieza musical con toma de seguridad."
     },
     {
-      "time": "13:15",
-      "block": "Pausa y fotos",
-      "owner": "Oficina",
-      "detail": "Descanso breve, seleccion de fondos y sesion fotografica en estudio."
+      "time": "12:30",
+      "block": "Pausa y montaje ",
+      "owner": "David + Álvaro ",
+      "detail": "Descanso breve. Sesion fotografica en estudio."
+    },
+    {
+      "time": "12:40",
+      "block": "Fotos ",
+      "owner": "Álvaro + Artista",
+      "detail": "Sesión de fotos con el vestuario y en el estudio."
+    },
+    {
+      "time": "13:30",
+      "block": "Entrevista Pavoneate",
+      "owner": "David + Álvaro + Miriam ",
+      "detail": "40 minutos preguntas pautada + improvisación y Pavoneo "
     },
     {
       "time": "14:15",
-      "block": "Live session 2",
-      "owner": "David + artista",
-      "detail": "Grabacion de la segunda pieza o alternativa definida en briefing."
-    },
-    {
-      "time": "15:30",
-      "block": "Making off y spot prescriptor",
-      "owner": "Oficina + artista",
-      "detail": "Recursos de proceso, planos cortos, testimonio y mensajes para redes."
-    },
-    {
-      "time": "16:30",
       "block": "Cierre de grabacion",
       "owner": "David + oficina",
       "detail": "Confirmar archivos, naming, copia de seguridad y siguientes pasos de postproduccion."
@@ -143,24 +121,45 @@
   ],
   "steps": {
     "contacto": {
-      "status": "active",
+      "status": "done",
       "checks": [
         true,
         true,
         true,
-        null,
         true,
-        false
+        true,
+        true
       ]
     },
     "formulario": {
-      "status": "active"
+      "status": "done",
+      "checks": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ]
     },
     "briefing": {
-      "status": "todo"
+      "status": "done",
+      "checks": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ]
     },
     "grabacion": {
-      "status": "todo"
+      "status": "active",
+      "checks": [
+        true,
+        true,
+        false,
+        false,
+        false
+      ]
     },
     "postproduccion": {
       "status": "todo"
@@ -174,5 +173,27 @@
     "cierre": {
       "status": "todo"
     }
-  }
+  },
+  "palette": [
+    {
+      "hex": "#D72638",
+      "name": "Rojo Mario"
+    },
+    {
+      "hex": "#8B1E2D",
+      "name": "Rojo oscuro"
+    },
+    {
+      "hex": "#FFFFFF",
+      "name": "Blanco puro"
+    },
+    {
+      "hex": "#D9D9D9",
+      "name": "Gris mundo"
+    },
+    {
+      "hex": "#333333",
+      "name": "Gris oscuro"
+    }
+  ]
 }
