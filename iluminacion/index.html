@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Iluminación Pavoneo 360º · Live Sessions</title>
+  <meta name="description" content="Diseñador de iluminación 3D para las Live Sessions de Pavoneo 360º — Artes Búho. Focos fijos, móviles, barras y tubos LED con sombras y movimiento realistas." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script type="importmap">
+  {
+    "imports": {
+      "react": "https://esm.sh/react@18.3.1",
+      "react-dom": "https://esm.sh/react-dom@18.3.1",
+      "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+      "three": "https://esm.sh/three@0.128.0",
+      "htm": "https://esm.sh/htm@3.1.1"
+    }
+  }
+  </script>
+  <style>
+    :root{
+      --crema:#F7F2E5; --tinta:#071C48; --azul:#0757D8; --dorado:#E8B83E;
+      --bg:#040A18; --panel:#081226; --panel2:#0C1B38; --border:#173463; --text:#F7F2E5;
+      --sub:#9DB2D8; --muted:#6C83Ad;
+    }
+    html, body, #root { height: 100%; margin: 0; }
+    body { background: var(--bg); color: var(--text); overflow:hidden; }
+    #boot { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 12px; background: var(--bg); color: var(--sub);
+      font-family: 'DM Sans', system-ui, sans-serif; letter-spacing: .04em; z-index: 9999;
+      transition: opacity .5s ease; }
+    #boot b { color: var(--crema); font-size: 30px; font-family:'Playfair Display', Georgia, serif; letter-spacing:.02em; }
+    #boot .g { color: var(--dorado); }
+    #boot.hide { opacity: 0; pointer-events: none; }
+    ::-webkit-scrollbar{width:9px;height:9px}
+    ::-webkit-scrollbar-thumb{background:#183763;border-radius:9px}
+    ::-webkit-scrollbar-track{background:transparent}
+    input[type=range]{-webkit-appearance:none;appearance:none;height:4px;border-radius:4px;background:#183763;outline:none}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:15px;height:15px;border-radius:50%;background:var(--dorado);cursor:pointer;border:2px solid #0b1a33}
+    input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--dorado);cursor:pointer;border:2px solid #0b1a33}
+    .ff-serif{font-family:'Playfair Display',Georgia,serif}
+    .ff-sans{font-family:'DM Sans',system-ui,sans-serif}
+    input:focus,select:focus,button:focus-visible{outline:2px solid rgba(232,184,62,.6);outline-offset:1px}
+    @media (prefers-reduced-motion: reduce){*{transition:none!important}}
+  </style>
+</head>
+<body class="ff-sans">
+  <div id="boot"><b>Iluminación <span class="g">Pavoneo 360º</span></b><span>preparando la sala…</span></div>
+  <div id="root"></div>
+  <script>
+    (function () {
+      const LS = window.localStorage;
+      window.storage = {
+        get(key){ try { return LS.getItem(key); } catch { return null; } },
+        set(key, value){ try { LS.setItem(key, value); } catch {} }
+      };
+    })();
+  </script>
+  <script type="module">
+import { createRoot } from "react-dom/client";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import * as THREE from "three";
+import htm from "htm";
+
+const html = htm.bind(React.createElement);
+const STORE = "pavoneo-iluminacion-v1";
+const uid = () => Math.random().toString(36).slice(2, 9);
+
+/* ─────────────────────────── Paleta Artes Búho ─────────────────────────── */
+const C = {
+  crema:"#F7F2E5", tinta:"#071C48", azul:"#0757D8", dorado:"#E8B83E",
+  bg:"#040A18", panel:"#081226", panel2:"#0C1B38", border:"#173463",
+  text:"#F7F2E5", sub:"#9DB2D8", muted:"#6C83Ad"
+};
+
+/* ─────────────────────────── Tipos de foco ─────────────────────────── */
+const FIXTURE_TYPES = {
+  fijo:  { label:"Foco fijo",    icon:"▼", desc:"Recorte fijo apuntando a un punto del suelo." },
+  movil: { label:"Foco móvil",   icon:"✳", desc:"Cabeza móvil con barrido pan/tilt automático." },
+  barra: { label:"Barra LED",    icon:"▬", desc:"Barra wash horizontal para bañar el fondo." },
+  tubo:  { label:"Tubo LED",     icon:"▮", desc:"Tubo vertical de acento y glow suave." },
+};
+const OBJ_SHAPES = {
+  caja:     { label:"Armario (caja)",  desc:"Prisma rectangular — armario, mueble, riser." },
+  cubo:     { label:"Cubo",            desc:"Bloque cuadrado — cajón, tarima." },
+  cilindro: { label:"Cilindro",        desc:"Columna / forma circular en planta." },
+};
+
+/* Sala */
+const ROOM = { W:16, D:12, H:7 };
+
+/* ─────────────────────────── Semilla ─────────────────────────── */
+function seed() {
+  return {
+    fixtures: [
+      mkFixture("movil", { name:"Móvil izq",  x:-3, y:6.2, z:-4, color:"#0757D8", intensity:80, beam:14, panRange:35, tiltRange:22, speed:30, tilt:38 }),
+      mkFixture("movil", { name:"Móvil der",  x: 3, y:6.2, z:-4, color:"#E8B83E", intensity:80, beam:14, panRange:35, tiltRange:22, speed:30, tilt:38, phase:180 }),
+      mkFixture("fijo",  { name:"Recorte artista", x:0, y:6.4, z:3, color:"#FFF6E2", intensity:90, beam:20, tx:0, tz:0 }),
+      mkFixture("fijo",  { name:"Contra izq", x:-4.5, y:6.2, z:-5, color:"#0757D8", intensity:55, beam:24, tx:-2.5, tz:-2 }),
+      mkFixture("barra", { name:"Barra fondo", x:0, y:0.15, z:-5.4, color:"#0757D8", intensity:70, length:8, rotY:0 }),
+      mkFixture("tubo",  { name:"Tubo izq", x:-6.5, y:1.6, z:-5.7, color:"#E8B83E", intensity:75, length:3 }),
+      mkFixture("tubo",  { name:"Tubo der", x: 6.5, y:1.6, z:-5.7, color:"#E8B83E", intensity:75, length:3 }),
+    ],
+    objects: [
+      mkObject("caja", { name:"Armario", x:-4.5, z:-3, w:1.6, h:2.1, d:0.7, color:"#5A4632" }),
+    ],
+    settings: { ambient:0.14, floorColor:"#141b28", wallColor:"#0d1420", showBeams:true, blackout:false, playing:true, shadows:"alta", fog:true },
+    selected: null,
+  };
+}
+function mkFixture(type, o={}) {
+  return {
+    id: uid(), type, name: o.name || FIXTURE_TYPES[type].label,
+    x: o.x ?? 0, y: o.y ?? (type==="barra"?0.15:type==="tubo"?1.6:6.2), z: o.z ?? -4,
+    color: o.color || "#FFFFFF", intensity: o.intensity ?? 75,
+    beam: o.beam ?? 18,           // fijo / movil
+    tx: o.tx ?? 0, tz: o.tz ?? 0, // aim fijo
+    tilt: o.tilt ?? 35, panRange: o.panRange ?? 30, tiltRange: o.tiltRange ?? 18,
+    speed: o.speed ?? 28, phase: o.phase ?? 0,   // movil
+    length: o.length ?? (type==="tubo"?3:8), rotY: o.rotY ?? 0, // barra / tubo
+  };
+}
+function mkObject(shape, o={}) {
+  return {
+    id: uid(), shape, name: o.name || OBJ_SHAPES[shape].label,
+    x: o.x ?? 0, z: o.z ?? 0,
+    w: o.w ?? 1.2, h: o.h ?? 2, d: o.d ?? 1.2, r: o.r ?? 0.8,
+    rotY: o.rotY ?? 0, color: o.color || "#6b5842",
+  };
+}
+
+/* ─────────────────────────── Motor 3D ─────────────────────────── */
+function createEngine(mount, getState, onPick) {
+  const scene = new THREE.Scene();
+  const renderer = new THREE.WebGLRenderer({ antialias:true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  mount.appendChild(renderer.domElement);
+
+  const camera = new THREE.PerspectiveCamera(48, 1, 0.1, 200);
+
+  /* órbita */
+  const orbit = { theta: 0, phi: 1.05, radius: 20, target: new THREE.Vector3(0, 1.6, -1) };
+  function updateCam() {
+    orbit.phi = Math.max(0.15, Math.min(1.52, orbit.phi));
+    orbit.radius = Math.max(6, Math.min(45, orbit.radius));
+    const st = Math.sin(orbit.phi), ct = Math.cos(orbit.phi);
+    camera.position.set(
+      orbit.target.x + orbit.radius * st * Math.sin(orbit.theta),
+      orbit.target.y + orbit.radius * ct,
+      orbit.target.z + orbit.radius * st * Math.cos(orbit.theta)
+    );
+    camera.lookAt(orbit.target);
+  }
+
+  /* iluminación base */
+  const ambient = new THREE.AmbientLight(0xffffff, 0.14);
+  scene.add(ambient);
+  const fill = new THREE.DirectionalLight(0x9db2d8, 0.12);
+  fill.position.set(6, 10, 8);
+  scene.add(fill);
+
+  /* sala */
+  const matFloor = new THREE.MeshStandardMaterial({ color:0x141b28, roughness:0.95, metalness:0.05 });
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(ROOM.W, ROOM.D), matFloor);
+  floor.rotation.x = -Math.PI/2; floor.receiveShadow = true; floor.name = "__floor";
+  scene.add(floor);
+  const grid = new THREE.GridHelper(ROOM.W, ROOM.W, 0x24406e, 0x142a4d);
+  grid.position.y = 0.012; scene.add(grid);
+
+  const matWall = new THREE.MeshStandardMaterial({ color:0x0d1420, roughness:1, metalness:0 });
+  const back = new THREE.Mesh(new THREE.PlaneGeometry(ROOM.W, ROOM.H), matWall);
+  back.position.set(0, ROOM.H/2, -ROOM.D/2); back.receiveShadow = true; scene.add(back);
+  const wallL = new THREE.Mesh(new THREE.PlaneGeometry(ROOM.D, ROOM.H), matWall.clone());
+  wallL.rotation.y = Math.PI/2; wallL.position.set(-ROOM.W/2, ROOM.H/2, 0); wallL.receiveShadow = true; scene.add(wallL);
+  const wallR = new THREE.Mesh(new THREE.PlaneGeometry(ROOM.D, ROOM.H), matWall.clone());
+  wallR.rotation.y = -Math.PI/2; wallR.position.set(ROOM.W/2, ROOM.H/2, 0); wallR.receiveShadow = true; scene.add(wallR);
+
+  /* truss superior */
+  const trussMat = new THREE.MeshStandardMaterial({ color:0x2a3547, metalness:0.6, roughness:0.5 });
+  [-4, 0, 4].forEach(z => {
+    const t = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, ROOM.W-0.6, 8), trussMat);
+    t.rotation.z = Math.PI/2; t.position.set(0, ROOM.H-0.35, z); scene.add(t);
+  });
+
+  /* piso "escenario" sutil */
+  const stageDisc = new THREE.Mesh(
+    new THREE.CircleGeometry(2.4, 40),
+    new THREE.MeshStandardMaterial({ color:0x1a2740, roughness:0.85, transparent:true, opacity:0.6 })
+  );
+  stageDisc.rotation.x = -Math.PI/2; stageDisc.position.set(0, 0.014, 0.5); scene.add(stageDisc);
+
+  /* selección */
+  const selHelper = new THREE.BoxHelper(new THREE.Mesh(new THREE.BoxGeometry(0.01,0.01,0.01)), 0xE8B83E);
+  selHelper.visible = false; scene.add(selHelper);
+
+  /* mapas */
+  const fmap = new Map();  // id -> rig
+  const omap = new Map();  // id -> mesh
+  const scratchCol = new THREE.Color();
+  const DOWN = new THREE.Vector3(0, -1, 0);
+  const beamGeo = new THREE.ConeGeometry(1, 1, 24, 1, true); beamGeo.translate(0, -0.5, 0);
+  const housingMat = new THREE.MeshStandardMaterial({ color:0x1a2233, metalness:0.5, roughness:0.5 });
+
+  let shadowBudget = 8;
+
+  function shadowsQuality(){ const s = getState().settings.shadows; return s === "off" ? 0 : s === "media" ? 512 : 1024; }
+
+  /* ── crear rig por tipo ── */
+  function buildFixture(fx) {
+    const group = new THREE.Group();
+    scene.add(group);
+    const rig = { id: fx.id, type: fx.type, group, meshes: [] };
+
+    if (fx.type === "fijo" || fx.type === "movil") {
+      const yoke = new THREE.Group();
+      const body = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.13, 0.34, 14), housingMat);
+      body.rotation.x = Math.PI/2; body.castShadow = true;
+      const lens = new THREE.Mesh(new THREE.CircleGeometry(0.09, 16), new THREE.MeshBasicMaterial({ color:0x222222 }));
+      lens.position.z = 0.18;
+      yoke.add(body, lens);
+      const bracket = new THREE.Mesh(new THREE.TorusGeometry(0.14, 0.02, 8, 16, Math.PI), housingMat);
+      bracket.rotation.x = Math.PI/2;
+      group.add(yoke, bracket);
+      const spot = new THREE.SpotLight(0xffffff, 0, 60, 0.4, 0.35, 1);
+      spot.target = new THREE.Object3D(); scene.add(spot.target);
+      group.add(spot);
+      const beamMat = new THREE.MeshBasicMaterial({ color:0xffffff, transparent:true, opacity:0, depthWrite:false, side:THREE.DoubleSide, blending:THREE.AdditiveBlending });
+      const beam = new THREE.Mesh(beamGeo, beamMat); beam.renderOrder = 2;
+      scene.add(beam);
+      rig.yoke = yoke; rig.lens = lens; rig.spot = spot; rig.beam = beam; rig.beamMat = beamMat;
+      rig.meshes.push(body, lens);
+    }
+    else if (fx.type === "barra") {
+      const bar = new THREE.Mesh(new THREE.BoxGeometry(fx.length, 0.16, 0.16),
+        new THREE.MeshStandardMaterial({ color:0x0a0f18, emissive:0x000000, roughness:0.4 }));
+      bar.castShadow = true;
+      group.add(bar);
+      const cells = [];
+      const n = Math.max(4, Math.round(fx.length * 1.6));
+      for (let i=0;i<n;i++){
+        const cell = new THREE.Mesh(new THREE.PlaneGeometry(fx.length/n*0.8, 0.1),
+          new THREE.MeshBasicMaterial({ color:0x111111 }));
+        cell.position.set(-fx.length/2 + (i+0.5)*fx.length/n, 0, 0.085);
+        group.add(cell); cells.push(cell);
+      }
+      const spot = new THREE.SpotLight(0xffffff, 0, 30, 0.9, 0.9, 1);
+      spot.position.set(0, 0.2, 0);
+      spot.target = new THREE.Object3D(); scene.add(spot.target);
+      group.add(spot);
+      const beamMat = new THREE.MeshBasicMaterial({ color:0xffffff, transparent:true, opacity:0, depthWrite:false, side:THREE.DoubleSide, blending:THREE.AdditiveBlending });
+      const beam = new THREE.Mesh(beamGeo, beamMat);
+      scene.add(beam);
+      rig.bar = bar; rig.cells = cells; rig.spot = spot; rig.beam = beam; rig.beamMat = beamMat; rig.barLen = fx.length;
+      rig.meshes.push(bar);
+    }
+    else if (fx.type === "tubo") {
+      const tube = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, fx.length, 12),
+        new THREE.MeshStandardMaterial({ color:0x0a0f18, emissive:0x000000, roughness:0.35 }));
+      const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.06, 12), housingMat);
+      cap.position.y = fx.length/2;
+      group.add(tube, cap);
+      const pl = new THREE.PointLight(0xffffff, 0, 9, 2);
+      group.add(pl);
+      rig.tube = tube; rig.point = pl; rig.tubeLen = fx.length;
+      rig.meshes.push(tube);
+    }
+    rig.meshes.forEach(m => { m.userData.pickId = fx.id; m.userData.pickKind = "fixture"; });
+    fmap.set(fx.id, rig);
+    return rig;
+  }
+
+  function disposeRig(rig) {
+    scene.remove(rig.group);
+    if (rig.beam) scene.remove(rig.beam);
+    if (rig.spot && rig.spot.target) scene.remove(rig.spot.target);
+    rig.group.traverse(o => { if (o.geometry) o.geometry.dispose?.(); if (o.material) o.material.dispose?.(); });
+  }
+
+  /* ── reconcile focos: crea/borra/geo ── */
+  function syncFixtures(fixtures) {
+    const ids = new Set(fixtures.map(f => f.id));
+    for (const [id, rig] of fmap) if (!ids.has(id)) { disposeRig(rig); fmap.delete(id); }
+    fixtures.forEach(fx => {
+      let rig = fmap.get(fx.id);
+      // reconstruir si cambió tipo o longitud de barra/tubo (geometría)
+      if (rig && (rig.type !== fx.type || (fx.type==="barra" && rig.barLen!==fx.length) || (fx.type==="tubo" && rig.tubeLen!==fx.length))) {
+        disposeRig(rig); fmap.delete(fx.id); rig = null;
+      }
+      if (!rig) buildFixture(fx);
+    });
+    // presupuesto de sombras: sólo fijo/móvil, primeros N
+    let used = 0;
+    const q = shadowsQuality();
+    fixtures.forEach(fx => {
+      const rig = fmap.get(fx.id); if (!rig || !rig.spot) return;
+      const wants = q>0 && (fx.type==="fijo"||fx.type==="movil"||(fx.type==="barra"&&q>=1024)) && used < shadowBudget;
+      rig.spot.castShadow = !!wants;
+      if (wants) { rig.spot.shadow.mapSize.set(q, q); rig.spot.shadow.bias = -0.0006; rig.spot.shadow.camera.near = 0.4; rig.spot.shadow.camera.far = 60; used++; }
+    });
+  }
+
+  /* ── reconcile objetos ── */
+  function objGeo(o) {
+    if (o.shape === "cilindro") return new THREE.CylinderGeometry(o.r, o.r, o.h, 32);
+    if (o.shape === "cubo")     { const s = o.w; return new THREE.BoxGeometry(s, s, s); }
+    return new THREE.BoxGeometry(o.w, o.h, o.d);
+  }
+  function syncObjects(objects) {
+    const ids = new Set(objects.map(o => o.id));
+    for (const [id, mesh] of omap) if (!ids.has(id)) { scene.remove(mesh); mesh.geometry.dispose(); mesh.material.dispose(); omap.delete(id); }
+    objects.forEach(o => {
+      let mesh = omap.get(o.id);
+      const sig = `${o.shape}|${o.w}|${o.h}|${o.d}|${o.r}`;
+      if (mesh && mesh.userData.sig !== sig) { scene.remove(mesh); mesh.geometry.dispose(); omap.delete(o.id); mesh = null; }
+      if (!mesh) {
+        mesh = new THREE.Mesh(objGeo(o), new THREE.MeshStandardMaterial({ color:o.color, roughness:0.85, metalness:0.05 }));
+        mesh.castShadow = true; mesh.receiveShadow = true;
+        mesh.userData = { sig, pickId:o.id, pickKind:"object" };
+        scene.add(mesh); omap.set(o.id, mesh);
+      }
+      const hh = (o.shape==="cubo"? o.w : o.h)/2;
+      mesh.position.set(o.x, hh, o.z);
+      mesh.rotation.y = (o.rotY||0) * Math.PI/180;
+      mesh.material.color.set(o.color);
+    });
+  }
+
+  /* ── frame ── */
+  function applyFrame() {
+    const state = getState();
+    if (!state) return;
+    const { fixtures, settings, selected } = state;
+    const now = performance.now()/1000;
+    const black = settings.blackout;
+    ambient.intensity = black ? 0.03 : settings.ambient;
+    fill.intensity = black ? 0.02 : 0.12;
+    scene.fog = settings.fog ? new THREE.Fog(0x040a18, 14, 46) : null;
+    matFloor.color.set(settings.floorColor);
+    [back, wallL, wallR].forEach(w => w.material.color.set(settings.wallColor));
+
+    fixtures.forEach(fx => {
+      const rig = fmap.get(fx.id); if (!rig) return;
+      rig.group.position.set(fx.x, fx.y, fx.z);
+      const k = black ? 0 : fx.intensity/100;
+      scratchCol.set(fx.color);
+
+      if (rig.type === "fijo" || rig.type === "movil") {
+        let tx = fx.tx, tz = fx.tz;
+        if (rig.type === "movil") {
+          const pan = (fx.phase*Math.PI/180) + Math.sin(now * fx.speed/60) * (fx.panRange*Math.PI/180);
+          const tiltC = fx.tilt*Math.PI/180;
+          const tilt = tiltC + Math.sin(now * fx.speed/60 * 0.7 + fx.phase*Math.PI/180) * (fx.tiltRange*Math.PI/180);
+          const hor = Math.sin(Math.max(0.02, tilt));
+          const dist = fx.y / Math.max(0.15, Math.cos(tilt));
+          tx = fx.x + Math.sin(pan) * hor * dist;
+          tz = fx.z - Math.cos(pan) * hor * dist;
+        }
+        tx = Math.max(-ROOM.W/2, Math.min(ROOM.W/2, tx));
+        tz = Math.max(-ROOM.D/2, Math.min(ROOM.D/2, tz));
+        rig.spot.target.position.set(tx, 0, tz);
+        rig.spot.position.set(0,0,0);
+        rig.spot.color.copy(scratchCol);
+        rig.spot.intensity = k * 3.2;
+        rig.spot.angle = Math.max(0.05, Math.min(1.1, (fx.beam*Math.PI/180)/2));
+        rig.spot.penumbra = 0.35;
+        rig.yoke.lookAt(tx, 0, tz);
+        rig.lens.material.color.copy(scratchCol).multiplyScalar(0.15 + 0.85*k);
+        // beam
+        const from = new THREE.Vector3(fx.x, fx.y, fx.z);
+        const to = new THREE.Vector3(tx, 0, tz);
+        const dir = to.clone().sub(from); const len = dir.length(); dir.normalize();
+        rig.beam.position.copy(from);
+        rig.beam.quaternion.setFromUnitVectors(DOWN, dir);
+        const R = Math.tan(rig.spot.angle) * len;
+        rig.beam.scale.set(R, len, R);
+        rig.beamMat.color.copy(scratchCol);
+        rig.beamMat.opacity = settings.showBeams ? k*0.14 : 0;
+      }
+      else if (rig.type === "barra") {
+        rig.group.rotation.y = (fx.rotY||0)*Math.PI/180;
+        rig.cells.forEach(c => c.material.color.copy(scratchCol).multiplyScalar(0.1 + 0.9*k));
+        rig.bar.material.emissive.copy(scratchCol).multiplyScalar(k);
+        rig.spot.color.copy(scratchCol);
+        rig.spot.intensity = k * 2.0;
+        rig.spot.target.position.set(fx.x, 0, fx.z - 0.1);
+        rig.beam.position.set(fx.x, fx.y, fx.z);
+        rig.beam.quaternion.setFromUnitVectors(DOWN, DOWN);
+        rig.beam.scale.set(fx.length*0.4, fx.y+0.2, 0.7);
+        rig.beamMat.color.copy(scratchCol);
+        rig.beamMat.opacity = settings.showBeams ? k*0.06 : 0;
+      }
+      else if (rig.type === "tubo") {
+        rig.group.rotation.z = (fx.rotY||0)*Math.PI/180;
+        rig.tube.material.emissive.copy(scratchCol).multiplyScalar(k);
+        rig.point.color.copy(scratchCol);
+        rig.point.intensity = k * 1.4;
+      }
+    });
+
+    // selección
+    let selMesh = null;
+    if (selected) {
+      const rig = fmap.get(selected);
+      if (rig) selMesh = rig.meshes[0] || rig.group;
+      else if (omap.get(selected)) selMesh = omap.get(selected);
+    }
+    if (selMesh) { selHelper.visible = true; selHelper.setFromObject(selMesh); }
+    else selHelper.visible = false;
+  }
+
+  /* ── interacción: órbita + arrastre ── */
+  const ray = new THREE.Raycaster();
+  const ndc = new THREE.Vector2();
+  const floorPlane = new THREE.Plane(new THREE.Vector3(0,1,0), 0);
+  let mode = null; // 'orbit' | 'drag'
+  let dragId = null, dragKind = null, last = {x:0,y:0};
+
+  function setNdc(e){
+    const r = renderer.domElement.getBoundingClientRect();
+    ndc.x = ((e.clientX - r.left)/r.width)*2 - 1;
+    ndc.y = -((e.clientY - r.top)/r.height)*2 + 1;
+  }
+  function pickAt(e){
+    setNdc(e); ray.setFromCamera(ndc, camera);
+    const targets = [];
+    fmap.forEach(rig => rig.meshes.forEach(m => targets.push(m)));
+    omap.forEach(m => targets.push(m));
+    const hit = ray.intersectObjects(targets, false)[0];
+    return hit ? { id: hit.object.userData.pickId, kind: hit.object.userData.pickKind } : null;
+  }
+  function onDown(e){
+    e.preventDefault();
+    last = { x:e.clientX, y:e.clientY };
+    const hit = pickAt(e);
+    if (hit && !e.shiftKey) {
+      onPick(hit.id);
+      dragId = hit.id; dragKind = hit.kind; mode = "drag";
+    } else {
+      onPick(hit ? hit.id : null);
+      mode = "orbit";
+    }
+  }
+  function onMove(e){
+    if (!mode) return;
+    if (mode === "orbit") {
+      const dx = e.clientX - last.x, dy = e.clientY - last.y;
+      orbit.theta -= dx*0.006; orbit.phi -= dy*0.006; updateCam();
+    } else if (mode === "drag" && dragId) {
+      setNdc(e); ray.setFromCamera(ndc, camera);
+      const p = new THREE.Vector3();
+      if (ray.ray.intersectPlane(floorPlane, p)) {
+        p.x = Math.max(-ROOM.W/2+0.3, Math.min(ROOM.W/2-0.3, p.x));
+        p.z = Math.max(-ROOM.D/2+0.3, Math.min(ROOM.D/2-0.3, p.z));
+        onDrag(dragId, dragKind, p.x, p.z);
+      }
+    }
+    last = { x:e.clientX, y:e.clientY };
+  }
+  function onUp(){ mode = null; dragId = null; dragKind = null; }
+  function onWheel(e){ e.preventDefault(); orbit.radius *= (1 + Math.sign(e.deltaY)*0.08); updateCam(); }
+
+  let onDrag = () => {};
+
+  const el = renderer.domElement;
+  el.style.touchAction = "none";
+  el.addEventListener("pointerdown", onDown);
+  window.addEventListener("pointermove", onMove);
+  window.addEventListener("pointerup", onUp);
+  el.addEventListener("wheel", onWheel, { passive:false });
+
+  /* ── loop + resize ── */
+  let raf = 0, alive = true;
+  function loop(){ if (!alive) return; applyFrame(); updateCam(); renderer.render(scene, camera); raf = requestAnimationFrame(loop); }
+  function resize(){
+    const w = mount.clientWidth || 800, h = mount.clientHeight || 500;
+    renderer.setSize(w, h); camera.aspect = w/h; camera.updateProjectionMatrix();
+  }
+  const ro = new ResizeObserver(resize); ro.observe(mount);
+  resize(); updateCam(); loop();
+
+  return {
+    syncFixtures, syncObjects,
+    setOnDrag(fn){ onDrag = fn; },
+    frame(theta){ orbit.theta = theta; updateCam(); },
+    resetView(){ orbit.theta = 0; orbit.phi = 1.05; orbit.radius = 20; updateCam(); },
+    dispose(){ alive = false; cancelAnimationFrame(raf); ro.disconnect();
+      el.removeEventListener("pointerdown", onDown); window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp); el.removeEventListener("wheel", onWheel);
+      renderer.dispose(); mount.removeChild(el); }
+  };
+}
+
+/* ─────────────────────────── Viewport React ─────────────────────────── */
+function Viewport({ stateRef, onPick, onDrag, engineRef }) {
+  const mountRef = useRef(null);
+  useEffect(() => {
+    const eng = createEngine(mountRef.current, () => stateRef.current, onPick);
+    eng.setOnDrag(onDrag);
+    engineRef.current = eng;
+    return () => { eng.dispose(); engineRef.current = null; };
+  }, []);
+  return html`<div ref=${mountRef} style=${{ position:"absolute", inset:0 }} />`;
+}
+
+/* ─────────────────────────── Controles UI ─────────────────────────── */
+function Field({ label, children, hint }) {
+  return html`<label style=${{ display:"block", marginBottom:10 }}>
+    <div style=${{ fontSize:11, letterSpacing:".05em", textTransform:"uppercase", color:C.sub, marginBottom:4 }}>${label}</div>
+    ${children}
+    ${hint && html`<div style=${{ fontSize:10, color:C.muted, marginTop:3 }}>${hint}</div>`}
+  </label>`;
+}
+function Slider({ label, value, min, max, step=1, onChange, unit="" }) {
+  return html`<div style=${{ marginBottom:10 }}>
+    <div style=${{ display:"flex", justifyContent:"space-between", fontSize:11, textTransform:"uppercase", letterSpacing:".05em", color:C.sub, marginBottom:4 }}>
+      <span>${label}</span><span style=${{ color:C.dorado }}>${value}${unit}</span>
+    </div>
+    <input type="range" min=${min} max=${max} step=${step} value=${value}
+      onInput=${e => onChange(parseFloat(e.target.value))} style=${{ width:"100%" }} />
+  </div>`;
+}
+function TextInput({ value, onChange }) {
+  return html`<input value=${value} onInput=${e => onChange(e.target.value)}
+    style=${{ width:"100%", background:C.panel2, border:`1px solid ${C.border}`, color:C.text,
+      borderRadius:8, padding:"7px 9px", fontSize:13 }} />`;
+}
+function ColorInput({ value, onChange }) {
+  return html`<div style=${{ display:"flex", gap:8, alignItems:"center" }}>
+    <input type="color" value=${value} onInput=${e => onChange(e.target.value)}
+      style=${{ width:38, height:32, border:`1px solid ${C.border}`, borderRadius:8, background:"transparent", cursor:"pointer", padding:0 }} />
+    <span style=${{ fontSize:12, color:C.sub, fontFamily:"monospace" }}>${value.toUpperCase()}</span>
+  </div>`;
+}
+function Btn({ children, onClick, primary, danger, small, active }) {
+  const bg = primary ? C.dorado : danger ? "#4a1420" : active ? C.azul : C.panel2;
+  const col = primary ? C.tinta : danger ? "#ff9db0" : C.text;
+  return html`<button onClick=${onClick} style=${{
+    background:bg, color:col, border:`1px solid ${primary?C.dorado:active?C.azul:C.border}`,
+    borderRadius:8, padding: small?"5px 9px":"8px 12px", fontSize: small?12:13, fontWeight:600,
+    cursor:"pointer", whiteSpace:"nowrap" }}>${children}</button>`;
+}
+
+/* ── editor de foco ── */
+function FixtureEditor({ fx, patch, remove, dup }) {
+  const isSpot = fx.type==="fijo" || fx.type==="movil";
+  return html`<div>
+    <${Field} label="Nombre"><${TextInput} value=${fx.name} onChange=${v=>patch({name:v})} /><//>
+    <${Field} label="Color"><${ColorInput} value=${fx.color} onChange=${v=>patch({color:v})} /><//>
+    <${Slider} label="Intensidad" value=${fx.intensity} min=0 max=100 unit="%" onChange=${v=>patch({intensity:v})} />
+    <div style=${{ height:1, background:C.border, margin:"12px 0" }} />
+    <div style=${{ fontSize:11, textTransform:"uppercase", letterSpacing:".06em", color:C.dorado, marginBottom:8 }}>Posición en la sala</div>
+    <${Slider} label="Izq · Der (X)" value=${round(fx.x)} min=${-8} max=8 step=0.1 onChange=${v=>patch({x:v})} />
+    <${Slider} label="Fondo · Frente (Z)" value=${round(fx.z)} min=${-6} max=6 step=0.1 onChange=${v=>patch({z:v})} />
+    <${Slider} label="Altura (Y)" value=${round(fx.y)} min=0 max=7 step=0.1 onChange=${v=>patch({y:v})} />
+
+    ${isSpot && html`<div>
+      <div style=${{ height:1, background:C.border, margin:"12px 0" }} />
+      <${Slider} label="Apertura del haz" value=${fx.beam} min=6 max=60 unit="°" onChange=${v=>patch({beam:v})} />
+      ${fx.type==="fijo" && html`<div>
+        <div style=${{ fontSize:11, textTransform:"uppercase", letterSpacing:".06em", color:C.dorado, margin:"10px 0 8px" }}>Apuntado (punto del suelo)</div>
+        <${Slider} label="Objetivo X" value=${round(fx.tx)} min=${-8} max=8 step=0.1 onChange=${v=>patch({tx:v})} />
+        <${Slider} label="Objetivo Z" value=${round(fx.tz)} min=${-6} max=6 step=0.1 onChange=${v=>patch({tz:v})} />
+      </div>`}
+      ${fx.type==="movil" && html`<div>
+        <div style=${{ fontSize:11, textTransform:"uppercase", letterSpacing:".06em", color:C.dorado, margin:"10px 0 8px" }}>Movimiento automático</div>
+        <${Slider} label="Inclinación base" value=${fx.tilt} min=5 max=70 unit="°" onChange=${v=>patch({tilt:v})} />
+        <${Slider} label="Barrido horizontal" value=${fx.panRange} min=0 max=80 unit="°" onChange=${v=>patch({panRange:v})} />
+        <${Slider} label="Barrido vertical" value=${fx.tiltRange} min=0 max=45 unit="°" onChange=${v=>patch({tiltRange:v})} />
+        <${Slider} label="Velocidad" value=${fx.speed} min=2 max=90 onChange=${v=>patch({speed:v})} />
+        <${Slider} label="Desfase" value=${fx.phase} min=0 max=360 unit="°" onChange=${v=>patch({phase:v})} />
+      </div>`}
+    </div>`}
+
+    ${(fx.type==="barra"||fx.type==="tubo") && html`<div>
+      <div style=${{ height:1, background:C.border, margin:"12px 0" }} />
+      <${Slider} label="Longitud" value=${round(fx.length)} min=1 max=12 step=0.2 unit=" m" onChange=${v=>patch({length:v})} />
+      <${Slider} label="Rotación" value=${fx.rotY} min=0 max=90 unit="°" onChange=${v=>patch({rotY:v})} />
+    </div>`}
+
+    <div style=${{ display:"flex", gap:8, marginTop:16 }}>
+      <${Btn} small onClick=${dup}>⧉ Duplicar<//>
+      <${Btn} small danger onClick=${remove}>🗑 Eliminar<//>
+    </div>
+  </div>`;
+}
+
+/* ── editor de objeto ── */
+function ObjectEditor({ o, patch, remove, dup }) {
+  return html`<div>
+    <${Field} label="Nombre"><${TextInput} value=${o.name} onChange=${v=>patch({name:v})} /><//>
+    <${Field} label="Color / material"><${ColorInput} value=${o.color} onChange=${v=>patch({color:v})} /><//>
+    <div style=${{ fontSize:11, textTransform:"uppercase", letterSpacing:".06em", color:C.dorado, margin:"6px 0 8px" }}>Posición</div>
+    <${Slider} label="Izq · Der (X)" value=${round(o.x)} min=${-8} max=8 step=0.1 onChange=${v=>patch({x:v})} />
+    <${Slider} label="Fondo · Frente (Z)" value=${round(o.z)} min=${-6} max=6 step=0.1 onChange=${v=>patch({z:v})} />
+    <${Slider} label="Giro" value=${o.rotY} min=0 max=180 unit="°" onChange=${v=>patch({rotY:v})} />
+    <div style=${{ fontSize:11, textTransform:"uppercase", letterSpacing:".06em", color:C.dorado, margin:"10px 0 8px" }}>Tamaño</div>
+    ${o.shape==="cilindro" && html`<div>
+      <${Slider} label="Radio" value=${round(o.r)} min=0.2 max=3 step=0.1 unit=" m" onChange=${v=>patch({r:v})} />
+      <${Slider} label="Altura" value=${round(o.h)} min=0.2 max=4 step=0.1 unit=" m" onChange=${v=>patch({h:v})} />
+    </div>`}
+    ${o.shape==="cubo" && html`<${Slider} label="Lado" value=${round(o.w)} min=0.2 max=3 step=0.1 unit=" m" onChange=${v=>patch({w:v})} />`}
+    ${o.shape==="caja" && html`<div>
+      <${Slider} label="Ancho" value=${round(o.w)} min=0.2 max=4 step=0.1 unit=" m" onChange=${v=>patch({w:v})} />
+      <${Slider} label="Alto" value=${round(o.h)} min=0.2 max=4 step=0.1 unit=" m" onChange=${v=>patch({h:v})} />
+      <${Slider} label="Fondo" value=${round(o.d)} min=0.2 max=4 step=0.1 unit=" m" onChange=${v=>patch({d:v})} />
+    </div>`}
+    <div style=${{ display:"flex", gap:8, marginTop:16 }}>
+      <${Btn} small onClick=${dup}>⧉ Duplicar<//>
+      <${Btn} small danger onClick=${remove}>🗑 Eliminar<//>
+    </div>
+  </div>`;
+}
+
+const round = n => Math.round(n*10)/10;
+
+/* ─────────────────────────── App ─────────────────────────── */
+function App() {
+  const [state, setState] = useState(null);
+  const [panel, setPanel] = useState("focos"); // focos | objetos | escena
+  const stateRef = useRef(null);
+  const engineRef = useRef(null);
+  const saveTimer = useRef(null);
+
+  // cargar
+  useEffect(() => {
+    let data = null;
+    try { const raw = window.storage.get(STORE); if (raw) data = JSON.parse(raw); } catch {}
+    const s = data && data.fixtures ? { ...seed(), ...data, selected:null } : seed();
+    setState(s);
+  }, []);
+
+  // el motor lee siempre el estado más reciente
+  stateRef.current = state;
+
+  // sincronizar motor + guardar
+  useEffect(() => {
+    if (!state) return;
+    if (engineRef.current) {
+      engineRef.current.syncFixtures(state.fixtures);
+      engineRef.current.syncObjects(state.objects);
+    }
+    clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => {
+      try { window.storage.set(STORE, JSON.stringify({ ...state, selected:null })); } catch {}
+    }, 500);
+  }, [state]);
+
+  const up = useCallback(patch => setState(s => ({ ...s, ...patch })), []);
+  const patchFixture = (id, p) => setState(s => ({ ...s, fixtures: s.fixtures.map(f => f.id===id ? { ...f, ...p } : f) }));
+  const patchObject  = (id, p) => setState(s => ({ ...s, objects:  s.objects.map(o => o.id===id ? { ...o, ...p } : o) }));
+  const patchSetting = p => setState(s => ({ ...s, settings: { ...s.settings, ...p } }));
+
+  const onPick = useCallback(id => setState(s => ({ ...s, selected:id })), []);
+  const onDrag = useCallback((id, kind, x, z) => {
+    setState(s => kind==="fixture"
+      ? { ...s, fixtures: s.fixtures.map(f => f.id===id ? { ...f, x, z } : f) }
+      : { ...s, objects:  s.objects.map(o => o.id===id ? { ...o, x, z } : o) });
+  }, []);
+
+  if (!state) return null;
+  const sel = state.selected;
+  const selFixture = state.fixtures.find(f => f.id===sel);
+  const selObject  = state.objects.find(o => o.id===sel);
+
+  const addFixture = type => {
+    const f = mkFixture(type, { name: `${FIXTURE_TYPES[type].label} ${state.fixtures.filter(x=>x.type===type).length+1}` });
+    setState(s => ({ ...s, fixtures:[...s.fixtures, f], selected:f.id }));
+    setPanel("focos");
+  };
+  const addObject = shape => {
+    const o = mkObject(shape, { name: `${OBJ_SHAPES[shape].label}` });
+    setState(s => ({ ...s, objects:[...s.objects, o], selected:o.id }));
+    setPanel("objetos");
+  };
+  const removeFixture = id => setState(s => ({ ...s, fixtures: s.fixtures.filter(f=>f.id!==id), selected:null }));
+  const removeObject  = id => setState(s => ({ ...s, objects:  s.objects.filter(o=>o.id!==id), selected:null }));
+  const dupFixture = f => { const n = mkFixture(f.type, { ...f, name:f.name+" copia", x:f.x+0.6 }); n.id=uid(); setState(s=>({...s, fixtures:[...s.fixtures,n], selected:n.id})); };
+  const dupObject  = o => { const n = mkObject(o.shape, { ...o, name:o.name+" copia", x:o.x+0.6 }); n.id=uid(); setState(s=>({...s, objects:[...s.objects,n], selected:n.id})); };
+
+  const exportJson = () => {
+    const blob = new Blob([JSON.stringify({ ...state, selected:null }, null, 2)], { type:"application/json" });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+    a.download = "iluminacion-pavoneo.json"; a.click(); URL.revokeObjectURL(a.href);
+  };
+  const importJson = e => {
+    const file = e.target.files[0]; if (!file) return;
+    const r = new FileReader();
+    r.onload = () => { try { const d = JSON.parse(r.result); if (d.fixtures) setState({ ...seed(), ...d, selected:null }); } catch {} };
+    r.readAsText(file); e.target.value = "";
+  };
+  const resetAll = () => { if (confirm("¿Restablecer la sala a la escena de ejemplo?")) setState(seed()); };
+
+  const st = state.settings;
+
+  return html`<div style=${{ height:"100%", display:"flex", flexDirection:"column", background:C.bg }}>
+    <${Header} state=${state} patchSetting=${patchSetting} />
+    <div style=${{ flex:1, display:"flex", minHeight:0 }}>
+      <!-- Visor -->
+      <div style=${{ flex:1, position:"relative", minWidth:0 }}>
+        <${Viewport} stateRef=${stateRef} onPick=${onPick} onDrag=${onDrag} engineRef=${engineRef} />
+        <${Toolbar} st=${st} patchSetting=${patchSetting} engineRef=${engineRef} />
+        <div style=${{ position:"absolute", left:14, bottom:12, fontSize:11, color:C.muted, background:"rgba(4,10,24,.6)", padding:"5px 9px", borderRadius:7, pointerEvents:"none" }}>
+          Arrastra un elemento para moverlo · arrastra el fondo para orbitar · rueda para zoom
+        </div>
+      </div>
+      <!-- Panel -->
+      <div style=${{ width:340, minWidth:340, background:C.panel, borderLeft:`1px solid ${C.border}`, display:"flex", flexDirection:"column" }}>
+        <div style=${{ display:"flex", borderBottom:`1px solid ${C.border}` }}>
+          ${[["focos","Focos"],["objetos","Objetos 3D"],["escena","Escena"]].map(([id,lb]) =>
+            html`<button key=${id} onClick=${()=>setPanel(id)} style=${{
+              flex:1, padding:"11px 6px", background: panel===id?C.panel2:"transparent", color: panel===id?C.dorado:C.sub,
+              border:"none", borderBottom: panel===id?`2px solid ${C.dorado}`:"2px solid transparent",
+              fontSize:12.5, fontWeight:700, cursor:"pointer", textTransform:"uppercase", letterSpacing:".04em" }}>${lb}</button>`)}
+        </div>
+        <div style=${{ flex:1, overflowY:"auto", padding:16 }}>
+          ${panel==="focos" && html`<${FocosPanel}
+            state=${state} sel=${sel} selFixture=${selFixture}
+            addFixture=${addFixture} onPick=${onPick}
+            patch=${p=>patchFixture(sel,p)} remove=${()=>removeFixture(sel)} dup=${()=>dupFixture(selFixture)} />`}
+          ${panel==="objetos" && html`<${ObjetosPanel}
+            state=${state} sel=${sel} selObject=${selObject}
+            addObject=${addObject} onPick=${onPick}
+            patch=${p=>patchObject(sel,p)} remove=${()=>removeObject(sel)} dup=${()=>dupObject(selObject)} />`}
+          ${panel==="escena" && html`<${EscenaPanel}
+            st=${st} patchSetting=${patchSetting}
+            exportJson=${exportJson} importJson=${importJson} resetAll=${resetAll} />`}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function Header({ state, patchSetting }) {
+  const st = state.settings;
+  return html`<header style=${{ display:"flex", alignItems:"center", gap:14, padding:"10px 18px",
+    background:C.panel, borderBottom:`1px solid ${C.border}`, flexWrap:"wrap" }}>
+    <div style=${{ display:"flex", alignItems:"baseline", gap:9 }}>
+      <span class="ff-serif" style=${{ fontSize:22, color:C.crema, fontWeight:700 }}>Iluminación</span>
+      <span class="ff-serif" style=${{ fontSize:22, color:C.dorado, fontWeight:700 }}>Pavoneo 360º</span>
+    </div>
+    <span style=${{ fontSize:11.5, color:C.sub }}>Live Sessions · Artes Búho</span>
+    <div style=${{ marginLeft:"auto", display:"flex", gap:8, alignItems:"center" }}>
+      <${Btn} small active=${st.playing} onClick=${()=>patchSetting({playing:!st.playing})}>${st.playing?"⏸ Movimiento":"▶ Movimiento"}<//>
+      <${Btn} small danger=${st.blackout} onClick=${()=>patchSetting({blackout:!st.blackout})}>${st.blackout?"● Blackout":"○ Blackout"}<//>
+    </div>
+  </header>`;
+}
+
+function Toolbar({ st, patchSetting, engineRef }) {
+  const item = (on, label, onClick) => html`<button onClick=${onClick} style=${{
+    background: on?C.azul:"rgba(8,18,38,.85)", color: on?C.crema:C.sub, border:`1px solid ${on?C.azul:C.border}`,
+    borderRadius:8, padding:"6px 10px", fontSize:12, fontWeight:600, cursor:"pointer" }}>${label}</button>`;
+  return html`<div style=${{ position:"absolute", top:12, left:14, display:"flex", gap:8, flexWrap:"wrap" }}>
+    ${item(st.showBeams, "Haces", ()=>patchSetting({showBeams:!st.showBeams}))}
+    ${item(st.fog, "Niebla", ()=>patchSetting({fog:!st.fog}))}
+    ${item(false, "↺ Vista", ()=>engineRef.current?.resetView())}
+  </div>`;
+}
+
+/* ── Panel focos ── */
+function FocosPanel({ state, sel, selFixture, addFixture, onPick, patch, remove, dup }) {
+  return html`<div>
+    <div style=${{ fontSize:11, textTransform:"uppercase", letterSpacing:".06em", color:C.sub, marginBottom:8 }}>Añadir foco</div>
+    <div style=${{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:16 }}>
+      ${Object.entries(FIXTURE_TYPES).map(([type,info]) => html`<button key=${type} onClick=${()=>addFixture(type)}
+        title=${info.desc} style=${{ background:C.panel2, border:`1px solid ${C.border}`, borderRadius:9,
+          padding:"10px 8px", color:C.text, cursor:"pointer", textAlign:"left" }}>
+        <div style=${{ fontSize:18, color:C.dorado, lineHeight:1 }}>${info.icon}</div>
+        <div style=${{ fontSize:12.5, fontWeight:600, marginTop:4 }}>${info.label}</div>
+      </button>`)}
+    </div>
+    <div style=${{ fontSize:11, textTransform:"uppercase", letterSpacing:".06em", color:C.sub, marginBottom:8 }}>
+      Rig actual · ${state.fixtures.length} focos
+    </div>
+    <div style=${{ display:"flex", flexDirection:"column", gap:5, marginBottom:16 }}>
+      ${state.fixtures.map(f => html`<button key=${f.id} onClick=${()=>onPick(f.id)} style=${{
+        display:"flex", alignItems:"center", gap:9, padding:"8px 10px", borderRadius:8, cursor:"pointer", textAlign:"left",
+        background: sel===f.id?C.azul:C.panel2, border:`1px solid ${sel===f.id?C.azul:C.border}`, color:C.text }}>
+        <span style=${{ width:12, height:12, borderRadius:3, background:f.color, flexShrink:0, border:"1px solid rgba(255,255,255,.2)" }}></span>
+        <span style=${{ fontSize:15, color:C.dorado }}>${FIXTURE_TYPES[f.type].icon}</span>
+        <span style=${{ fontSize:13, flex:1, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>${f.name}</span>
+        <span style=${{ fontSize:10.5, color:C.muted }}>${f.intensity}%</span>
+      </button>`)}
+    </div>
+    ${selFixture ? html`<div style=${{ borderTop:`1px solid ${C.border}`, paddingTop:14 }}>
+      <div style=${{ fontSize:11, textTransform:"uppercase", letterSpacing:".06em", color:C.dorado, marginBottom:12 }}>
+        Editar · ${FIXTURE_TYPES[selFixture.type].label}
+      </div>
+      <${FixtureEditor} fx=${selFixture} patch=${patch} remove=${remove} dup=${dup} />
+    </div>` : html`<div style=${{ fontSize:12, color:C.muted, textAlign:"center", padding:"10px 0" }}>Selecciona un foco para editarlo.</div>`}
+  </div>`;
+}
+
+/* ── Panel objetos ── */
+function ObjetosPanel({ state, sel, selObject, addObject, onPick, patch, remove, dup }) {
+  return html`<div>
+    <div style=${{ fontSize:11, textTransform:"uppercase", letterSpacing:".06em", color:C.sub, marginBottom:8 }}>Añadir objeto de escenografía</div>
+    <div style=${{ display:"flex", flexDirection:"column", gap:8, marginBottom:16 }}>
+      ${Object.entries(OBJ_SHAPES).map(([shape,info]) => html`<button key=${shape} onClick=${()=>addObject(shape)}
+        style=${{ background:C.panel2, border:`1px solid ${C.border}`, borderRadius:9, padding:"10px 12px",
+          color:C.text, cursor:"pointer", textAlign:"left" }}>
+        <div style=${{ fontSize:13, fontWeight:600 }}>＋ ${info.label}</div>
+        <div style=${{ fontSize:10.5, color:C.muted, marginTop:2 }}>${info.desc}</div>
+      </button>`)}
+    </div>
+    <div style=${{ fontSize:11, textTransform:"uppercase", letterSpacing:".06em", color:C.sub, marginBottom:8 }}>
+      Objetos · ${state.objects.length}
+    </div>
+    <div style=${{ display:"flex", flexDirection:"column", gap:5, marginBottom:16 }}>
+      ${state.objects.length===0 && html`<div style=${{ fontSize:12, color:C.muted }}>Aún no hay objetos.</div>`}
+      ${state.objects.map(o => html`<button key=${o.id} onClick=${()=>onPick(o.id)} style=${{
+        display:"flex", alignItems:"center", gap:9, padding:"8px 10px", borderRadius:8, cursor:"pointer", textAlign:"left",
+        background: sel===o.id?C.azul:C.panel2, border:`1px solid ${sel===o.id?C.azul:C.border}`, color:C.text }}>
+        <span style=${{ width:12, height:12, borderRadius:3, background:o.color, flexShrink:0, border:"1px solid rgba(255,255,255,.2)" }}></span>
+        <span style=${{ fontSize:13, flex:1, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>${o.name}</span>
+        <span style=${{ fontSize:10.5, color:C.muted }}>${OBJ_SHAPES[o.shape].label.split(" ")[0]}</span>
+      </button>`)}
+    </div>
+    ${selObject ? html`<div style=${{ borderTop:`1px solid ${C.border}`, paddingTop:14 }}>
+      <div style=${{ fontSize:11, textTransform:"uppercase", letterSpacing:".06em", color:C.dorado, marginBottom:12 }}>Editar objeto</div>
+      <${ObjectEditor} o=${selObject} patch=${patch} remove=${remove} dup=${dup} />
+    </div>` : html`<div style=${{ fontSize:12, color:C.muted, textAlign:"center", padding:"10px 0" }}>Selecciona un objeto para editarlo.</div>`}
+  </div>`;
+}
+
+/* ── Panel escena ── */
+function EscenaPanel({ st, patchSetting, exportJson, importJson, resetAll }) {
+  return html`<div>
+    <div style=${{ fontSize:11, textTransform:"uppercase", letterSpacing:".06em", color:C.dorado, marginBottom:10 }}>Ambiente de sala</div>
+    <${Slider} label="Luz ambiente" value=${Math.round(st.ambient*100)} min=0 max=60 unit="%" onChange=${v=>patchSetting({ambient:v/100})} />
+    <${Field} label="Color del suelo"><${ColorInput} value=${st.floorColor} onChange=${v=>patchSetting({floorColor:v})} /><//>
+    <${Field} label="Color de paredes"><${ColorInput} value=${st.wallColor} onChange=${v=>patchSetting({wallColor:v})} /><//>
+
+    <div style=${{ height:1, background:C.border, margin:"14px 0" }} />
+    <${Field} label="Calidad de sombras" hint="Más calidad = sombras más nítidas, algo más de carga.">
+      <div style=${{ display:"flex", gap:6 }}>
+        ${[["alta","Alta"],["media","Media"],["off","Sin"]].map(([v,l]) => html`<button key=${v}
+          onClick=${()=>patchSetting({shadows:v})} style=${{ flex:1, padding:"7px", borderRadius:7, cursor:"pointer",
+            background: st.shadows===v?C.azul:C.panel2, color: st.shadows===v?C.crema:C.sub,
+            border:`1px solid ${st.shadows===v?C.azul:C.border}`, fontSize:12, fontWeight:600 }}>${l}</button>`)}
+      </div>
+    <//>
+
+    <div style=${{ height:1, background:C.border, margin:"14px 0" }} />
+    <div style=${{ fontSize:11, textTransform:"uppercase", letterSpacing:".06em", color:C.dorado, marginBottom:10 }}>Escena</div>
+    <div style=${{ display:"flex", flexDirection:"column", gap:8 }}>
+      <${Btn} onClick=${exportJson}>⭳ Exportar escena (JSON)<//>
+      <label style=${{ display:"block" }}>
+        <span style=${{ display:"block", background:C.panel2, border:`1px solid ${C.border}`, borderRadius:8,
+          padding:"8px 12px", fontSize:13, fontWeight:600, cursor:"pointer", textAlign:"center", color:C.text }}>⭱ Importar escena</span>
+        <input type="file" accept="application/json" onChange=${importJson} style=${{ display:"none" }} />
+      </label>
+      <${Btn} danger onClick=${resetAll}>↺ Restablecer a ejemplo<//>
+    </div>
+    <div style=${{ fontSize:11, color:C.muted, marginTop:16, lineHeight:1.5 }}>
+      Todo se guarda automáticamente en este navegador. Exporta el JSON para llevar tu diseño a otro equipo o compartirlo con la oficina.
+    </div>
+  </div>`;
+}
+
+/* ─────────────────────────── Arranque ─────────────────────────── */
+const _boot = document.getElementById("boot");
+try {
+  createRoot(document.getElementById("root")).render(React.createElement(App));
+  requestAnimationFrame(() => requestAnimationFrame(() => { _boot.classList.add("hide"); setTimeout(() => _boot.remove(), 550); }));
+} catch (err) {
+  _boot.innerHTML = '<b style="color:#E8B83E">Error al arrancar</b><span style="max-width:440px;text-align:center">' + (err && err.message ? err.message : err) + '</span>';
+  console.error(err);
+}
+  </script>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap" onload="this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap"></noscript>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap">
+</body>
+</html>
