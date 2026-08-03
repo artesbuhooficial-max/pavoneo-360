@@ -2,8 +2,8 @@
   "artistId": "mario-cassado",
   "displayName": "Mario Cassado",
   "pack": "premium",
-  "currentStep": "grabacion",
-  "unlockedUntil": "grabacion",
+  "currentStep": "postproduccion",
+  "unlockedUntil": "postproduccion",
   "updatedAt": "2026-08-03",
   "publicLinks": {
     "infoMaestra": "https://artesbuhooficial-max.github.io/pavoneo-360/artistas/mario-cassado/",
@@ -11,24 +11,6 @@
     "artifactCloud": "https://docs.google.com/forms/d/1DU4ijRq93Lo5yqssmkpXDme8t-3pqkIWsdrnd6Nrip0/edit",
     "mixApp": "../artistas/revision-audio.html?id=mario-cassado"
   },
-  "mixReviews": [
-    {
-      "id": "dimelo",
-      "songName": "Dímelo",
-      "version": "Pre-mix v1",
-      "versionDate": "2026-08-03",
-      "audioFile": "dimelo-premix-v1.wav",
-      "comments": []
-    },
-    {
-      "id": "yo-no-soy-el",
-      "songName": "Yo No Soy El",
-      "version": "Pre-mix v1",
-      "versionDate": "2026-08-03",
-      "audioFile": "yo-no-soy-el-premix-v1.wav",
-      "comments": []
-    }
-  ],
   "recordingTiming": [
     {
       "time": "09:30",
@@ -170,17 +152,23 @@
       ]
     },
     "grabacion": {
-      "status": "active",
+      "status": "done",
       "checks": [
         true,
         true,
-        false,
-        false,
-        false
+        true,
+        true,
+        true
       ]
     },
     "postproduccion": {
-      "status": "todo"
+      "status": "active",
+      "checks": [
+        true,
+        false,
+        true,
+        false
+      ]
     },
     "lanzamiento": {
       "status": "todo"
