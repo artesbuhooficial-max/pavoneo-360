@@ -235,7 +235,7 @@ function render(){
     }
   });
   document.getElementById('modeToggle').textContent = officeMode ? '👤 Ver como artista' : '🔐 Modo oficina';
-  document.getElementById('draftBanner').hidden = !hasLocalDraft;
+  document.getElementById('draftBanner').hidden = !(officeMode && hasLocalDraft);
 }
 
 function renderSongCard(idx){
@@ -523,7 +523,7 @@ function persistDraft(){
   const note = document.getElementById('savedNote');
   if(note){ note.className = 'saved-note local'; note.textContent = '☁ Guardado automáticamente en este dispositivo'; }
   const banner = document.getElementById('draftBanner');
-  if(banner) banner.hidden = false;
+  if(banner) banner.hidden = !officeMode;
 }
 function discardDraft(){
   if(!confirm('¿Descartar los cambios guardados en este dispositivo y cargar la versión de la oficina? Se perderá lo que no se haya enviado.')) return;
