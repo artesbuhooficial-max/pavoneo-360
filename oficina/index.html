@@ -922,8 +922,8 @@
                 <input id="infoMaestraLink" value="" placeholder="https://..." oninput="saveMeta()">
               </div>
               <div class="field" style="grid-column:1 / -1">
-                <label for="mixAppLink">App de mezcla / revisiones</label>
-                <input id="mixAppLink" value="../mezcla/" placeholder="https://... o ../mezcla/" oninput="saveMeta()">
+                <label for="mixAppLink">Revisión de audio (postproducción)</label>
+                <input id="mixAppLink" value="../artistas/revision-audio.html?id=" placeholder="https://... o ../artistas/revision-audio.html?id=slug" oninput="saveMeta()">
               </div>
               <div class="field internal-only" style="grid-column:1 / -1">
                 <label for="altaLink">Alta / RGPD (enlace interno)</label>
@@ -1187,7 +1187,7 @@
         status:"todo",
         handoff:"David -> Miriam",
         actions:[
-          "Subir archivos a la app de mezcla/revision.",
+          "Subir archivos de audio y organizarlos en la pagina de revision.",
           "Editar material de video y audio.",
           "Centralizar correcciones para evitar caos de mensajes.",
           "Revisar y aprobar material final antes de lanzamiento."
@@ -1198,7 +1198,7 @@
           "Cerramos material final antes de preparar calendario de publicaciones."
         ],
         alerts:[
-          {type:"important",text:"La app de mezcla debe ser el punto unico de subida y correcciones."},
+          {type:"important",text:"La pagina de revision de audio debe ser el punto unico de escucha y correcciones."},
           {type:"important",text:"Definir fecha limite de correcciones antes de calendario editorial."}
         ],
         agent:"postproduccion-drive",
@@ -1473,7 +1473,7 @@
       }
       if(step.id === "postproduccion"){
         return [
-          "Archivos subidos u organizados en la app de mezcla/revision.",
+          "Archivos de audio subidos y organizados en la pagina de revision.",
           "Correcciones centralizadas.",
           "Audio y video revisados por oficina.",
           "Material final aprobado antes de lanzamiento."
@@ -1561,7 +1561,7 @@
           buttons.push(linkButton(href, "Abrir formulario de preconsultoria"));
           if(currentMode === "client") buttons.push(`<div class="google-hint"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>Inicia sesion en Google antes de abrir el formulario para que tus respuestas queden guardadas correctamente.</div>`);
         }
-        if(step.id === "postproduccion") buttons.push(linkButton(mixHref, "Abrir app de mezcla"));
+        if(step.id === "postproduccion") buttons.push(linkButton(mixHref, "Abrir revisión de audio"));
       }
       return { title, note, buttons:buttons.join("") };
     }
@@ -1986,7 +1986,7 @@
       document.getElementById("driveFolder").value = "artista_pavoneo.json";
       document.getElementById("artifactLink").value = PRECONSULTORIA_FORM_URL;
       document.getElementById("infoMaestraLink").value = "";
-      document.getElementById("mixAppLink").value = "../mezcla/";
+      document.getElementById("mixAppLink").value = "../artistas/revision-audio.html?id=";
       recordingTiming = DEFAULT_TIMING.map(item => ({...item}));
       editorialCalendar = DEFAULT_EDITORIAL_CALENDAR.map(item => ({...item}));
       currentPageId = "contacto";

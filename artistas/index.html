@@ -890,8 +890,8 @@
                 <input id="infoMaestraLink" value="" placeholder="https://..." oninput="saveMeta()">
               </div>
               <div class="field" style="grid-column:1 / -1">
-                <label for="mixAppLink">App de mezcla / revisiones</label>
-                <input id="mixAppLink" value="../mezcla/" placeholder="https://... o ../mezcla/" oninput="saveMeta()">
+                <label for="mixAppLink">Revisión de audio (postproducción)</label>
+                <input id="mixAppLink" value="../artistas/revision-audio.html?id=" placeholder="https://... o ../artistas/revision-audio.html?id=slug" oninput="saveMeta()">
               </div>
             </div>
           </div>
@@ -1134,7 +1134,7 @@
         status:"todo",
         handoff:"David -> Miriam",
         actions:[
-          "Subir archivos a la app de mezcla/revision.",
+          "Subir archivos de audio y organizarlos en la pagina de revision.",
           "Editar material de video y audio.",
           "Centralizar correcciones para evitar caos de mensajes.",
           "Revisar y aprobar material final antes de lanzamiento."
@@ -1145,7 +1145,7 @@
           "Cerramos material final antes de preparar calendario de publicaciones."
         ],
         alerts:[
-          {type:"important",text:"La app de mezcla debe ser el punto unico de subida y correcciones."},
+          {type:"important",text:"La pagina de revision de audio debe ser el punto unico de escucha y correcciones."},
           {type:"important",text:"Definir fecha limite de correcciones antes de calendario editorial."}
         ],
         agent:"postproduccion-drive",
@@ -1412,7 +1412,7 @@
       }
       if(step.id === "postproduccion"){
         return [
-          "Archivos subidos u organizados en la app de mezcla/revision.",
+          "Archivos de audio subidos y organizados en la pagina de revision.",
           "Correcciones centralizadas.",
           "Audio y video revisados por oficina.",
           "Material final aprobado antes de lanzamiento."
@@ -1497,7 +1497,7 @@
         note = "Desde el paso 2, la Info Maestra acompana el proceso como base viva del proyecto. La oficina pega aqui el enlace cuando este preparada.";
         buttons.push(linkButton(infoHref, "Abrir Info Maestra", true));
         if(step.id === "formulario") buttons.push(linkButton(href, "Abrir formulario de preconsultoria"));
-        if(step.id === "postproduccion") buttons.push(linkButton(mixHref, "Abrir app de mezcla"));
+        if(step.id === "postproduccion") buttons.push(linkButton(mixHref, "Abrir revisión de audio"));
       }
       return { title, note, buttons:buttons.join("") };
     }
@@ -1922,7 +1922,7 @@
       document.getElementById("driveFolder").value = "artista_pavoneo.json";
       document.getElementById("artifactLink").value = PRECONSULTORIA_FORM_URL;
       document.getElementById("infoMaestraLink").value = "";
-      document.getElementById("mixAppLink").value = "../mezcla/";
+      document.getElementById("mixAppLink").value = "../artistas/revision-audio.html?id=";
       recordingTiming = DEFAULT_TIMING.map(item => ({...item}));
       editorialCalendar = DEFAULT_EDITORIAL_CALENDAR.map(item => ({...item}));
       currentPageId = "contacto";
