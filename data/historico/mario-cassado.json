@@ -54,5 +54,19 @@
       "inversion": "todo",
       "cierre": "todo"
     }
+  },
+  {
+    "fecha": "2026-08-03",
+    "currentStep": "postproduccion",
+    "steps": {
+      "contacto": "done",
+      "formulario": "done",
+      "briefing": "done",
+      "grabacion": "done",
+      "postproduccion": "active",
+      "lanzamiento": "todo",
+      "inversion": "todo",
+      "cierre": "todo"
+    }
   }
 ]
