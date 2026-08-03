@@ -40,6 +40,8 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 .saved-note{font-size:11.5px;font-weight:700;width:100%}
 .saved-note.ok{color:var(--green)} .saved-note.err{color:var(--red)} .saved-note.local{color:var(--ink-light)}
 
+.draft-banner{background:var(--gold-pale);border:1px solid var(--gold);color:var(--terra);border-radius:12px;padding:12px 16px;margin-bottom:18px;font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+
 .empty-state{background:#fff;border:1px dashed var(--border);border-radius:14px;padding:50px 20px;text-align:center;color:var(--ink-light)}
 
 .song-card{background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--sh);padding:20px 22px;margin-bottom:18px}
@@ -130,6 +132,11 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
       <span class="saved-note" id="savedNote"></span>
     </div>
 
+    <div class="draft-banner" id="draftBanner" hidden>
+      <span>⚠ Estás viendo cambios guardados solo en este dispositivo, sin enviar a la oficina (puede ser de una prueba anterior).</span>
+      <button type="button" class="btn-mini" onclick="discardDraft()">Descartar y cargar la versión de la oficina</button>
+    </div>
+
     <div id="songsWrap"></div>
 
     <div class="footer"><strong>Artes Búho</strong> · artesbuho.oficial@gmail.com · Pavoneo 360°</div>
@@ -155,6 +162,7 @@ let songs = [];
 let officeMode = false;
 let pendingMarker = {};
 let editingComment = {};
+let hasLocalDraft = false;
 
 function lsKey(){ return 'pavoneo-revision-audio-' + artistId; }
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
@@ -180,7 +188,7 @@ async function init(){
   }
   const draft = localStorage.getItem(lsKey());
   if(draft){
-    try{ songs = JSON.parse(draft) || []; }
+    try{ songs = JSON.parse(draft) || []; hasLocalDraft = true; }
     catch(e){ songs = (expediente && expediente.mixReviews) || []; }
   }else{
     songs = (expediente && expediente.mixReviews) || [];
@@ -227,6 +235,7 @@ function render(){
     }
   });
   document.getElementById('modeToggle').textContent = officeMode ? '👤 Ver como artista' : '🔐 Modo oficina';
+  document.getElementById('draftBanner').hidden = !hasLocalDraft;
 }
 
 function renderSongCard(idx){
@@ -510,8 +519,22 @@ function deleteSong(idx){
 /* ---- guardado ---- */
 function persistDraft(){
   localStorage.setItem(lsKey(), JSON.stringify(songs.map(stripTransient)));
+  hasLocalDraft = true;
   const note = document.getElementById('savedNote');
   if(note){ note.className = 'saved-note local'; note.textContent = '☁ Guardado automáticamente en este dispositivo'; }
+  const banner = document.getElementById('draftBanner');
+  if(banner) banner.hidden = false;
+}
+function discardDraft(){
+  if(!confirm('¿Descartar los cambios guardados en este dispositivo y cargar la versión de la oficina? Se perderá lo que no se haya enviado.')) return;
+  localStorage.removeItem(lsKey());
+  hasLocalDraft = false;
+  pendingMarker = {};
+  editingComment = {};
+  songs = (expediente && expediente.mixReviews) || [];
+  const note = document.getElementById('savedNote');
+  if(note){ note.className = ''; note.textContent = ''; }
+  render();
 }
 async function guardar(){
   const note = document.getElementById('savedNote');
@@ -527,6 +550,8 @@ async function guardar(){
     if(r.ok && body && body.status === 'ok'){
       note.className = 'saved-note ok'; note.textContent = '✓ Enviado — la oficina ya lo ve';
       localStorage.removeItem(lsKey());
+      hasLocalDraft = false;
+      document.getElementById('draftBanner').hidden = true;
     }else{
       throw new Error((body && body.message) || r.status);
     }
