@@ -2116,6 +2116,7 @@
       publishedExtra = {
         palette: data.palette,
         materialChecklist: data.materialChecklist,
+        mixReviews: data.mixReviews,
         publicLinks: data.publicLinks || {}
       };
       if(data.displayName) document.getElementById("artistName").value = data.displayName;
@@ -2194,6 +2195,7 @@
       // Campos gestionados fuera de este panel (Info Maestra, portal de material)
       if(publishedExtra.palette) json.palette = publishedExtra.palette;
       if(publishedExtra.materialChecklist) json.materialChecklist = publishedExtra.materialChecklist;
+      if(publishedExtra.mixReviews) json.mixReviews = publishedExtra.mixReviews;
       return json;
     }
 

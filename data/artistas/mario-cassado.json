@@ -11,6 +11,24 @@
     "artifactCloud": "https://docs.google.com/forms/d/1DU4ijRq93Lo5yqssmkpXDme8t-3pqkIWsdrnd6Nrip0/edit",
     "mixApp": "../artistas/revision-audio.html?id=mario-cassado"
   },
+  "mixReviews": [
+    {
+      "id": "dimelo",
+      "songName": "Dímelo",
+      "version": "Pre-mix v1",
+      "versionDate": "2026-08-03",
+      "audioFile": "dimelo-premix-v1.wav",
+      "comments": []
+    },
+    {
+      "id": "yo-no-soy-el",
+      "songName": "Yo No Soy El",
+      "version": "Pre-mix v1",
+      "versionDate": "2026-08-03",
+      "audioFile": "yo-no-soy-el-premix-v1.wav",
+      "comments": []
+    }
+  ],
   "recordingTiming": [
     {
       "time": "09:30",
