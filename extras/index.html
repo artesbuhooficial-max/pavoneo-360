@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pavoneo 360° · Extras</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:#F7F2E5; --cream2:#FFF8E8;
+  --ink:#071C48; --ink-mid:#24406E; --ink-light:#6A7EA6;
+  --blue:#0757D8; --blue-deep:#043C9F; --blue-soft:#EAF2FF; --teal-l:#3E83FF;
+  --gold:#E8B83E; --gold-pale:#FFF5D7; --terra:#D59A18;
+  --border:#D8E3F5;
+  --sh:0 10px 28px rgba(7,28,72,.07); --sh-md:0 18px 52px rgba(7,28,72,.13);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,#f8fbff 0%,#fff 44%,#fff8e8 100%);color:var(--ink);font-size:15px;line-height:1.6;min-height:100vh}
+a{color:var(--blue)}
+.wrap{max-width:920px;margin:0 auto;padding:34px 22px 90px}
+
+/* BRAND BAR */
+.brandbar{display:flex;align-items:center;gap:11px;margin-bottom:26px}
+.brand-mark{width:40px;height:40px;flex:0 0 auto;background:var(--ink);border-radius:9px;display:grid;place-items:center;font-size:19px}
+.brand-word{font-weight:900;line-height:.85;color:var(--ink);font-size:16px;letter-spacing:-.04em}
+.brand-word span{display:block}
+.brand-note{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-light);font-weight:700;margin-top:3px}
+
+/* MASTHEAD */
+.masthead{background:linear-gradient(135deg,#071C48 0%,#0B3E9A 60%,#0757D8 100%);color:#fff;padding:40px 42px 32px;border-radius:18px;margin-bottom:30px;position:relative;overflow:hidden;box-shadow:var(--sh-md)}
+.masthead::before{content:'🎁';position:absolute;right:40px;top:50%;transform:translateY(-50%);font-size:84px;opacity:.1}
+.mh-eye{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);font-weight:800;margin-bottom:10px}
+.mh-title{font-family:'Playfair Display',serif;font-size:34px;font-weight:700;line-height:1.08;letter-spacing:-.01em;margin-bottom:10px;max-width:560px}
+.mh-title em{color:var(--gold);font-style:italic}
+.mh-sub{font-size:13.5px;color:rgba(255,255,255,.72);max-width:520px}
+
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.xcard{background:#fff;border:1px solid var(--border);border-radius:16px;padding:26px 24px;box-shadow:var(--sh);display:flex;flex-direction:column;gap:12px;transition:box-shadow .16s,transform .16s}
+.xcard.live:hover{box-shadow:var(--sh-md);transform:translateY(-2px)}
+.xcard.soon{background:var(--cream2);border-style:dashed;opacity:.75}
+.xc-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.xc-ico{width:42px;height:42px;border-radius:10px;background:var(--blue-soft);display:grid;place-items:center;font-size:20px}
+.xcard.soon .xc-ico{background:#fff}
+.xc-badge{font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:20px}
+.xc-badge.on{background:var(--gold-pale);color:var(--terra)}
+.xc-badge.off{background:#EFEFEF;color:var(--ink-light)}
+.xc-title{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:var(--ink)}
+.xc-desc{font-size:12.5px;color:var(--ink-light);flex:1}
+.xc-btn{display:inline-flex;align-items:center;gap:6px;background:var(--blue);color:#fff;border:none;border-radius:9px;padding:10px 16px;font-size:12.5px;font-weight:800;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;align-self:flex-start;transition:.15s}
+.xc-btn:hover{background:var(--blue-deep)}
+
+.footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--border);font-size:11px;color:var(--ink-light);text-align:center}
+@media(max-width:600px){.masthead{padding:28px 24px}.mh-title{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="brandbar">
+    <div class="brand-mark">🦉</div>
+    <div>
+      <div class="brand-word"><span>Pavoneo</span><span>360°</span></div>
+      <div class="brand-note">Artes Búho Management</div>
+    </div>
+  </div>
+
+  <div class="masthead">
+    <div class="mh-eye">Pavoneo 360° · Contenido extra</div>
+    <div class="mh-title">Recursos <em>Extra</em></div>
+    <div class="mh-sub">Material adicional, exclusivo para los proyectos que forman parte del Pack Full Pavoneo 360°. Iremos añadiendo nuevos contenidos aquí.</div>
+  </div>
+
+  <div class="grid">
+
+    <div class="xcard live">
+      <div class="xc-top">
+        <div class="xc-ico">🔥</div>
+        <span class="xc-badge on">Disponible</span>
+      </div>
+      <div class="xc-title">Método Sold Out</div>
+      <div class="xc-desc">La estrategia de Artes Búho para agotar el aforo de una sala: del embudo de venta de entradas a la comunicación de la recta final antes del concierto.</div>
+      <a class="xc-btn" href="metodo-sold-out.html">Ver contenido →</a>
+    </div>
+
+    <div class="xcard soon">
+      <div class="xc-top">
+        <div class="xc-ico">✦</div>
+        <span class="xc-badge off">Próximamente</span>
+      </div>
+      <div class="xc-title">Nuevo extra</div>
+      <div class="xc-desc">Estamos preparando el siguiente contenido exclusivo del Pack Full Pavoneo 360°.</div>
+    </div>
+
+  </div>
+
+  <div class="footer"><strong>Artes Búho</strong> · artesbuho.oficial@gmail.com · Pavoneo 360°</div>
+</div>
+</body>
+</html>

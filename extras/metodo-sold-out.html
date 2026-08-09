@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Método Sold Out · Pavoneo 360°</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:#F7F2E5; --cream2:#FFF8E8;
+  --ink:#071C48; --ink-mid:#24406E; --ink-light:#6A7EA6;
+  --blue:#0757D8; --blue-deep:#043C9F; --blue-soft:#EAF2FF; --teal-l:#3E83FF;
+  --gold:#E8B83E; --gold-pale:#FFF5D7; --terra:#D59A18;
+  --border:#D8E3F5;
+  --sh:0 10px 28px rgba(7,28,72,.07); --sh-md:0 18px 52px rgba(7,28,72,.13);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,#f8fbff 0%,#fff 44%,#fff8e8 100%);color:var(--ink);font-size:15px;line-height:1.6;min-height:100vh}
+a{color:var(--blue)}
+.wrap{max-width:860px;margin:0 auto;padding:34px 22px 90px}
+
+/* BRAND BAR */
+.brandbar{display:flex;align-items:center;justify-content:space-between;gap:11px;margin-bottom:22px;flex-wrap:wrap}
+.brand-lockup{display:flex;align-items:center;gap:11px}
+.brand-mark{width:40px;height:40px;flex:0 0 auto;background:var(--ink);border-radius:9px;display:grid;place-items:center;font-size:19px}
+.brand-word{font-weight:900;line-height:.85;color:var(--ink);font-size:16px;letter-spacing:-.04em}
+.brand-word span{display:block}
+.brand-note{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-light);font-weight:700;margin-top:3px}
+.back-link{font-size:12.5px;font-weight:700;color:var(--ink-mid);display:inline-flex;align-items:center;gap:5px;text-decoration:none}
+.back-link:hover{color:var(--blue)}
+
+/* MASTHEAD */
+.masthead{background:linear-gradient(135deg,#071C48 0%,#0B3E9A 60%,#0757D8 100%);color:#fff;padding:38px 42px 30px;border-radius:18px;margin-bottom:26px;position:relative;overflow:hidden;box-shadow:var(--sh-md)}
+.masthead::before{content:'🔥';position:absolute;right:40px;top:50%;transform:translateY(-50%);font-size:84px;opacity:.1}
+.mh-badge{display:inline-block;background:var(--gold);color:var(--ink);font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:12px}
+.mh-title{font-family:'Playfair Display',serif;font-size:34px;font-weight:700;line-height:1.08;letter-spacing:-.01em;margin-bottom:10px}
+.mh-title em{color:var(--gold);font-style:italic}
+.mh-sub{font-size:13.5px;color:rgba(255,255,255,.78);max-width:560px}
+
+/* CARD */
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px 26px;box-shadow:var(--sh);margin-bottom:18px}
+.card h2{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:12px;color:var(--ink)}
+
+/* VIDEO */
+.video-wrap{position:relative;padding-bottom:56.25%;height:0;border-radius:12px;overflow:hidden;background:var(--ink)}
+.video-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+
+/* MATERIALS */
+.mat-card{background:linear-gradient(135deg,var(--gold-pale),#fff);border:1.5px solid var(--gold);border-radius:16px;padding:24px 26px;text-align:center;margin-bottom:18px}
+.mat-card h2{font-family:'Playfair Display',serif;font-size:18px;margin-bottom:6px}
+.mat-card p{font-size:12.5px;color:var(--ink-mid);margin-bottom:16px}
+.btn{display:inline-flex;align-items:center;gap:7px;border:none;border-radius:9px;padding:11px 20px;font-size:13px;font-weight:800;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;transition:.15s}
+.btn-gold{background:var(--gold);color:var(--ink)}
+.btn-gold:hover{background:var(--terra);color:#fff}
+
+.footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--border);font-size:11px;color:var(--ink-light);text-align:center}
+@media(max-width:600px){.masthead{padding:26px 22px}.mh-title{font-size:25px}.card,.mat-card{padding:20px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="brandbar">
+    <div class="brand-lockup">
+      <div class="brand-mark">🦉</div>
+      <div>
+        <div class="brand-word"><span>Pavoneo</span><span>360°</span></div>
+        <div class="brand-note">Artes Búho Management</div>
+      </div>
+    </div>
+    <a class="back-link" href="index.html">← Volver a Extras</a>
+  </div>
+
+  <div class="masthead">
+    <span class="mh-badge">Exclusivo · Pack Full Pavoneo 360°</span>
+    <div class="mh-title">Método <em>Sold Out</em></div>
+    <div class="mh-sub">La estrategia de Artes Búho para agotar el aforo de una sala: del embudo de venta de entradas a la comunicación de la recta final antes del concierto.</div>
+  </div>
+
+  <div class="card">
+    <h2>🎬 La sesión</h2>
+    <div class="video-wrap">
+      <iframe src="https://www.loom.com/embed/f21ae0597e0946988e612c51715c0a94" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
+    </div>
+  </div>
+
+  <div class="mat-card">
+    <h2>📁 Materiales descargables</h2>
+    <p>Plantillas y documentos de apoyo del método, en una carpeta compartida de Drive.</p>
+    <a class="btn btn-gold" href="https://drive.google.com/drive/folders/1EdF6vG4uVb5rVhfj5BK9b2rLagrTr-Z4" target="_blank" rel="noopener">↗ Abrir carpeta de materiales</a>
+  </div>
+
+  <div class="footer"><strong>Artes Búho</strong> · artesbuho.oficial@gmail.com · Pavoneo 360°</div>
+</div>
+</body>
+</html>

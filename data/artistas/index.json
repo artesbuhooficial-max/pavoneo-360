@@ -29,7 +29,8 @@
       "documentos": [
         { "tipo": "info-maestra", "nombre": "Info Maestra", "url": "artistas/mario-cassado/" },
         { "tipo": "panel", "nombre": "Panel de proceso (oficina)", "url": "oficina/?id=mario-cassado" },
-        { "tipo": "panel", "nombre": "Vista del artista", "url": "artistas/?id=mario-cassado" }
+        { "tipo": "panel", "nombre": "Vista del artista", "url": "artistas/?id=mario-cassado" },
+        { "tipo": "extra", "nombre": "Método Sold Out (exclusivo Pack Full Pavoneo 360°)", "url": "extras/metodo-sold-out.html" }
       ]
     }
   ]
