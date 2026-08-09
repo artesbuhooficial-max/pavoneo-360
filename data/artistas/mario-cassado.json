@@ -4,7 +4,7 @@
   "pack": "premium",
   "currentStep": "postproduccion",
   "unlockedUntil": "postproduccion",
-  "updatedAt": "2026-08-03",
+  "updatedAt": "2026-08-09",
   "publicLinks": {
     "infoMaestra": "https://artesbuhooficial-max.github.io/pavoneo-360/artistas/mario-cassado/",
     "materialesPublicos": "",
@@ -26,7 +26,64 @@
       "version": "Pre-mix v1",
       "versionDate": "2026-08-03",
       "audioFile": "yo-no-soy-el-premix-v1.wav",
-      "comments": []
+      "comments": [
+        {
+          "id": "msltmok0aa6tx",
+          "time": 7.4,
+          "category": "voz",
+          "text": "Subir 1 db 0:07-0:37.",
+          "createdAt": "2026-08-09"
+        },
+        {
+          "id": "msltn795wgo9c",
+          "time": 39.7,
+          "category": "voz",
+          "text": "Subir 2 db 0:37-0:55",
+          "createdAt": "2026-08-09"
+        },
+        {
+          "id": "msltnku2my0wx",
+          "time": 57,
+          "category": "voz",
+          "text": "Subir 1 db 0:55-1:26",
+          "createdAt": "2026-08-09"
+        },
+        {
+          "id": "msltogxmk2wmo",
+          "time": 73,
+          "category": "voz",
+          "text": "Hay otra mejor versión para \"yo no juego a juegos como juega él\"?",
+          "createdAt": "2026-08-09"
+        },
+        {
+          "id": "msltozh7k94nz",
+          "time": 89.3,
+          "category": "voz",
+          "text": "Subir 2 dbs 1:27-2:01",
+          "createdAt": "2026-08-09"
+        },
+        {
+          "id": "msltq2bd7wtxl",
+          "time": 140.8,
+          "category": "voz",
+          "text": "Subir un 2 dbs 2:17-2:33",
+          "createdAt": "2026-08-09"
+        },
+        {
+          "id": "msltwejklh85o",
+          "time": 1.4,
+          "category": "general",
+          "text": "Añadir aututune en toda la pista (retune speed 14 (siendo el 0 el máximo retoque), flex tune 10, humanize 50",
+          "createdAt": "2026-08-09"
+        },
+        {
+          "id": "mslu2jgcax3gm",
+          "time": 2.9,
+          "category": "general",
+          "text": "Añadir más reverb a toda la voz en toda la pista.",
+          "createdAt": "2026-08-09"
+        }
+      ]
     }
   ],
   "recordingTiming": [
