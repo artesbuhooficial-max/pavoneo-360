@@ -17,7 +17,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,#f8fbff 0%,#fff 44%,#fff8e8 100%);color:var(--ink);font-size:15px;line-height:1.6;min-height:100vh}
 a{color:var(--blue)}
-.wrap{max-width:860px;margin:0 auto;padding:34px 22px 90px}
+.wrap{max-width:880px;margin:0 auto;padding:34px 22px 90px}
 
 /* BRAND BAR */
 .brandbar{display:flex;align-items:center;justify-content:space-between;gap:11px;margin-bottom:22px;flex-wrap:wrap}
@@ -30,31 +30,60 @@ a{color:var(--blue)}
 .back-link:hover{color:var(--blue)}
 
 /* MASTHEAD */
-.masthead{background:linear-gradient(135deg,#071C48 0%,#0B3E9A 60%,#0757D8 100%);color:#fff;padding:38px 42px 30px;border-radius:18px;margin-bottom:26px;position:relative;overflow:hidden;box-shadow:var(--sh-md)}
+.masthead{background:linear-gradient(135deg,#071C48 0%,#0B3E9A 60%,#0757D8 100%);color:#fff;padding:40px 42px 32px;border-radius:18px;margin-bottom:22px;position:relative;overflow:hidden;box-shadow:var(--sh-md)}
 .masthead::before{content:'🔥';position:absolute;right:40px;top:50%;transform:translateY(-50%);font-size:84px;opacity:.1}
 .mh-badge{display:inline-block;background:var(--gold);color:var(--ink);font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:12px}
-.mh-title{font-family:'Playfair Display',serif;font-size:34px;font-weight:700;line-height:1.08;letter-spacing:-.01em;margin-bottom:10px}
+.mh-title{font-family:'Playfair Display',serif;font-size:36px;font-weight:700;line-height:1.05;letter-spacing:-.01em;margin-bottom:4px}
 .mh-title em{color:var(--gold);font-style:italic}
-.mh-sub{font-size:13.5px;color:rgba(255,255,255,.78);max-width:560px}
+.mh-tagline{font-size:13px;color:var(--gold);font-weight:700;margin-bottom:14px}
+.mh-sub{font-size:13.5px;color:rgba(255,255,255,.78);max-width:580px}
+
+/* QUOTE */
+.quote{background:var(--cream2);border-left:4px solid var(--gold);border-radius:0 12px 12px 0;padding:18px 24px;margin-bottom:22px;font-family:'Playfair Display',serif;font-style:italic;font-size:15px;color:var(--ink-mid);line-height:1.55}
+.quote strong{color:var(--ink);font-style:normal}
 
 /* CARD */
 .card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px 26px;box-shadow:var(--sh);margin-bottom:18px}
 .card h2{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:12px;color:var(--ink)}
+.section-eye{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);font-weight:800;margin-bottom:8px}
+.section-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:16px;color:var(--ink)}
 
 /* VIDEO */
 .video-wrap{position:relative;padding-bottom:56.25%;height:0;border-radius:12px;overflow:hidden;background:var(--ink)}
 .video-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
 
+/* PHASES */
+.phase-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-bottom:8px}
+.phase{background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;box-shadow:var(--sh);display:flex;gap:14px}
+.phase-num{flex:0 0 auto;width:34px;height:34px;border-radius:50%;background:var(--blue-soft);color:var(--blue-deep);display:grid;place-items:center;font-family:'Playfair Display',serif;font-weight:700;font-size:15px}
+.phase-name{font-weight:800;font-size:13.5px;color:var(--ink);margin-bottom:4px}
+.phase-desc{font-size:12px;color:var(--ink-light);line-height:1.5}
+
+/* AFOROS PREVIEW */
+.preview-card{background:linear-gradient(135deg,var(--blue-soft),#fff);border:1px solid var(--border);border-radius:16px;padding:22px 26px;margin-bottom:18px}
+.preview-card h2{font-family:'Playfair Display',serif;font-size:16px;margin-bottom:4px;color:var(--ink)}
+.preview-note{font-size:11.5px;color:var(--ink-light);margin-bottom:14px}
+.aforo-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.aforo-table th{text-align:left;padding:8px 10px;background:var(--blue);color:#fff;font-size:10px;letter-spacing:.05em;text-transform:uppercase}
+.aforo-table th:first-child{border-radius:8px 0 0 8px}
+.aforo-table th:last-child{border-radius:0 8px 8px 0}
+.aforo-table td{padding:9px 10px;border-bottom:1px solid var(--border)}
+.aforo-table tr:last-child td{border-bottom:none}
+
 /* MATERIALS */
-.mat-card{background:linear-gradient(135deg,var(--gold-pale),#fff);border:1.5px solid var(--gold);border-radius:16px;padding:24px 26px;text-align:center;margin-bottom:18px}
-.mat-card h2{font-family:'Playfair Display',serif;font-size:18px;margin-bottom:6px}
-.mat-card p{font-size:12.5px;color:var(--ink-mid);margin-bottom:16px}
+.mat-card{background:linear-gradient(135deg,var(--gold-pale),#fff);border:1.5px solid var(--gold);border-radius:16px;padding:24px 26px;margin-bottom:18px}
+.mat-card h2{font-family:'Playfair Display',serif;font-size:18px;margin-bottom:4px;text-align:center}
+.mat-card>p{font-size:12.5px;color:var(--ink-mid);margin-bottom:16px;text-align:center}
+.mat-list{list-style:none;margin-bottom:18px;display:grid;gap:9px}
+.mat-list li{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--ink-mid);background:rgba(255,255,255,.6);border-radius:9px;padding:9px 12px}
+.mat-list .mi{font-size:16px;flex-shrink:0}
+.mat-btn-wrap{text-align:center}
 .btn{display:inline-flex;align-items:center;gap:7px;border:none;border-radius:9px;padding:11px 20px;font-size:13px;font-weight:800;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;transition:.15s}
 .btn-gold{background:var(--gold);color:var(--ink)}
 .btn-gold:hover{background:var(--terra);color:#fff}
 
 .footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--border);font-size:11px;color:var(--ink-light);text-align:center}
-@media(max-width:600px){.masthead{padding:26px 22px}.mh-title{font-size:25px}.card,.mat-card{padding:20px}}
+@media(max-width:600px){.masthead{padding:28px 22px}.mh-title{font-size:27px}.card,.mat-card,.preview-card{padding:20px}}
 </style>
 </head>
 <body>
@@ -73,8 +102,13 @@ a{color:var(--blue)}
 
   <div class="masthead">
     <span class="mh-badge">Exclusivo · Pack Full Pavoneo 360°</span>
-    <div class="mh-title">Método <em>Sold Out</em></div>
-    <div class="mh-sub">La estrategia de Artes Búho para agotar el aforo de una sala: del embudo de venta de entradas a la comunicación de la recta final antes del concierto.</div>
+    <div class="mh-title">Método <em>Sold Out</em> Express</div>
+    <div class="mh-tagline">Llena tu sala de conciertos en un mes (Edición Local)</div>
+    <div class="mh-sub">El método estructurado paso a paso de Artes Búho para conectar artistas con su público, desarrollar carreras musicales sostenibles y vivir de tu arte.</div>
+  </div>
+
+  <div class="quote">
+    "El objetivo no es solo colgar el cartel de <strong>no hay entradas</strong> — es crear un espacio donde el público socialice, viva una experiencia memorable, sienta pertenencia a la tribu y active el boca a boca para futuros eventos."
   </div>
 
   <div class="card">
@@ -84,10 +118,78 @@ a{color:var(--blue)}
     </div>
   </div>
 
+  <div class="section-eye">El método, en 6 fases</div>
+  <div class="section-title">De la primera llamada a la sala al día después del Sold Out</div>
+  <div class="phase-grid">
+    <div class="phase">
+      <div class="phase-num">1</div>
+      <div>
+        <div class="phase-name">Análisis de Situación</div>
+        <div class="phase-desc">Diagnóstico antes de gastar un euro: cómo convertir la falta de histórico en ventaja táctica y calcular tu aforo objetivo real.</div>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">2</div>
+      <div>
+        <div class="phase-name">Negociación y Autoridad</div>
+        <div class="phase-desc">Cómo elegir fecha y negociar con la sala para que te perciban como una inversión segura, no como una banda más — y qué debe llevar tu primer correo de booking.</div>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">3</div>
+      <div>
+        <div class="phase-name">El Multiplicador Personal</div>
+        <div class="phase-desc">Los 4 círculos de influencia que activa cada miembro de la banda desde su WhatsApp y sus redes personales, no solo desde el perfil del proyecto.</div>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">4</div>
+      <div>
+        <div class="phase-name">Master Dashboard</div>
+        <div class="phase-desc">El calendario de promoción a 3 meses: venta anticipada con valor añadido, hype y colaboraciones, y el apretón final antes del concierto.</div>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">5</div>
+      <div>
+        <div class="phase-name">El Trípode del Poder</div>
+        <div class="phase-desc">Piensa como emprendedor (merch y operativa del día D), como analista (propiedad de tus datos y ticketera) y como creativo (demostración social y fidelización).</div>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">6</div>
+      <div>
+        <div class="phase-name">El Plan B</div>
+        <div class="phase-desc">Qué hacer si la venta se estanca: cómo llenar la sala visualmente sin perder autoridad ni credibilidad frente a la sala.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="preview-card">
+    <h2>📐 Vista previa: la escalera de aforos</h2>
+    <div class="preview-note">Así se calcula, en la Fase 1, el aforo objetivo según el número de integrantes del proyecto.</div>
+    <table class="aforo-table">
+      <thead><tr><th>Integrantes</th><th>Convocatoria media</th><th>Aforo objetivo</th></tr></thead>
+      <tbody>
+        <tr><td>1 (unipersonal)</td><td>60 personas</td><td>Sala de 100</td></tr>
+        <tr><td>2 integrantes</td><td>120 personas</td><td>Sala de 200</td></tr>
+        <tr><td>3 integrantes</td><td>180 personas</td><td>Sala de 300</td></tr>
+        <tr><td>4 integrantes</td><td>240 personas</td><td>Sala de 400</td></tr>
+      </tbody>
+    </table>
+  </div>
+
   <div class="mat-card">
     <h2>📁 Materiales descargables</h2>
-    <p>Plantillas y documentos de apoyo del método, en una carpeta compartida de Drive.</p>
-    <a class="btn btn-gold" href="https://drive.google.com/drive/folders/1EdF6vG4uVb5rVhfj5BK9b2rLagrTr-Z4" target="_blank" rel="noopener">↗ Abrir carpeta de materiales</a>
+    <p>En la carpeta de Drive encontrarás:</p>
+    <ul class="mat-list">
+      <li><span class="mi">📄</span> El método completo en PDF — las 6 fases con todo el detalle táctico y ejemplos.</li>
+      <li><span class="mi">✉️</span> Plantilla de correo de booking — lista para rellenar y enviar a salas.</li>
+      <li><span class="mi">📰</span> Plantilla de nota de prensa — con un ejemplo real ya maquetado como referencia.</li>
+    </ul>
+    <div class="mat-btn-wrap">
+      <a class="btn btn-gold" href="https://drive.google.com/drive/folders/1EdF6vG4uVb5rVhfj5BK9b2rLagrTr-Z4" target="_blank" rel="noopener">↗ Abrir carpeta de materiales</a>
+    </div>
   </div>
 
   <div class="footer"><strong>Artes Búho</strong> · artesbuho.oficial@gmail.com · Pavoneo 360°</div>
