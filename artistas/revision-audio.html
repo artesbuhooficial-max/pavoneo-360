@@ -43,14 +43,23 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 .empty-state{background:#fff;border:1px dashed var(--border);border-radius:14px;padding:50px 20px;text-align:center;color:var(--ink-light)}
 
 .song-card{background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--sh);padding:20px 22px;margin-bottom:18px}
-.song-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.song-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:12px}
 .song-eyebrow{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);font-weight:800;margin-bottom:3px}
 .song-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:700}
-.song-meta{display:flex;gap:8px;flex-wrap:wrap}
+.song-office-controls{display:flex;gap:6px}
+
+.version-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.ver-tab{border:1px solid var(--border);background:#fff;color:var(--ink-mid);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.ver-tab.selected{border-color:var(--blue);background:var(--blue-soft);color:var(--blue-deep)}
+.ver-tab .ver-dot{color:var(--green);font-size:9px}
+.ver-tab-add{border-style:dashed;color:var(--blue)}
+
+.version-meta-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
 .meta-box{background:var(--cream2);border:1px solid var(--border);border-radius:9px;padding:6px 12px;min-width:110px}
 .meta-label{display:block;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-light);font-weight:800}
 .meta-value{display:block;font-size:13px;font-weight:700;color:var(--blue-deep)}
-.song-office-controls{display:flex;gap:6px}
+
+.old-version-banner{background:var(--blue-soft);border:1px solid var(--blue);color:var(--blue-deep);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 
 .player{margin-bottom:14px}
 .transport{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
@@ -155,6 +164,7 @@ let songs = [];
 let officeMode = false;
 let pendingMarker = {};
 let editingComment = {};
+let selectedVersion = {}; // idx (índice de canción) -> id de la versión que se está viendo ahora mismo
 
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 function fmt(s){ s = Math.max(0, Math.floor(Number(s)||0)); const m = Math.floor(s/60), sec = s%60; return m+':'+String(sec).padStart(2,'0'); }
@@ -162,11 +172,26 @@ function escapeHtml(value){
   return String(value == null ? '' : value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 }
 function categoryOf(id){ return CATEGORIES.find(c => c.id === id) || CATEGORIES[CATEGORIES.length - 1]; }
-function stripTransient(s){ const copy = Object.assign({}, s); delete copy._duration; return copy; }
-function resolveAudioSrc(song){
-  if(!song.audioFile) return '';
-  if(/^https?:\/\//i.test(song.audioFile)) return song.audioFile;
-  return artistId + '/audio/' + song.audioFile;
+function stripTransient(song){
+  return Object.assign({}, song, {
+    versions: (song.versions || []).map(v => { const copy = Object.assign({}, v); delete copy._duration; return copy; })
+  });
+}
+function resolveAudioSrc(ver){
+  if(!ver || !ver.audioFile) return '';
+  if(/^https?:\/\//i.test(ver.audioFile)) return ver.audioFile;
+  return artistId + '/audio/' + ver.audioFile;
+}
+function getSelectedVersion(idx){
+  const song = songs[idx];
+  if(!song || !song.versions || !song.versions.length) return null;
+  const selId = selectedVersion[idx] || song.activeVersionId;
+  return song.versions.find(v => v.id === selId) || song.versions[song.versions.length - 1];
+}
+function isActiveVersion(idx){
+  const song = songs[idx];
+  const ver = getSelectedVersion(idx);
+  return !!(song && ver && ver.id === song.activeVersionId);
 }
 function officeUnlocked(){ return sessionStorage.getItem(OFFICE_UNLOCK_KEY) === 'true'; }
 
@@ -193,12 +218,12 @@ async function init(){
 }
 
 function toggleMode(){
-  if(officeMode){ officeMode = false; render(); return; }
-  if(officeUnlocked()){ officeMode = true; render(); return; }
+  if(officeMode){ officeMode = false; selectedVersion = {}; render(); return; }
+  if(officeUnlocked()){ officeMode = true; selectedVersion = {}; render(); return; }
   const pass = window.prompt('Clave de oficina');
   if(pass === OFFICE_PASSWORD){
     sessionStorage.setItem(OFFICE_UNLOCK_KEY, 'true');
-    officeMode = true; render();
+    officeMode = true; selectedVersion = {}; render();
   }else if(pass !== null){
     alert('Clave incorrecta');
   }
@@ -214,35 +239,75 @@ function render(){
   }
   document.querySelectorAll('.wave-canvas').forEach(cv => drawWave(cv, hashStr(cv.dataset.seed || '')));
   songs.forEach((s,i) => {
-    if(s.audioFile){
+    const ver = getSelectedVersion(i);
+    if(ver && ver.audioFile){
       updateCommentsList(i);
-      if(s._duration) renderMarkers(i);
+      if(ver._duration) renderMarkers(i);
     }
   });
   document.getElementById('modeToggle').textContent = officeMode ? '👤 Ver como artista' : '🔐 Modo oficina';
 }
 
+function refreshSongCard(idx){
+  const el = document.getElementById('song-card-' + idx);
+  if(!el) return;
+  el.innerHTML = renderSongCardInner(idx);
+  const cv = el.querySelector('.wave-canvas');
+  if(cv) drawWave(cv, hashStr(cv.dataset.seed || ''));
+  const ver = getSelectedVersion(idx);
+  if(ver && ver.audioFile){
+    updateCommentsList(idx);
+    if(ver._duration) renderMarkers(idx);
+  }
+}
+
+function renderVersionTabs(idx){
+  const song = songs[idx];
+  const versions = song.versions || [];
+  if(!versions.length && !officeMode) return '';
+  const selId = selectedVersion[idx] || song.activeVersionId;
+  return `<div class="version-tabs">
+    ${versions.map(v => `<button type="button" class="ver-tab ${v.id===selId?'selected':''}" onclick="switchVersionTab(${idx},'${v.id}')">${escapeHtml(v.version || 'Versión')}${v.id===song.activeVersionId?' <span class="ver-dot" title="Versión actual">●</span>':''}</button>`).join('')}
+    ${officeMode ? `<button type="button" class="ver-tab ver-tab-add" onclick="addVersion(${idx})">+ Nueva versión</button>` : ''}
+  </div>`;
+}
+
 function renderSongCard(idx){
-  const s = songs[idx];
-  const hasAudio = !!s.audioFile;
-  const src = resolveAudioSrc(s);
-  const seed = escapeHtml(s.id || s.songName || String(idx));
+  return `<div class="song-card" id="song-card-${idx}">${renderSongCardInner(idx)}</div>`;
+}
+
+function renderSongCardInner(idx){
+  const song = songs[idx];
+  const ver = getSelectedVersion(idx);
+  const isActive = isActiveVersion(idx);
+  const hasAudio = !!(ver && ver.audioFile);
+  const src = ver ? resolveAudioSrc(ver) : '';
+  const seed = escapeHtml((ver && ver.id) || song.id || song.songName || String(idx));
   return `
-  <div class="song-card">
     <div class="song-head">
       <div>
         <div class="song-eyebrow">Canción</div>
-        <div class="song-title">${escapeHtml(s.songName || 'Sin título')}</div>
-      </div>
-      <div class="song-meta">
-        <div class="meta-box"><span class="meta-label">Versión actual</span><span class="meta-value">${escapeHtml(s.version || '—')}</span></div>
-        <div class="meta-box"><span class="meta-label">Fecha</span><span class="meta-value">${escapeHtml(s.versionDate || '—')}</span></div>
+        <div class="song-title">${escapeHtml(song.songName || 'Sin título')}</div>
       </div>
       ${officeMode ? `<div class="song-office-controls">
-        <button type="button" class="icon-btn" onclick="startEditSong(${idx})" title="Editar canción">✎</button>
+        <button type="button" class="icon-btn" onclick="startEditSong(${idx})" title="Renombrar canción">✎</button>
         <button type="button" class="icon-btn" onclick="deleteSong(${idx})" title="Eliminar canción">🗑</button>
       </div>` : ''}
     </div>
+    ${renderVersionTabs(idx)}
+    ${!ver ? `<div class="no-audio">Esta canción todavía no tiene ninguna versión subida.</div>` : `
+    <div class="version-meta-row">
+      <div class="meta-box"><span class="meta-label">${isActive ? 'Versión actual' : 'Versión anterior'}</span><span class="meta-value">${escapeHtml(ver.version || '—')}</span></div>
+      <div class="meta-box"><span class="meta-label">Fecha</span><span class="meta-value">${escapeHtml(ver.versionDate || '—')}</span></div>
+      ${officeMode ? `
+        <button type="button" class="icon-btn" onclick="startEditVersion(${idx})" title="Editar esta versión">✎</button>
+        <button type="button" class="icon-btn" onclick="deleteVersion(${idx})" title="Eliminar esta versión">🗑</button>
+      ` : ''}
+    </div>
+    ${!isActive ? `<div class="old-version-banner">
+      <span>📜 Estás viendo ${escapeHtml(ver.version || 'una versión')} — no es la versión actual, es solo consulta.</span>
+      ${officeMode ? `<button type="button" class="btn-mini btn-mini-primary" onclick="restoreVersion(${idx})">↺ Restaurar como actual</button>` : ''}
+    </div>` : ''}
     ${hasAudio ? `
     <div class="player">
       <div class="transport">
@@ -265,14 +330,22 @@ function renderSongCard(idx){
         onended="setPlayIcon(${idx},false)"
         onerror="onAudioError(${idx})"></audio>
     </div>
-    <button type="button" class="btn-add-marker" onclick="startAddMarker(${idx})">+ Añadir marcador</button>
+    ${isActive ? `<button type="button" class="btn-add-marker" onclick="startAddMarker(${idx})">+ Añadir marcador</button>` : ''}
     <div class="add-marker-form" data-idx="${idx}" hidden></div>
     <div class="comments-list" data-idx="${idx}"></div>
     ` : `<div class="no-audio">🎵 Audio pendiente de subir por la oficina.</div>`}
-  </div>`;
+    `}
+  `;
 }
 
-/* ---- waveform decorativo (determinista por canción, sin decodificar audio) ---- */
+function switchVersionTab(idx, versionId){
+  selectedVersion[idx] = versionId;
+  delete pendingMarker[idx];
+  delete editingComment[idx];
+  refreshSongCard(idx);
+}
+
+/* ---- waveform decorativo (determinista por versión, sin decodificar audio) ---- */
 function hashStr(s){
   let h = 0; s = String(s || '');
   for(let i=0;i<s.length;i++){ h = (h*31 + s.charCodeAt(i)) | 0; }
@@ -319,12 +392,14 @@ function onAudioReady(idx, audioEl){
   if(durEl) durEl.textContent = fmt(dur);
   const seek = document.querySelector(`.seek-range[data-idx="${idx}"]`);
   if(seek) seek.max = dur || 100;
-  if(songs[idx]) songs[idx]._duration = dur;
+  const ver = getSelectedVersion(idx);
+  if(ver) ver._duration = dur;
   renderMarkers(idx);
 }
 function onAudioError(idx){
   const wrap = document.querySelectorAll('.song-card')[idx]?.querySelector('.player');
-  if(wrap) wrap.innerHTML = `<div class="audio-error">⚠ No se pudo cargar el audio. Comprueba que el archivo esté subido en <code>${escapeHtml(artistId)}/audio/${escapeHtml(songs[idx].audioFile||'')}</code>.</div>`;
+  const ver = getSelectedVersion(idx);
+  if(wrap) wrap.innerHTML = `<div class="audio-error">⚠ No se pudo cargar el audio. Comprueba que el archivo esté subido en <code>${escapeHtml(artistId)}/audio/${escapeHtml((ver && ver.audioFile)||'')}</code>.</div>`;
 }
 function seekInput(idx, val){
   const a = document.querySelector(`audio.audio-el[data-idx="${idx}"]`);
@@ -347,12 +422,13 @@ function seekTo(idx, t){
 
 /* ---- marcadores (comentarios por segundo) ---- */
 function renderMarkers(idx){
-  const song = songs[idx];
-  const dur = song._duration || 0;
+  const ver = getSelectedVersion(idx);
+  if(!ver) return;
+  const dur = ver._duration || 0;
   const row = document.querySelector(`.markers-row[data-idx="${idx}"]`);
   if(!row) return;
   if(!dur){ row.innerHTML = ''; return; }
-  const sorted = (song.comments || []).slice().sort((a,b) => a.time - b.time);
+  const sorted = (ver.comments || []).slice().sort((a,b) => a.time - b.time);
   row.innerHTML = sorted.map((c,i) => {
     const cat = categoryOf(c.category);
     const pct = Math.min(100, Math.max(0, (c.time/dur)*100));
@@ -361,6 +437,7 @@ function renderMarkers(idx){
 }
 
 function startAddMarker(idx){
+  if(!isActiveVersion(idx)) return;
   const a = document.querySelector(`audio.audio-el[data-idx="${idx}"]`);
   const t = a ? Math.round(a.currentTime*10)/10 : 0;
   pendingMarker[idx] = { time:t, category:'general', text:'' };
@@ -369,11 +446,13 @@ function startAddMarker(idx){
 function cancelAddMarker(idx){ delete pendingMarker[idx]; renderAddMarkerForm(idx); }
 function updatePendingMarker(idx, field, value){ if(pendingMarker[idx]) pendingMarker[idx][field] = value; }
 function saveMarker(idx){
+  if(!isActiveVersion(idx)) return;
   const pm = pendingMarker[idx];
   if(!pm) return;
   if(!pm.text || !pm.text.trim()){ alert('Escribe una recomendación antes de guardar.'); return; }
-  if(!songs[idx].comments) songs[idx].comments = [];
-  songs[idx].comments.push({ id:uid(), time:pm.time, category:pm.category, text:pm.text.trim(), createdAt:new Date().toISOString().slice(0,10) });
+  const ver = getSelectedVersion(idx);
+  if(!ver.comments) ver.comments = [];
+  ver.comments.push({ id:uid(), time:pm.time, category:pm.category, text:pm.text.trim(), createdAt:new Date().toISOString().slice(0,10) });
   delete pendingMarker[idx];
   renderAddMarkerForm(idx);
   updateCommentsList(idx);
@@ -400,19 +479,21 @@ function renderAddMarkerForm(idx){
     </div>`;
 }
 
-/* ---- listado / edición de comentarios ---- */
+/* ---- listado / edición de comentarios (solo en la versión activa) ---- */
 function updateCommentsList(idx){
   const el = document.querySelector(`.comments-list[data-idx="${idx}"]`);
   if(!el) return;
-  const song = songs[idx];
-  const sorted = (song.comments || []).slice().sort((a,b) => a.time - b.time);
+  const ver = getSelectedVersion(idx);
+  if(!ver) return;
+  const isActive = isActiveVersion(idx);
+  const sorted = (ver.comments || []).slice().sort((a,b) => a.time - b.time);
   if(!sorted.length){
-    el.innerHTML = `<div class="no-comments">Aún no hay recomendaciones. Reproduce la canción y toca "+ Añadir marcador" en el momento exacto.</div>`;
+    el.innerHTML = `<div class="no-comments">${isActive ? 'Aún no hay recomendaciones. Reproduce la canción y toca "+ Añadir marcador" en el momento exacto.' : 'No se dejaron recomendaciones en esta versión.'}</div>`;
     return;
   }
   el.innerHTML = sorted.map((c,i) => {
     const cat = categoryOf(c.category);
-    if(editingComment[idx] && editingComment[idx].id === c.id){
+    if(isActive && editingComment[idx] && editingComment[idx].id === c.id){
       const ed = editingComment[idx];
       return `<div class="comment-row editing">
         <div class="c-num" style="background:${cat.color}">${i+1}</div>
@@ -434,15 +515,17 @@ function updateCommentsList(idx){
       <div class="c-time" onclick="seekTo(${idx},${c.time})" title="Ir a este momento">${fmt(c.time)}</div>
       <span class="c-tag" style="background:${cat.bg};color:${cat.color}">${cat.label}</span>
       <div class="c-text">${escapeHtml(c.text)}</div>
-      <div class="c-actions">
+      ${isActive ? `<div class="c-actions">
         <button type="button" class="icon-btn" onclick="startEditComment(${idx},'${c.id}')" title="Editar">✎</button>
         <button type="button" class="icon-btn" onclick="deleteComment(${idx},'${c.id}')" title="Eliminar">🗑</button>
-      </div>
+      </div>` : ''}
     </div>`;
   }).join('');
 }
 function startEditComment(idx, cid){
-  const c = (songs[idx].comments || []).find(x => x.id === cid);
+  if(!isActiveVersion(idx)) return;
+  const ver = getSelectedVersion(idx);
+  const c = (ver.comments || []).find(x => x.id === cid);
   if(!c) return;
   editingComment[idx] = { id:cid, category:c.category, text:c.text };
   updateCommentsList(idx);
@@ -450,10 +533,12 @@ function startEditComment(idx, cid){
 function cancelEditComment(idx){ delete editingComment[idx]; updateCommentsList(idx); }
 function updateEditField(idx, field, value){ if(editingComment[idx]) editingComment[idx][field] = value; }
 function saveEditComment(idx){
+  if(!isActiveVersion(idx)) return;
   const ed = editingComment[idx];
   if(!ed) return;
   if(!ed.text || !ed.text.trim()){ alert('El comentario no puede quedar vacío.'); return; }
-  const c = (songs[idx].comments || []).find(x => x.id === ed.id);
+  const ver = getSelectedVersion(idx);
+  const c = (ver.comments || []).find(x => x.id === ed.id);
   if(c){ c.category = ed.category; c.text = ed.text.trim(); }
   delete editingComment[idx];
   updateCommentsList(idx);
@@ -461,21 +546,26 @@ function saveEditComment(idx){
   noteChanged();
 }
 function deleteComment(idx, cid){
+  if(!isActiveVersion(idx)) return;
   if(!confirm('¿Eliminar esta recomendación?')) return;
-  songs[idx].comments = (songs[idx].comments || []).filter(x => x.id !== cid);
+  const ver = getSelectedVersion(idx);
+  ver.comments = (ver.comments || []).filter(x => x.id !== cid);
   updateCommentsList(idx);
   renderMarkers(idx);
   noteChanged();
 }
 
-/* ---- modo oficina: alta/edición/baja de canciones ---- */
+/* ---- modo oficina: alta/edición/baja de canciones y versiones ---- */
 function addSong(){
   const nombre = prompt('Nombre de la canción');
   if(!nombre) return;
-  const version = prompt('Versión (ej. Mezcla v1)', 'Mezcla v1') || '';
-  const fecha = prompt('Fecha (texto libre, ej. 14 Mayo 2026)', new Date().toISOString().slice(0,10)) || '';
+  const version = prompt('Versión (ej. Pre-mix v1)', 'Pre-mix v1') || '';
+  const fecha = prompt('Fecha (texto libre, ej. 19 Agosto 2026)', new Date().toISOString().slice(0,10)) || '';
   const archivo = prompt('Nombre exacto del archivo de audio (súbelo antes a la carpeta audio/ del artista en el repo)', '') || '';
-  songs.push({ id:uid(), songName:nombre.trim(), version:version.trim(), versionDate:fecha.trim(), audioFile:archivo.trim(), comments:[] });
+  const vId = uid();
+  songs.push({ id:uid(), songName:nombre.trim(), activeVersionId:vId, versions:[
+    { id:vId, version:version.trim(), versionDate:fecha.trim(), audioFile:archivo.trim(), comments:[] }
+  ]});
   noteChanged();
   render();
 }
@@ -483,21 +573,68 @@ function startEditSong(idx){
   const s = songs[idx];
   const nombre = prompt('Nombre de la canción', s.songName || '');
   if(nombre === null) return;
-  const version = prompt('Versión (ej. Mezcla v3)', s.version || '');
-  if(version === null) return;
-  const fecha = prompt('Fecha (texto libre, ej. 14 Mayo 2026)', s.versionDate || '');
-  if(fecha === null) return;
-  const archivo = prompt('Nombre exacto del archivo de audio (ya subido en la carpeta audio/ del artista)', s.audioFile || '');
-  if(archivo === null) return;
-  s.songName = nombre.trim(); s.version = version.trim(); s.versionDate = fecha.trim(); s.audioFile = archivo.trim();
+  s.songName = nombre.trim();
+  refreshSongCard(idx);
+  noteChanged();
+}
+function deleteSong(idx){
+  if(!confirm('¿Eliminar esta canción, todas sus versiones y recomendaciones? No se puede deshacer.')) return;
+  songs.splice(idx,1);
+  delete selectedVersion[idx];
   noteChanged();
   render();
 }
-function deleteSong(idx){
-  if(!confirm('¿Eliminar esta canción y todas sus recomendaciones?')) return;
-  songs.splice(idx,1);
+function addVersion(idx){
+  const song = songs[idx];
+  const version = prompt('Nombre de la nueva versión (ej. Pre-mix v' + ((song.versions||[]).length + 1) + ')', '');
+  if(!version) return;
+  const fecha = prompt('Fecha (texto libre, ej. 19 Agosto 2026)', new Date().toISOString().slice(0,10)) || '';
+  const archivo = prompt('Nombre exacto del archivo de audio (súbelo antes a la carpeta audio/ del artista en el repo)', '') || '';
+  const vId = uid();
+  song.versions = song.versions || [];
+  song.versions.push({ id:vId, version:version.trim(), versionDate:fecha.trim(), audioFile:archivo.trim(), comments:[] });
+  song.activeVersionId = vId;
+  selectedVersion[idx] = vId;
+  refreshSongCard(idx);
   noteChanged();
-  render();
+}
+function startEditVersion(idx){
+  const ver = getSelectedVersion(idx);
+  if(!ver) return;
+  const label = prompt('Nombre de la versión (ej. Pre-mix v2)', ver.version || '');
+  if(label === null) return;
+  const fecha = prompt('Fecha (texto libre)', ver.versionDate || '');
+  if(fecha === null) return;
+  const archivo = prompt('Nombre exacto del archivo de audio', ver.audioFile || '');
+  if(archivo === null) return;
+  ver.version = label.trim(); ver.versionDate = fecha.trim(); ver.audioFile = archivo.trim();
+  refreshSongCard(idx);
+  noteChanged();
+}
+function deleteVersion(idx){
+  const song = songs[idx];
+  if(!song.versions || song.versions.length <= 1){
+    alert('No puedes borrar la única versión de esta canción. Si ya no hace falta, borra la canción entera.');
+    return;
+  }
+  const ver = getSelectedVersion(idx);
+  if(!confirm(`¿Eliminar la versión "${ver.version}" y sus recomendaciones? No se puede deshacer.`)) return;
+  song.versions = song.versions.filter(v => v.id !== ver.id);
+  if(song.activeVersionId === ver.id){
+    song.activeVersionId = song.versions[song.versions.length - 1].id;
+  }
+  delete selectedVersion[idx];
+  refreshSongCard(idx);
+  noteChanged();
+}
+function restoreVersion(idx){
+  const song = songs[idx];
+  const ver = getSelectedVersion(idx);
+  if(!ver) return;
+  if(!confirm(`¿Marcar "${ver.version}" como la versión actual? El artista la verá por defecto al entrar.`)) return;
+  song.activeVersionId = ver.id;
+  refreshSongCard(idx);
+  noteChanged();
 }
 
 /* ---- guardado ---- */

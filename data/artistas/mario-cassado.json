@@ -15,73 +15,92 @@
     {
       "id": "dimelo",
       "songName": "Dímelo",
-      "version": "Pre-mix v1",
-      "versionDate": "2026-08-03",
-      "audioFile": "dimelo-premix-v1.wav",
-      "comments": []
+      "activeVersionId": "dimelo-v1",
+      "versions": [
+        {
+          "id": "dimelo-v1",
+          "version": "Pre-mix v1",
+          "versionDate": "2026-08-03",
+          "audioFile": "dimelo-premix-v1.wav",
+          "comments": []
+        }
+      ]
     },
     {
       "id": "yo-no-soy-el",
       "songName": "Yo No Soy El",
-      "version": "Pre-mix v2",
-      "versionDate": "2026-08-19",
-      "audioFile": "yo-no-soy-el-premix-v2.wav",
-      "comments": [
+      "activeVersionId": "yo-no-soy-el-v2",
+      "versions": [
         {
-          "id": "msltmok0aa6tx",
-          "time": 7.4,
-          "category": "voz",
-          "text": "Subir 1 db 0:07-0:37.",
-          "createdAt": "2026-08-09"
+          "id": "yo-no-soy-el-v1",
+          "version": "Pre-mix v1",
+          "versionDate": "2026-08-03",
+          "audioFile": "yo-no-soy-el-premix-v1.wav",
+          "comments": [
+            {
+              "id": "msltmok0aa6tx",
+              "time": 7.4,
+              "category": "voz",
+              "text": "Subir 1 db 0:07-0:37.",
+              "createdAt": "2026-08-09"
+            },
+            {
+              "id": "msltn795wgo9c",
+              "time": 39.7,
+              "category": "voz",
+              "text": "Subir 2 db 0:37-0:55",
+              "createdAt": "2026-08-09"
+            },
+            {
+              "id": "msltnku2my0wx",
+              "time": 57,
+              "category": "voz",
+              "text": "Subir 1 db 0:55-1:26",
+              "createdAt": "2026-08-09"
+            },
+            {
+              "id": "msltogxmk2wmo",
+              "time": 73,
+              "category": "voz",
+              "text": "Hay otra mejor versión para \"yo no juego a juegos como juega él\"?",
+              "createdAt": "2026-08-09"
+            },
+            {
+              "id": "msltozh7k94nz",
+              "time": 89.3,
+              "category": "voz",
+              "text": "Subir 2 dbs 1:27-2:01",
+              "createdAt": "2026-08-09"
+            },
+            {
+              "id": "msltq2bd7wtxl",
+              "time": 140.8,
+              "category": "voz",
+              "text": "Subir un 2 dbs 2:17-2:33",
+              "createdAt": "2026-08-09"
+            },
+            {
+              "id": "msltwejklh85o",
+              "time": 1.4,
+              "category": "general",
+              "text": "Añadir aututune en toda la pista (retune speed 14 (siendo el 0 el máximo retoque), flex tune 10, humanize 50",
+              "createdAt": "2026-08-09"
+            },
+            {
+              "id": "mslu2jgcax3gm",
+              "time": 2.9,
+              "category": "general",
+              "text": "Añadir más reverb a toda la voz en toda la pista.",
+              "createdAt": "2026-08-09"
+            }
+          ]
         },
         {
-          "id": "msltn795wgo9c",
-          "time": 39.7,
-          "category": "voz",
-          "text": "Subir 2 db 0:37-0:55",
-          "createdAt": "2026-08-09"
-        },
-        {
-          "id": "msltnku2my0wx",
-          "time": 57,
-          "category": "voz",
-          "text": "Subir 1 db 0:55-1:26",
-          "createdAt": "2026-08-09"
-        },
-        {
-          "id": "msltogxmk2wmo",
-          "time": 73,
-          "category": "voz",
-          "text": "Hay otra mejor versión para \"yo no juego a juegos como juega él\"?",
-          "createdAt": "2026-08-09"
-        },
-        {
-          "id": "msltozh7k94nz",
-          "time": 89.3,
-          "category": "voz",
-          "text": "Subir 2 dbs 1:27-2:01",
-          "createdAt": "2026-08-09"
-        },
-        {
-          "id": "msltq2bd7wtxl",
-          "time": 140.8,
-          "category": "voz",
-          "text": "Subir un 2 dbs 2:17-2:33",
-          "createdAt": "2026-08-09"
-        },
-        {
-          "id": "msltwejklh85o",
-          "time": 1.4,
-          "category": "general",
-          "text": "Añadir aututune en toda la pista (retune speed 14 (siendo el 0 el máximo retoque), flex tune 10, humanize 50",
-          "createdAt": "2026-08-09"
-        },
-        {
-          "id": "mslu2jgcax3gm",
-          "time": 2.9,
-          "category": "general",
-          "text": "Añadir más reverb a toda la voz en toda la pista.",
-          "createdAt": "2026-08-09"
+          "id": "yo-no-soy-el-v2",
+          "version": "Pre-mix v2",
+          "versionDate": "2026-08-19",
+          "audioFile": "yo-no-soy-el-premix-v2.wav",
+          "comments": []
         }
       ]
     }
