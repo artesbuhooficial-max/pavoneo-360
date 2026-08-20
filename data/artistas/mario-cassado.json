@@ -9,8 +9,10 @@
     "infoMaestra": "https://artesbuhooficial-max.github.io/pavoneo-360/artistas/mario-cassado/",
     "materialesPublicos": "",
     "artifactCloud": "https://docs.google.com/forms/d/1DU4ijRq93Lo5yqssmkpXDme8t-3pqkIWsdrnd6Nrip0/edit",
-    "mixApp": "../artistas/revision-audio.html?id=mario-cassado"
+    "mixApp": "../artistas/revision-audio.html?id=mario-cassado",
+    "videoApp": "../artistas/revision-video.html?id=mario-cassado"
   },
+  "videoReviews": [],
   "mixReviews": [
     {
       "id": "dimelo",

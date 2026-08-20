@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pavoneo 360 · Revisión de vídeo</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:#F7F2E5; --cream2:#FFF8E8;
+  --ink:#071C48; --ink-mid:#24406E; --ink-light:#6A7EA6;
+  --blue:#0757D8; --blue-deep:#043C9F; --blue-soft:#EAF2FF; --teal-l:#3E83FF;
+  --gold:#E8B83E; --gold-pale:#FFF5D7; --terra:#D59A18;
+  --green:#1E8A5E; --green-pale:#E8F7F1;
+  --red:#C0392B; --red-pale:#FBEAEA;
+  --border:#D8E3F5;
+  --sh:0 10px 28px rgba(7,28,72,.07); --sh-md:0 18px 52px rgba(7,28,72,.13);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,#f8fbff 0%,#fff 44%,#fff8e8 100%);color:var(--ink);font-size:15px;line-height:1.6;min-height:100vh}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+.wrap{max-width:840px;margin:0 auto;padding:28px 22px 90px}
+
+.masthead{background:linear-gradient(135deg,#071C48 0%,#0B3E9A 60%,#0757D8 100%);color:#fff;padding:32px 38px 26px;border-radius:18px;margin-bottom:20px;position:relative;overflow:hidden;box-shadow:var(--sh-md)}
+.masthead::before{content:'🎬';position:absolute;right:38px;top:50%;transform:translateY(-50%);font-size:74px;opacity:.1}
+.mh-eye{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);font-weight:800;margin-bottom:8px}
+.mh-title{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;line-height:1.05;letter-spacing:-.01em;margin-bottom:8px}
+.mh-title em{color:var(--gold);font-style:italic}
+.mh-sub{font-size:13px;color:rgba(255,255,255,.72);max-width:560px}
+
+.bar{background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px 18px;box-shadow:var(--sh);margin-bottom:22px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:10.5px;font-weight:700;color:var(--ink-mid)}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.swatch{width:10px;height:10px;border-radius:3px;display:inline-block}
+.mode-pill{border:1px solid var(--border);background:var(--cream2);color:var(--ink-mid);border-radius:20px;padding:8px 14px;font-size:11.5px;font-weight:800;cursor:pointer}
+.btn{display:inline-flex;align-items:center;gap:7px;border:none;border-radius:9px;padding:10px 18px;font-size:12.5px;font-weight:800;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s;margin-left:auto}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-blue:hover{background:var(--blue-deep)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.saved-note{font-size:11.5px;font-weight:700;width:100%}
+.saved-note.ok{color:var(--green)} .saved-note.err{color:var(--red)} .saved-note.local{color:var(--ink-light)}
+
+.empty-state{background:#fff;border:1px dashed var(--border);border-radius:14px;padding:50px 20px;text-align:center;color:var(--ink-light)}
+
+.clip-card{background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--sh);padding:20px 22px;margin-bottom:18px}
+.clip-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+.clip-eyebrow{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);font-weight:800;margin-bottom:3px}
+.clip-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:700}
+.clip-office-controls{display:flex;gap:6px}
+
+.version-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.ver-tab{border:1px solid var(--border);background:#fff;color:var(--ink-mid);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.ver-tab.selected{border-color:var(--blue);background:var(--blue-soft);color:var(--blue-deep)}
+.ver-tab .ver-dot{color:var(--green);font-size:9px}
+.ver-tab-add{border-style:dashed;color:var(--blue)}
+
+.version-meta-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.meta-box{background:var(--cream2);border:1px solid var(--border);border-radius:9px;padding:6px 12px;min-width:110px}
+.meta-label{display:block;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-light);font-weight:800}
+.meta-value{display:block;font-size:13px;font-weight:700;color:var(--blue-deep)}
+
+.old-version-banner{background:var(--blue-soft);border:1px solid var(--blue);color:var(--blue-deep);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+
+.yt-wrap{position:relative;padding-bottom:56.25%;height:0;border-radius:10px;overflow:hidden;background:#000;margin-bottom:14px}
+.yt-wrap > div{position:absolute;inset:0}
+.yt-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+
+.mini-timeline{position:relative;height:30px;margin-bottom:12px}
+.mini-track{position:absolute;left:0;right:0;top:12px;height:6px;border-radius:3px;background:var(--blue-soft);cursor:pointer}
+.markers-row{position:absolute;top:0;left:0;right:0;height:20px}
+.marker-pin{position:absolute;transform:translateX(-50%);top:0;width:19px;height:19px;border-radius:50%;border:2px solid #fff;color:#fff;font-size:10px;font-weight:800;display:grid;place-items:center;cursor:pointer;box-shadow:0 2px 6px rgba(7,28,72,.3);padding:0}
+
+.btn-add-marker{display:inline-block;border:1px dashed var(--blue);background:var(--blue-soft);color:var(--blue-deep);border-radius:9px;padding:9px 16px;font-size:12.5px;font-weight:800;cursor:pointer;margin-bottom:12px}
+.no-video{background:var(--cream2);border:1px dashed var(--border);border-radius:10px;padding:16px;text-align:center;color:var(--ink-light);font-size:13px;margin-bottom:6px}
+.video-error{background:var(--red-pale);border:1px solid var(--red);color:var(--red);border-radius:10px;padding:14px 16px;font-size:12.5px;margin-bottom:12px}
+.video-error code{background:rgba(0,0,0,.06);padding:1px 5px;border-radius:4px}
+
+.add-marker-form{background:var(--cream2);border:1px solid var(--gold);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.form-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.form-time{font-weight:800;color:var(--terra);font-size:13px}
+.add-marker-form select,.c-edit-body select{border:1px solid var(--border);border-radius:6px;padding:6px 8px;background:#fff}
+.add-marker-form textarea,.c-edit-body textarea{width:100%;min-height:56px;border:1px solid var(--border);border-radius:8px;padding:9px;resize:vertical;outline:none;background:#fff}
+.form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
+.btn-mini{border:1px solid var(--border);background:#fff;color:var(--ink-light);border-radius:7px;padding:7px 13px;font-size:11.5px;font-weight:700;cursor:pointer}
+.btn-mini-primary{background:var(--blue);border-color:var(--blue);color:#fff}
+
+.comments-list{display:flex;flex-direction:column;gap:8px}
+.no-comments{color:var(--ink-light);font-size:12.5px;padding:10px 2px}
+.comment-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--border);border-radius:10px;flex-wrap:wrap}
+.comment-row.editing{align-items:flex-start;background:var(--cream2)}
+.c-num{width:24px;height:24px;border-radius:50%;color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center;flex-shrink:0}
+.c-time{font-weight:800;color:var(--ink-mid);font-variant-numeric:tabular-nums;min-width:40px;cursor:pointer}
+.c-time:hover{color:var(--blue)}
+.c-tag{font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;flex-shrink:0}
+.c-text{flex:1;min-width:160px;font-size:13px}
+.c-actions{display:flex;gap:4px;margin-left:auto}
+.icon-btn{border:1px solid var(--border);background:#fff;border-radius:6px;width:28px;height:28px;font-size:12px;cursor:pointer;color:var(--ink-light)}
+.icon-btn:hover{color:var(--ink)}
+.c-edit-body{flex:1;min-width:220px}
+
+.btn-add-clip{display:block;width:100%;border:1.5px dashed var(--blue);background:#fff;color:var(--blue);border-radius:12px;padding:14px;font-size:13px;font-weight:800;cursor:pointer}
+
+.footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--border);font-size:11px;color:var(--ink-light);text-align:center}
+#loading{text-align:center;padding:60px 0;color:var(--ink-light)}
+@media(max-width:600px){
+  .masthead{padding:24px 20px}
+  .mh-title{font-size:23px}
+  .btn{margin-left:0;width:100%;justify-content:center}
+  .mode-pill{width:100%;text-align:center}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="loading">Cargando revisión de vídeo…</div>
+  <div id="app" style="display:none">
+
+    <div class="masthead">
+      <div class="mh-eye">Pavoneo 360° · Artes Búho</div>
+      <div class="mh-title">Revisión de <em>vídeo</em></div>
+      <div class="mh-sub" id="mhSub">Mira cada edición y déjanos tus notas justo en el segundo que quieras cambiar.</div>
+    </div>
+
+    <div class="bar">
+      <div class="legend" id="legend"></div>
+      <button type="button" class="mode-pill" id="modeToggle" onclick="toggleMode()">🔐 Modo oficina</button>
+      <button type="button" class="btn btn-blue" id="btnGuardar" onclick="guardar()">☁ Enviar cambios al equipo</button>
+      <span class="saved-note" id="savedNote"></span>
+    </div>
+
+    <div id="clipsWrap"></div>
+
+    <div class="footer"><strong>Artes Búho</strong> · artesbuho.oficial@gmail.com · Pavoneo 360°</div>
+  </div>
+</div>
+
+<script>
+// Publicador Google Apps Script (misma URL /exec que usa la oficina). Vacío = solo local.
+const WEBHOOK = 'https://script.google.com/macros/s/AKfycbz2gTZgugtG4hi2Ju7KRryZrOO24-CNDEzylyMjVGuR9cDJ3N1r1zRbrm7QM4UjM2o-gg/exec';
+const OFFICE_PASSWORD = 'pavoneo360';
+const OFFICE_UNLOCK_KEY = 'pavoneo360-office-unlocked';
+const CATEGORIES = [
+  { id:'edicion', label:'Edición',          color:'#0757D8', bg:'#EAF2FF' },
+  { id:'color',   label:'Color / Imagen',   color:'#D59A18', bg:'#FFF5D7' },
+  { id:'audio',   label:'Audio',            color:'#C0392B', bg:'#FBEAEA' },
+  { id:'ritmo',   label:'Ritmo / Montaje',  color:'#1E8A5E', bg:'#E8F7F1' },
+  { id:'general', label:'General',          color:'#6A7EA6', bg:'#EEF2F9' }
+];
+
+let artistId = new URLSearchParams(location.search).get('id') || '';
+let expediente = null;
+let clips = [];
+let officeMode = false;
+let pendingMarker = {};
+let editingComment = {};
+let selectedVersion = {}; // idx (índice de clip) -> id de la versión que se está viendo ahora mismo
+let ytPlayers = {};       // idx -> instancia YT.Player montada
+let ytApiReady = false;
+let ytApiReadyCallbacks = [];
+
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function fmt(s){ s = Math.max(0, Math.floor(Number(s)||0)); const m = Math.floor(s/60), sec = s%60; return m+':'+String(sec).padStart(2,'0'); }
+function escapeHtml(value){
+  return String(value == null ? '' : value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function categoryOf(id){ return CATEGORIES.find(c => c.id === id) || CATEGORIES[CATEGORIES.length - 1]; }
+function stripTransient(clip){
+  return Object.assign({}, clip, {
+    versions: (clip.versions || []).map(v => { const copy = Object.assign({}, v); delete copy._duration; return copy; })
+  });
+}
+function parseYouTubeId(input){
+  input = String(input || '').trim();
+  if(!input) return '';
+  if(/^[a-zA-Z0-9_-]{11}$/.test(input)) return input;
+  const m = input.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([a-zA-Z0-9_-]{11})/);
+  return m ? m[1] : input;
+}
+function getSelectedVersion(idx){
+  const clip = clips[idx];
+  if(!clip || !clip.versions || !clip.versions.length) return null;
+  const selId = selectedVersion[idx] || clip.activeVersionId;
+  return clip.versions.find(v => v.id === selId) || clip.versions[clip.versions.length - 1];
+}
+function isActiveVersion(idx){
+  const clip = clips[idx];
+  const ver = getSelectedVersion(idx);
+  return !!(clip && ver && ver.id === clip.activeVersionId);
+}
+function officeUnlocked(){ return sessionStorage.getItem(OFFICE_UNLOCK_KEY) === 'true'; }
+
+/* ---- API de YouTube (carga perezosa, una sola vez) ---- */
+function loadYouTubeApi(){
+  if(window.YT && window.YT.Player){ ytApiReady = true; return; }
+  if(document.getElementById('yt-iframe-api')) return;
+  const tag = document.createElement('script');
+  tag.id = 'yt-iframe-api';
+  tag.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(tag);
+  window.onYouTubeIframeAPIReady = function(){
+    ytApiReady = true;
+    ytApiReadyCallbacks.forEach(cb => cb());
+    ytApiReadyCallbacks = [];
+  };
+}
+function destroyPlayer(idx){
+  if(ytPlayers[idx]){
+    try{ ytPlayers[idx].destroy(); }catch(e){}
+    delete ytPlayers[idx];
+  }
+}
+function mountPlayer(idx){
+  const ver = getSelectedVersion(idx);
+  if(!ver || !ver.youtubeId) return;
+  const elId = 'yt-embed-' + idx;
+  const create = () => {
+    if(!document.getElementById(elId)) return;
+    destroyPlayer(idx);
+    ytPlayers[idx] = new YT.Player(elId, {
+      videoId: ver.youtubeId,
+      playerVars: { rel:0, modestbranding:1 },
+      events: {
+        onReady: () => onPlayerReady(idx),
+        onStateChange: (e) => onPlayerStateChange(idx, e),
+        onError: (e) => onPlayerError(idx, e)
+      }
+    });
+  };
+  if(ytApiReady) create(); else ytApiReadyCallbacks.push(create);
+}
+function onPlayerReady(idx){
+  const ver = getSelectedVersion(idx);
+  const player = ytPlayers[idx];
+  if(ver && player && player.getDuration){
+    const dur = player.getDuration();
+    if(dur) ver._duration = dur;
+  }
+  renderMarkers(idx);
+}
+function onPlayerStateChange(idx){
+  const ver = getSelectedVersion(idx);
+  const player = ytPlayers[idx];
+  if(ver && player && player.getDuration){
+    const dur = player.getDuration();
+    if(dur && dur !== ver._duration){ ver._duration = dur; renderMarkers(idx); }
+  }
+}
+function onPlayerError(idx, e){
+  const codes = { 2:'ID de vídeo inválido', 5:'Error del reproductor', 100:'Vídeo no encontrado o eliminado', 101:'El propietario no permite reproducirlo fuera de YouTube', 150:'El propietario no permite reproducirlo fuera de YouTube' };
+  const card = document.querySelectorAll('.clip-card')[idx];
+  const wrap = card && card.querySelector('.yt-wrap');
+  if(wrap) wrap.outerHTML = `<div class="video-error">⚠ No se pudo cargar el vídeo (${escapeHtml(codes[e.data] || 'error ' + e.data)}). Comprueba el enlace de YouTube y que el vídeo esté en modo <code>Oculto</code> (no <code>Privado</code>: privado exige iniciar sesión con una cuenta autorizada).</div>`;
+}
+function miniSeek(event, idx){
+  const ver = getSelectedVersion(idx);
+  const player = ytPlayers[idx];
+  const dur = ver && ver._duration;
+  if(!dur || !player || !player.seekTo) return;
+  const rect = event.currentTarget.getBoundingClientRect();
+  const pct = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width));
+  player.seekTo(pct * dur, true);
+}
+function seekTo(idx, t){
+  const player = ytPlayers[idx];
+  if(player && player.seekTo) player.seekTo(t, true);
+}
+
+async function init(){
+  loadYouTubeApi();
+  if(artistId){
+    try{
+      const r = await fetch(`../data/artistas/${artistId}.json?t=${Date.now()}`, { cache:'no-store' });
+      if(r.ok) expediente = await r.json();
+    }catch(e){ console.warn(e); }
+  }
+  clips = (expediente && expediente.videoReviews) || [];
+  if(expediente){
+    document.getElementById('mhSub').textContent =
+      `Hola, ${expediente.displayName} 👋 — mira cada edición y déjanos tus notas justo en el segundo que quieras cambiar.`;
+  }
+  if(new URLSearchParams(location.search).get('modo') === 'oficina' && officeUnlocked()) officeMode = true;
+
+  document.getElementById('legend').innerHTML = CATEGORIES.map(c =>
+    `<span><i class="swatch" style="background:${c.color}"></i>${c.label}</span>`).join('');
+
+  render();
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+}
+
+function toggleMode(){
+  if(officeMode){ officeMode = false; selectedVersion = {}; render(); return; }
+  if(officeUnlocked()){ officeMode = true; selectedVersion = {}; render(); return; }
+  const pass = window.prompt('Clave de oficina');
+  if(pass === OFFICE_PASSWORD){
+    sessionStorage.setItem(OFFICE_UNLOCK_KEY, 'true');
+    officeMode = true; selectedVersion = {}; render();
+  }else if(pass !== null){
+    alert('Clave incorrecta');
+  }
+}
+
+function render(){
+  Object.keys(ytPlayers).forEach(idx => destroyPlayer(idx));
+  const wrap = document.getElementById('clipsWrap');
+  if(!clips.length && !officeMode){
+    wrap.innerHTML = `<div class="empty-state">🎬 Aún no hay vídeos en revisión.<br>En cuanto la oficina suba el primer corte, aparecerá aquí.</div>`;
+  }else{
+    wrap.innerHTML = clips.map((c,i) => renderClipCard(i)).join('') +
+      (officeMode ? `<button type="button" class="btn-add-clip" onclick="addClip()">+ Añadir vídeo</button>` : '');
+  }
+  clips.forEach((c,i) => {
+    updateCommentsList(i);
+    mountPlayer(i);
+  });
+  document.getElementById('modeToggle').textContent = officeMode ? '👤 Ver como artista' : '🔐 Modo oficina';
+}
+
+function refreshClipCard(idx){
+  destroyPlayer(idx);
+  const el = document.getElementById('clip-card-' + idx);
+  if(!el) return;
+  el.innerHTML = renderClipCardInner(idx);
+  updateCommentsList(idx);
+  mountPlayer(idx);
+}
+
+function renderVersionTabs(idx){
+  const clip = clips[idx];
+  const versions = clip.versions || [];
+  if(!versions.length && !officeMode) return '';
+  const selId = selectedVersion[idx] || clip.activeVersionId;
+  return `<div class="version-tabs">
+    ${versions.map(v => `<button type="button" class="ver-tab ${v.id===selId?'selected':''}" onclick="switchVersionTab(${idx},'${v.id}')">${escapeHtml(v.version || 'Versión')}${v.id===clip.activeVersionId?' <span class="ver-dot" title="Versión actual">●</span>':''}</button>`).join('')}
+    ${officeMode ? `<button type="button" class="ver-tab ver-tab-add" onclick="addVersion(${idx})">+ Nueva versión</button>` : ''}
+  </div>`;
+}
+
+function renderClipCard(idx){
+  return `<div class="clip-card" id="clip-card-${idx}">${renderClipCardInner(idx)}</div>`;
+}
+
+function renderClipCardInner(idx){
+  const clip = clips[idx];
+  const ver = getSelectedVersion(idx);
+  const isActive = isActiveVersion(idx);
+  const hasVideo = !!(ver && ver.youtubeId);
+  return `
+    <div class="clip-head">
+      <div>
+        <div class="clip-eyebrow">Vídeo</div>
+        <div class="clip-title">${escapeHtml(clip.clipName || 'Sin título')}</div>
+      </div>
+      ${officeMode ? `<div class="clip-office-controls">
+        <button type="button" class="icon-btn" onclick="startEditClip(${idx})" title="Renombrar vídeo">✎</button>
+        <button type="button" class="icon-btn" onclick="deleteClip(${idx})" title="Eliminar vídeo">🗑</button>
+      </div>` : ''}
+    </div>
+    ${renderVersionTabs(idx)}
+    ${!ver ? `<div class="no-video">Este vídeo todavía no tiene ninguna versión subida.</div>` : `
+    <div class="version-meta-row">
+      <div class="meta-box"><span class="meta-label">${isActive ? 'Versión actual' : 'Versión anterior'}</span><span class="meta-value">${escapeHtml(ver.version || '—')}</span></div>
+      <div class="meta-box"><span class="meta-label">Fecha</span><span class="meta-value">${escapeHtml(ver.versionDate || '—')}</span></div>
+      ${officeMode ? `
+        <button type="button" class="icon-btn" onclick="startEditVersion(${idx})" title="Editar esta versión">✎</button>
+        <button type="button" class="icon-btn" onclick="deleteVersion(${idx})" title="Eliminar esta versión">🗑</button>
+      ` : ''}
+    </div>
+    ${!isActive ? `<div class="old-version-banner">
+      <span>📜 Estás viendo ${escapeHtml(ver.version || 'una versión')} — no es la versión actual, es solo consulta.</span>
+      ${officeMode ? `<button type="button" class="btn-mini btn-mini-primary" onclick="restoreVersion(${idx})">↺ Restaurar como actual</button>` : ''}
+    </div>` : ''}
+    ${hasVideo ? `
+    <div class="yt-wrap"><div id="yt-embed-${idx}"></div></div>
+    <div class="mini-timeline">
+      <div class="mini-track" onclick="miniSeek(event,${idx})"></div>
+      <div class="markers-row" data-idx="${idx}"></div>
+    </div>
+    ${isActive ? `<button type="button" class="btn-add-marker" onclick="startAddMarker(${idx})">+ Añadir marcador (en el momento actual del vídeo)</button>` : ''}
+    <div class="add-marker-form" data-idx="${idx}" hidden></div>
+    <div class="comments-list" data-idx="${idx}"></div>
+    ` : `<div class="no-video">🎬 Vídeo pendiente de subir por la oficina.</div>`}
+    `}
+  `;
+}
+
+function switchVersionTab(idx, versionId){
+  selectedVersion[idx] = versionId;
+  delete pendingMarker[idx];
+  delete editingComment[idx];
+  refreshClipCard(idx);
+}
+
+/* ---- marcadores (comentarios por segundo, sobre el mini-timeline) ---- */
+function renderMarkers(idx){
+  const ver = getSelectedVersion(idx);
+  if(!ver) return;
+  const dur = ver._duration || 0;
+  const row = document.querySelector(`.markers-row[data-idx="${idx}"]`);
+  if(!row) return;
+  if(!dur){ row.innerHTML = ''; return; }
+  const sorted = (ver.comments || []).slice().sort((a,b) => a.time - b.time);
+  row.innerHTML = sorted.map((c,i) => {
+    const cat = categoryOf(c.category);
+    const pct = Math.min(100, Math.max(0, (c.time/dur)*100));
+    return `<button type="button" class="marker-pin" style="left:${pct}%;background:${cat.color}" title="${escapeHtml(fmt(c.time)+' · '+cat.label+': '+c.text)}" onclick="seekTo(${idx},${c.time})">${i+1}</button>`;
+  }).join('');
+}
+
+function startAddMarker(idx){
+  if(!isActiveVersion(idx)) return;
+  const player = ytPlayers[idx];
+  const t = (player && player.getCurrentTime) ? Math.round(player.getCurrentTime()*10)/10 : 0;
+  pendingMarker[idx] = { time:t, category:'general', text:'' };
+  renderAddMarkerForm(idx);
+}
+function cancelAddMarker(idx){ delete pendingMarker[idx]; renderAddMarkerForm(idx); }
+function updatePendingMarker(idx, field, value){ if(pendingMarker[idx]) pendingMarker[idx][field] = value; }
+function saveMarker(idx){
+  if(!isActiveVersion(idx)) return;
+  const pm = pendingMarker[idx];
+  if(!pm) return;
+  if(!pm.text || !pm.text.trim()){ alert('Escribe una recomendación antes de guardar.'); return; }
+  const ver = getSelectedVersion(idx);
+  if(!ver.comments) ver.comments = [];
+  ver.comments.push({ id:uid(), time:pm.time, category:pm.category, text:pm.text.trim(), createdAt:new Date().toISOString().slice(0,10) });
+  delete pendingMarker[idx];
+  renderAddMarkerForm(idx);
+  updateCommentsList(idx);
+  renderMarkers(idx);
+  noteChanged();
+}
+function renderAddMarkerForm(idx){
+  const el = document.querySelector(`.add-marker-form[data-idx="${idx}"]`);
+  if(!el) return;
+  const pm = pendingMarker[idx];
+  if(!pm){ el.hidden = true; el.innerHTML = ''; return; }
+  el.hidden = false;
+  el.innerHTML = `
+    <div class="form-row">
+      <span class="form-time">En ${fmt(pm.time)}</span>
+      <select onchange="updatePendingMarker(${idx},'category',this.value)">
+        ${CATEGORIES.map(c => `<option value="${c.id}" ${c.id===pm.category?'selected':''}>${c.label}</option>`).join('')}
+      </select>
+    </div>
+    <textarea placeholder="Escribe tu recomendación..." oninput="updatePendingMarker(${idx},'text',this.value)">${escapeHtml(pm.text)}</textarea>
+    <div class="form-actions">
+      <button type="button" class="btn-mini" onclick="cancelAddMarker(${idx})">Cancelar</button>
+      <button type="button" class="btn-mini btn-mini-primary" onclick="saveMarker(${idx})">Guardar marcador</button>
+    </div>`;
+}
+
+/* ---- listado / edición de comentarios (solo en la versión activa) ---- */
+function updateCommentsList(idx){
+  const el = document.querySelector(`.comments-list[data-idx="${idx}"]`);
+  if(!el) return;
+  const ver = getSelectedVersion(idx);
+  if(!ver) return;
+  const isActive = isActiveVersion(idx);
+  const sorted = (ver.comments || []).slice().sort((a,b) => a.time - b.time);
+  if(!sorted.length){
+    el.innerHTML = `<div class="no-comments">${isActive ? 'Aún no hay recomendaciones. Reproduce el vídeo y toca "+ Añadir marcador" en el momento exacto.' : 'No se dejaron recomendaciones en esta versión.'}</div>`;
+    return;
+  }
+  el.innerHTML = sorted.map((c,i) => {
+    const cat = categoryOf(c.category);
+    if(isActive && editingComment[idx] && editingComment[idx].id === c.id){
+      const ed = editingComment[idx];
+      return `<div class="comment-row editing">
+        <div class="c-num" style="background:${cat.color}">${i+1}</div>
+        <div class="c-time">${fmt(c.time)}</div>
+        <div class="c-edit-body">
+          <select onchange="updateEditField(${idx},'category',this.value)">
+            ${CATEGORIES.map(x => `<option value="${x.id}" ${x.id===ed.category?'selected':''}>${x.label}</option>`).join('')}
+          </select>
+          <textarea oninput="updateEditField(${idx},'text',this.value)">${escapeHtml(ed.text)}</textarea>
+          <div class="form-actions">
+            <button type="button" class="btn-mini" onclick="cancelEditComment(${idx})">Cancelar</button>
+            <button type="button" class="btn-mini btn-mini-primary" onclick="saveEditComment(${idx})">Guardar</button>
+          </div>
+        </div>
+      </div>`;
+    }
+    return `<div class="comment-row">
+      <div class="c-num" style="background:${cat.color}">${i+1}</div>
+      <div class="c-time" onclick="seekTo(${idx},${c.time})" title="Ir a este momento">${fmt(c.time)}</div>
+      <span class="c-tag" style="background:${cat.bg};color:${cat.color}">${cat.label}</span>
+      <div class="c-text">${escapeHtml(c.text)}</div>
+      ${isActive ? `<div class="c-actions">
+        <button type="button" class="icon-btn" onclick="startEditComment(${idx},'${c.id}')" title="Editar">✎</button>
+        <button type="button" class="icon-btn" onclick="deleteComment(${idx},'${c.id}')" title="Eliminar">🗑</button>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+}
+function startEditComment(idx, cid){
+  if(!isActiveVersion(idx)) return;
+  const ver = getSelectedVersion(idx);
+  const c = (ver.comments || []).find(x => x.id === cid);
+  if(!c) return;
+  editingComment[idx] = { id:cid, category:c.category, text:c.text };
+  updateCommentsList(idx);
+}
+function cancelEditComment(idx){ delete editingComment[idx]; updateCommentsList(idx); }
+function updateEditField(idx, field, value){ if(editingComment[idx]) editingComment[idx][field] = value; }
+function saveEditComment(idx){
+  if(!isActiveVersion(idx)) return;
+  const ed = editingComment[idx];
+  if(!ed) return;
+  if(!ed.text || !ed.text.trim()){ alert('El comentario no puede quedar vacío.'); return; }
+  const ver = getSelectedVersion(idx);
+  const c = (ver.comments || []).find(x => x.id === ed.id);
+  if(c){ c.category = ed.category; c.text = ed.text.trim(); }
+  delete editingComment[idx];
+  updateCommentsList(idx);
+  renderMarkers(idx);
+  noteChanged();
+}
+function deleteComment(idx, cid){
+  if(!isActiveVersion(idx)) return;
+  if(!confirm('¿Eliminar esta recomendación?')) return;
+  const ver = getSelectedVersion(idx);
+  ver.comments = (ver.comments || []).filter(x => x.id !== cid);
+  updateCommentsList(idx);
+  renderMarkers(idx);
+  noteChanged();
+}
+
+/* ---- modo oficina: alta/edición/baja de vídeos y versiones ---- */
+function addClip(){
+  const nombre = prompt('Nombre del vídeo (ej. Live Session 1, Entrevista, Making off)');
+  if(!nombre) return;
+  const version = prompt('Versión (ej. Corte v1)', 'Corte v1') || '';
+  const fecha = prompt('Fecha (texto libre, ej. 20 Agosto 2026)', new Date().toISOString().slice(0,10)) || '';
+  const enlace = prompt('Enlace o ID de YouTube (el vídeo debe estar en modo "Oculto", no "Privado")', '') || '';
+  const vId = uid();
+  clips.push({ id:uid(), clipName:nombre.trim(), activeVersionId:vId, versions:[
+    { id:vId, version:version.trim(), versionDate:fecha.trim(), youtubeId:parseYouTubeId(enlace), comments:[] }
+  ]});
+  noteChanged();
+  render();
+}
+function startEditClip(idx){
+  const c = clips[idx];
+  const nombre = prompt('Nombre del vídeo', c.clipName || '');
+  if(nombre === null) return;
+  c.clipName = nombre.trim();
+  refreshClipCard(idx);
+  noteChanged();
+}
+function deleteClip(idx){
+  if(!confirm('¿Eliminar este vídeo, todas sus versiones y recomendaciones? No se puede deshacer.')) return;
+  clips.splice(idx,1);
+  delete selectedVersion[idx];
+  noteChanged();
+  render();
+}
+function addVersion(idx){
+  const clip = clips[idx];
+  const version = prompt('Nombre de la nueva versión (ej. Corte v' + ((clip.versions||[]).length + 1) + ')', '');
+  if(!version) return;
+  const fecha = prompt('Fecha (texto libre, ej. 20 Agosto 2026)', new Date().toISOString().slice(0,10)) || '';
+  const enlace = prompt('Enlace o ID de YouTube (el vídeo debe estar en modo "Oculto", no "Privado")', '') || '';
+  const vId = uid();
+  clip.versions = clip.versions || [];
+  clip.versions.push({ id:vId, version:version.trim(), versionDate:fecha.trim(), youtubeId:parseYouTubeId(enlace), comments:[] });
+  clip.activeVersionId = vId;
+  selectedVersion[idx] = vId;
+  refreshClipCard(idx);
+  noteChanged();
+}
+function startEditVersion(idx){
+  const ver = getSelectedVersion(idx);
+  if(!ver) return;
+  const label = prompt('Nombre de la versión (ej. Corte v2)', ver.version || '');
+  if(label === null) return;
+  const fecha = prompt('Fecha (texto libre)', ver.versionDate || '');
+  if(fecha === null) return;
+  const enlace = prompt('Enlace o ID de YouTube', ver.youtubeId || '');
+  if(enlace === null) return;
+  ver.version = label.trim(); ver.versionDate = fecha.trim(); ver.youtubeId = parseYouTubeId(enlace);
+  refreshClipCard(idx);
+  noteChanged();
+}
+function deleteVersion(idx){
+  const clip = clips[idx];
+  if(!clip.versions || clip.versions.length <= 1){
+    alert('No puedes borrar la única versión de este vídeo. Si ya no hace falta, borra el vídeo entero.');
+    return;
+  }
+  const ver = getSelectedVersion(idx);
+  if(!confirm(`¿Eliminar la versión "${ver.version}" y sus recomendaciones? No se puede deshacer.`)) return;
+  clip.versions = clip.versions.filter(v => v.id !== ver.id);
+  if(clip.activeVersionId === ver.id){
+    clip.activeVersionId = clip.versions[clip.versions.length - 1].id;
+  }
+  delete selectedVersion[idx];
+  refreshClipCard(idx);
+  noteChanged();
+}
+function restoreVersion(idx){
+  const clip = clips[idx];
+  const ver = getSelectedVersion(idx);
+  if(!ver) return;
+  if(!confirm(`¿Marcar "${ver.version}" como la versión actual? El artista la verá por defecto al entrar.`)) return;
+  clip.activeVersionId = ver.id;
+  refreshClipCard(idx);
+  noteChanged();
+}
+
+/* ---- guardado ---- */
+function noteChanged(){
+  const note = document.getElementById('savedNote');
+  if(note){ note.className = 'saved-note local'; note.textContent = '📝 Cambios sin enviar — toca "Enviar cambios al equipo"'; }
+}
+async function guardar(){
+  const note = document.getElementById('savedNote');
+  const btn = document.getElementById('btnGuardar');
+  if(!expediente){ note.className = 'saved-note err'; note.textContent = 'Sin expediente cargado'; return; }
+  if(!WEBHOOK){ note.className = 'saved-note err'; note.textContent = 'Publicador no configurado'; return; }
+  btn.disabled = true; note.className = 'saved-note'; note.textContent = 'Enviando…';
+  try{
+    const payload = Object.assign({}, expediente, { videoReviews: clips.map(stripTransient), updatedAt: new Date().toISOString().slice(0,10) });
+    // text/plain evita el preflight CORS de las webapps de Apps Script
+    const r = await fetch(WEBHOOK, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(payload) });
+    const body = await r.json().catch(() => null);
+    if(r.ok && body && body.status === 'ok'){
+      note.className = 'saved-note ok'; note.textContent = '✓ Enviado — la oficina ya lo ve';
+    }else{
+      throw new Error((body && body.message) || r.status);
+    }
+  }catch(e){
+    note.className = 'saved-note err'; note.textContent = '✗ No se pudo enviar (queda guardado en este dispositivo)';
+  }finally{ btn.disabled = false; }
+}
+
+init();
+</script>
+</body>
+</html>

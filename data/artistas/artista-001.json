@@ -9,8 +9,10 @@
     "infoMaestra": "",
     "materialesPublicos": "",
     "artifactCloud": "https://docs.google.com/forms/d/1DU4ijRq93Lo5yqssmkpXDme8t-3pqkIWsdrnd6Nrip0/edit",
-    "mixApp": "../artistas/revision-audio.html?id=artista-001"
+    "mixApp": "../artistas/revision-audio.html?id=artista-001",
+    "videoApp": "../artistas/revision-video.html?id=artista-001"
   },
+  "videoReviews": [],
   "mixReviews": [],
   "recordingTiming": [
     {
