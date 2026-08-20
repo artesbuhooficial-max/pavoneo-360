@@ -12,7 +12,22 @@
     "mixApp": "../artistas/revision-audio.html?id=mario-cassado",
     "videoApp": "../artistas/revision-video.html?id=mario-cassado"
   },
-  "videoReviews": [],
+  "videoReviews": [
+    {
+      "id": "yo-no-soy-el",
+      "clipName": "Yo No Soy El",
+      "activeVersionId": "yo-no-soy-el-v1",
+      "versions": [
+        {
+          "id": "yo-no-soy-el-v1",
+          "version": "Corte v1",
+          "versionDate": "2026-08-20",
+          "youtubeId": "8KY5pLcgwrM",
+          "comments": []
+        }
+      ]
+    }
+  ],
   "mixReviews": [
     {
       "id": "dimelo",
