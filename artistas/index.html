@@ -890,12 +890,8 @@
                 <input id="infoMaestraLink" value="" placeholder="https://..." oninput="saveMeta()">
               </div>
               <div class="field" style="grid-column:1 / -1">
-                <label for="mixAppLink">Revisión de audio (postproducción)</label>
-                <input id="mixAppLink" value="../artistas/revision-audio.html?id=" placeholder="https://... o ../artistas/revision-audio.html?id=slug" oninput="saveMeta()">
-              </div>
-              <div class="field" style="grid-column:1 / -1">
-                <label for="videoAppLink">Revisión de vídeo (postproducción)</label>
-                <input id="videoAppLink" value="../artistas/revision-video.html?id=" placeholder="https://... o ../artistas/revision-video.html?id=slug" oninput="saveMeta()">
+                <label for="revisionAppLink">Revisión de postproducción (audio + vídeo)</label>
+                <input id="revisionAppLink" value="../artistas/revision-postproduccion.html?id=" placeholder="https://... o ../artistas/revision-postproduccion.html?id=slug" oninput="saveMeta()">
               </div>
             </div>
           </div>
@@ -1295,7 +1291,7 @@
     function loadMeta(){
       try{
         const meta = JSON.parse(localStorage.getItem(META_KEY) || "{}");
-        ["artistName","artistPack","ownerName","driveFolder","artifactLink","infoMaestraLink","mixAppLink","videoAppLink"].forEach(id => {
+        ["artistName","artistPack","ownerName","driveFolder","artifactLink","infoMaestraLink","revisionAppLink"].forEach(id => {
           if(meta[id]) document.getElementById(id).value = meta[id];
         });
       }catch(error){}
@@ -1313,8 +1309,7 @@
         driveFolder:document.getElementById("driveFolder").value,
         artifactLink:document.getElementById("artifactLink").value,
         infoMaestraLink:document.getElementById("infoMaestraLink").value,
-        mixAppLink:document.getElementById("mixAppLink").value,
-        videoAppLink:document.getElementById("videoAppLink").value
+        revisionAppLink:document.getElementById("revisionAppLink").value
       };
       localStorage.setItem(META_KEY, JSON.stringify(meta));
       syncMeta();
@@ -1478,12 +1473,8 @@
       return cleanHref(document.getElementById("infoMaestraLink").value);
     }
 
-    function mixAppHref(){
-      return cleanHref(document.getElementById("mixAppLink").value);
-    }
-
-    function videoAppHref(){
-      return cleanHref(document.getElementById("videoAppLink").value);
+    function revisionAppHref(){
+      return cleanHref(document.getElementById("revisionAppLink").value);
     }
 
     function linkButton(href, label, primary = false){
@@ -1493,7 +1484,7 @@
         : `<button class="action-btn" type="button" disabled>${label} pendiente</button>`;
     }
 
-    function artifactContent(step, index, href, infoHref, mixHref, videoHref){
+    function artifactContent(step, index, href, infoHref, revisionHref){
       const buttons = [];
       let title = "Herramientas del bloque";
       let note = "Este bloque queda registrado en el expediente para mantener trazabilidad de decisiones y materiales.";
@@ -1506,10 +1497,7 @@
         note = "Desde el paso 2, la Info Maestra acompana el proceso como base viva del proyecto. La oficina pega aqui el enlace cuando este preparada.";
         buttons.push(linkButton(infoHref, "Abrir Info Maestra", true));
         if(step.id === "formulario") buttons.push(linkButton(href, "Abrir formulario de preconsultoria"));
-        if(step.id === "postproduccion"){
-          buttons.push(linkButton(mixHref, "Abrir revisión de audio"));
-          buttons.push(linkButton(videoHref, "Abrir revisión de vídeo"));
-        }
+        if(step.id === "postproduccion") buttons.push(linkButton(revisionHref, "Abrir revisión de postproducción"));
       }
       return { title, note, buttons:buttons.join("") };
     }
@@ -1767,9 +1755,8 @@
       const index = steps.findIndex(item => item.id === step.id);
       const href = artifactHref();
       const infoHref = infoMaestraHref();
-      const mixHref = mixAppHref();
-      const videoHref = videoAppHref();
-      const tools = artifactContent(step, index, href, infoHref, mixHref, videoHref);
+      const revisionHref = revisionAppHref();
+      const tools = artifactContent(step, index, href, infoHref, revisionHref);
       const clientCopy = currentMode === "client";
       const visibleActions = clientCopy && step.clientActions ? step.clientActions : step.actions;
       const done = step.status === "done";
@@ -1936,8 +1923,7 @@
       document.getElementById("driveFolder").value = "artista_pavoneo.json";
       document.getElementById("artifactLink").value = PRECONSULTORIA_FORM_URL;
       document.getElementById("infoMaestraLink").value = "";
-      document.getElementById("mixAppLink").value = "../artistas/revision-audio.html?id=";
-      document.getElementById("videoAppLink").value = "../artistas/revision-video.html?id=";
+      document.getElementById("revisionAppLink").value = "../artistas/revision-postproduccion.html?id=";
       recordingTiming = DEFAULT_TIMING.map(item => ({...item}));
       editorialCalendar = DEFAULT_EDITORIAL_CALENDAR.map(item => ({...item}));
       currentPageId = "contacto";
@@ -2067,15 +2053,13 @@
       publishedExtra = {
         palette: data.palette,
         materialChecklist: data.materialChecklist,
-        mixReviews: data.mixReviews,
-        videoReviews: data.videoReviews
+        songReviews: data.songReviews
       };
       if(data.displayName) document.getElementById("artistName").value = data.displayName;
       if(data.pack) document.getElementById("artistPack").value = normalizePack(data.pack);
       if(data.publicLinks && data.publicLinks.artifactCloud) document.getElementById("artifactLink").value = data.publicLinks.artifactCloud;
       if(data.publicLinks && data.publicLinks.infoMaestra) document.getElementById("infoMaestraLink").value = data.publicLinks.infoMaestra;
-      if(data.publicLinks && data.publicLinks.mixApp) document.getElementById("mixAppLink").value = data.publicLinks.mixApp;
-      if(data.publicLinks && data.publicLinks.videoApp) document.getElementById("videoAppLink").value = data.publicLinks.videoApp;
+      if(data.publicLinks && data.publicLinks.revisionApp) document.getElementById("revisionAppLink").value = data.publicLinks.revisionApp;
       if(Array.isArray(data.recordingTiming) && data.recordingTiming.length){
         recordingTiming = data.recordingTiming.map(item => ({
           time:item.time || "",
@@ -2134,18 +2118,16 @@
           infoMaestra: document.getElementById("infoMaestraLink").value || "",
           materialesPublicos: "",
           artifactCloud: document.getElementById("artifactLink").value || "",
-          mixApp: document.getElementById("mixAppLink").value || "",
-          videoApp: document.getElementById("videoAppLink").value || ""
+          revisionApp: document.getElementById("revisionAppLink").value || ""
         },
         recordingTiming,
         editorialCalendar,
         steps: stepData
       };
-      // Campos gestionados fuera de este panel (Info Maestra, portal de material, revisión de audio/vídeo)
+      // Campos gestionados fuera de este panel (Info Maestra, portal de material, revisión de postproducción)
       if(publishedExtra.palette) json.palette = publishedExtra.palette;
       if(publishedExtra.materialChecklist) json.materialChecklist = publishedExtra.materialChecklist;
-      if(publishedExtra.mixReviews) json.mixReviews = publishedExtra.mixReviews;
-      if(publishedExtra.videoReviews) json.videoReviews = publishedExtra.videoReviews;
+      if(publishedExtra.songReviews) json.songReviews = publishedExtra.songReviews;
       return json;
     }
 

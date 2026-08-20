@@ -16,12 +16,10 @@
     "infoMaestra": "https://artesbuhooficial-max.github.io/pavoneo-360/artistas/epiybrass/",
     "materialesPublicos": "",
     "artifactCloud": "",
-    "mixApp": "../artistas/revision-audio.html?id=epiybrass",
-    "videoApp": "../artistas/revision-video.html?id=epiybrass",
+    "revisionApp": "../artistas/revision-postproduccion.html?id=epiybrass",
     "dashboardRedes": "https://artesbuhooficial-max.github.io/pavoneo-360/artistas/epiybrass/dashboard-redes.html"
   },
-  "videoReviews": [],
-  "mixReviews": [],
+  "songReviews": [],
   "recordingTiming": [
     {
       "time": "09:30",
