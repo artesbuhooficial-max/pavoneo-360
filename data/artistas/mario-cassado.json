@@ -33,7 +33,7 @@
       "id": "yo-no-soy-el",
       "songName": "Yo No Soy El",
       "audio": {
-        "activeVersionId": "yo-no-soy-el-v2",
+        "activeVersionId": "yo-no-soy-el-v3",
         "versions": [
           {
             "id": "yo-no-soy-el-v1",
@@ -141,6 +141,13 @@
                 "createdAt": "2026-08-21"
               }
             ]
+          },
+          {
+            "id": "yo-no-soy-el-v3",
+            "version": "Pre-mix v3",
+            "versionDate": "2026-08-21",
+            "audioFile": "yo-no-soy-el-premix-v3.wav",
+            "comments": []
           }
         ]
       },
