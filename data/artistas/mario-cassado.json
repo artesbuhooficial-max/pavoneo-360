@@ -4,7 +4,7 @@
   "pack": "premium",
   "currentStep": "postproduccion",
   "unlockedUntil": "postproduccion",
-  "updatedAt": "2026-08-09",
+  "updatedAt": "2026-08-21",
   "publicLinks": {
     "infoMaestra": "https://artesbuhooficial-max.github.io/pavoneo-360/artistas/mario-cassado/",
     "materialesPublicos": "",
@@ -104,7 +104,43 @@
             "version": "Pre-mix v2",
             "versionDate": "2026-08-20",
             "audioFile": "yo-no-soy-el-premix-v2.wav",
-            "comments": []
+            "comments": [
+              {
+                "id": "mt2wpy4upz5m7",
+                "time": 8.4,
+                "category": "voz",
+                "text": "Menos de reverb en toda la canción",
+                "createdAt": "2026-08-21"
+              },
+              {
+                "id": "mt2wqoouilvov",
+                "time": 40.3,
+                "category": "voz",
+                "text": "Más de autotune en toda la canción",
+                "createdAt": "2026-08-21"
+              },
+              {
+                "id": "mt2wt3781zvb5",
+                "time": 37.5,
+                "category": "voz",
+                "text": "Subir volumen voz hasta el 0:55",
+                "createdAt": "2026-08-21"
+              },
+              {
+                "id": "mt2wu95f6dgbx",
+                "time": 87.3,
+                "category": "voz",
+                "text": "Subir volumen voz hasta 1:45",
+                "createdAt": "2026-08-21"
+              },
+              {
+                "id": "mt2ww6j5faaky",
+                "time": 157.8,
+                "category": "general",
+                "text": "Que no se oigan los ruidos finales",
+                "createdAt": "2026-08-21"
+              }
+            ]
           }
         ]
       },
