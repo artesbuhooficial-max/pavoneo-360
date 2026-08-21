@@ -33,7 +33,7 @@
       "id": "yo-no-soy-el",
       "songName": "Yo No Soy El",
       "audio": {
-        "activeVersionId": "yo-no-soy-el-v3",
+        "activeVersionId": "yo-no-soy-el-v2",
         "versions": [
           {
             "id": "yo-no-soy-el-v1",
@@ -141,25 +141,18 @@
                 "createdAt": "2026-08-21"
               }
             ]
-          },
-          {
-            "id": "yo-no-soy-el-v3",
-            "version": "Pre-mix v3",
-            "versionDate": "2026-08-21",
-            "audioFile": "yo-no-soy-el-premix-v3.wav",
-            "comments": []
           }
         ]
       },
       "video": {
-        "activeVersionId": "yo-no-soy-el-vid-v1",
+        "activeVersionId": "mt3dnfxrq7mne",
         "versions": [
           {
-            "id": "yo-no-soy-el-vid-v1",
+            "id": "mt3dnfxrq7mne",
             "version": "Corte v1",
-            "versionDate": "2026-08-20",
-            "youtubeId": "8KY5pLcgwrM",
-            "comments": []
+            "versionDate": "2026-08-21",
+            "comments": [],
+            "youtubeId": "E1zLUfv2w5o"
           }
         ]
       }
