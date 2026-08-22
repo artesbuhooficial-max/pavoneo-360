@@ -5,5 +5,29 @@
   "publicLinks": {
     "revisionApp": "../artistas/revision-postproduccion.html?id=sin-guion"
   },
-  "songReviews": []
+  "songReviews": [
+    {
+      "id": "mt49etebp55v4",
+      "songName": "MIX CANCIONES DE SIEMPRE",
+      "audio": null,
+      "video": null
+    },
+    {
+      "id": "mt49ezph0tvdn",
+      "songName": "MIX BAILE Y FIESTA",
+      "audio": null,
+      "video": {
+        "activeVersionId": "mt49fi9c7gfgq",
+        "versions": [
+          {
+            "id": "mt49fi9c7gfgq",
+            "version": "PRE PREVIEW V.1",
+            "versionDate": "2026-08-22",
+            "comments": [],
+            "youtubeId": "YgkDWKAanc0"
+          }
+        ]
+      }
+    }
+  ]
 }
