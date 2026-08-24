@@ -4,7 +4,7 @@
   "pack": "premium",
   "currentStep": "postproduccion",
   "unlockedUntil": "postproduccion",
-  "updatedAt": "2026-08-21",
+  "updatedAt": "2026-08-24",
   "publicLinks": {
     "infoMaestra": "https://artesbuhooficial-max.github.io/pavoneo-360/artistas/mario-cassado/",
     "materialesPublicos": "",
@@ -23,7 +23,85 @@
             "version": "Pre-mix v1",
             "versionDate": "2026-08-03",
             "audioFile": "dimelo-premix-v1.wav",
-            "comments": []
+            "comments": [
+              {
+                "id": "mt77toih2qrmh",
+                "time": 0.6,
+                "category": "voz",
+                "text": "Añadir autotune en toda la canción, mismos parámetros que en \"Yo no soy él\"",
+                "createdAt": "2026-08-24"
+              },
+              {
+                "id": "mt77vrvzfiuu2",
+                "time": 12,
+                "category": "voz",
+                "text": "Subir volumen 0:11-0:13 para que se oiga \"estamos\"",
+                "createdAt": "2026-08-24"
+              },
+              {
+                "id": "mt77wnuwwzjys",
+                "time": 28.7,
+                "category": "voz",
+                "text": "Subir volumen voz 0:28- 0:31",
+                "createdAt": "2026-08-24"
+              },
+              {
+                "id": "mt77xcce7w8zr",
+                "time": 15.4,
+                "category": "voz",
+                "text": "Un pelín más de reverb en toda la canción",
+                "createdAt": "2026-08-24"
+              },
+              {
+                "id": "mt77yi9mrmyqs",
+                "time": 34.1,
+                "category": "voz",
+                "text": "Subir volumen voz 0:33-0:36",
+                "createdAt": "2026-08-24"
+              },
+              {
+                "id": "mt780ycxbhcu0",
+                "time": 56.1,
+                "category": "voz",
+                "text": "Subir volumen voz 0:56-1:10",
+                "createdAt": "2026-08-24"
+              },
+              {
+                "id": "mt781hliqhp3n",
+                "time": 72.8,
+                "category": "voz",
+                "text": "Subir volumen voz 1:12-1:14",
+                "createdAt": "2026-08-24"
+              },
+              {
+                "id": "mt7836mrergaq",
+                "time": 110,
+                "category": "voz",
+                "text": "Subir volumen voz 1:50-1:56",
+                "createdAt": "2026-08-24"
+              },
+              {
+                "id": "mt7867d3r59cu",
+                "time": 17.1,
+                "category": "voz",
+                "text": "Subir volumen voz 0:17-0:26",
+                "createdAt": "2026-08-24"
+              },
+              {
+                "id": "mt789k80cfmzp",
+                "time": 79.4,
+                "category": "voz",
+                "text": "Subir volumen voz 1:19-1:39",
+                "createdAt": "2026-08-24"
+              },
+              {
+                "id": "mt78ac9bbq4qz",
+                "time": 118.7,
+                "category": "voz",
+                "text": "Subir volumen voz 1:58-2:17",
+                "createdAt": "2026-08-24"
+              }
+            ]
           }
         ]
       },
