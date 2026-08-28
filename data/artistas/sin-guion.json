@@ -1,17 +1,17 @@
 {
   "artistId": "sin-guion",
   "displayName": "Sin Guion",
-  "updatedAt": "2026-08-22",
+  "updatedAt": "2026-08-28",
   "publicLinks": {
     "revisionApp": "../artistas/revision-postproduccion.html?id=sin-guion"
   },
   "songReviews": [
     {
       "id": "mt49etebp55v4",
-      "songName": "MIX CANCIONES DE SIEMPRE",
+      "songName": "MIX CUARTETO V.2",
       "audio": null,
       "video": {
-        "activeVersionId": "mt49ob61dfj1g",
+        "activeVersionId": "mtcta5mn96sag",
         "versions": [
           {
             "id": "mt49ob61dfj1g",
@@ -19,6 +19,13 @@
             "versionDate": "2026-08-22",
             "comments": [],
             "youtubeId": "MT-jyYOfbYQ"
+          },
+          {
+            "id": "mtcta5mn96sag",
+            "version": "PRE-EDIT V.2",
+            "versionDate": "2026-08-28",
+            "comments": [],
+            "youtubeId": "OAgsd7TQ3wk"
           }
         ]
       }
@@ -28,7 +35,7 @@
       "songName": "MIX BAILE Y FIESTA",
       "audio": null,
       "video": {
-        "activeVersionId": "mt49fi9c7gfgq",
+        "activeVersionId": "mtctbgurk018f",
         "versions": [
           {
             "id": "mt49fi9c7gfgq",
@@ -36,6 +43,13 @@
             "versionDate": "2026-08-22",
             "comments": [],
             "youtubeId": "YgkDWKAanc0"
+          },
+          {
+            "id": "mtctbgurk018f",
+            "version": "PRE-EDIT V.2",
+            "versionDate": "2026-08-28",
+            "comments": [],
+            "youtubeId": "Ae5q8vZ585A"
           }
         ]
       }
