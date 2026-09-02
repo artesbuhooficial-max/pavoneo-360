@@ -1,7 +1,7 @@
 {
   "artistId": "sin-guion",
   "displayName": "Sin Guion",
-  "updatedAt": "2026-08-28",
+  "updatedAt": "2026-09-02",
   "publicLinks": {
     "revisionApp": "../artistas/revision-postproduccion.html?id=sin-guion"
   },
@@ -24,7 +24,15 @@
             "id": "mtcta5mn96sag",
             "version": "PRE-EDIT V.2",
             "versionDate": "2026-08-28",
-            "comments": [],
+            "comments": [
+              {
+                "id": "mtjrzlfwgw6wc",
+                "time": 87.8,
+                "category": "audiovid",
+                "text": "Subir la caja",
+                "createdAt": "2026-09-02"
+              }
+            ],
             "youtubeId": "OAgsd7TQ3wk"
           }
         ]
@@ -48,7 +56,50 @@
             "id": "mtctbgurk018f",
             "version": "PRE-EDIT V.2",
             "versionDate": "2026-08-28",
-            "comments": [],
+            "comments": [
+              {
+                "id": "mtjrtcjqc2875",
+                "time": 110.8,
+                "category": "edicion",
+                "text": "Hay un fundido a negro",
+                "createdAt": "2026-09-02"
+              },
+              {
+                "id": "mtjrttnh4t2qf",
+                "time": 130.4,
+                "category": "audiovid",
+                "text": "Hay un corte raro entre el sonido",
+                "createdAt": "2026-09-02"
+              },
+              {
+                "id": "mtjru8mdtllhn",
+                "time": 154.5,
+                "category": "audiovid",
+                "text": "Coros muy altos",
+                "createdAt": "2026-09-02"
+              },
+              {
+                "id": "mtjrum3icsq48",
+                "time": 170.1,
+                "category": "edicion",
+                "text": "El video se hace pequeño",
+                "createdAt": "2026-09-02"
+              },
+              {
+                "id": "mtjrvebm47s12",
+                "time": 204.1,
+                "category": "edicion",
+                "text": "El video se hace pequeño",
+                "createdAt": "2026-09-02"
+              },
+              {
+                "id": "mtjrwxhzkbtsb",
+                "time": 254.6,
+                "category": "general",
+                "text": "Cortar antes el audio por que la guitarra no hizo el final y desafina con respecto al bajo.",
+                "createdAt": "2026-09-02"
+              }
+            ],
             "youtubeId": "Ae5q8vZ585A"
           }
         ]
