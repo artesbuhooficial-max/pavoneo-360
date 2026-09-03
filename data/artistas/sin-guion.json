@@ -1,17 +1,17 @@
 {
   "artistId": "sin-guion",
   "displayName": "Sin Guion",
-  "updatedAt": "2026-09-02",
+  "updatedAt": "2026-09-03",
   "publicLinks": {
     "revisionApp": "../artistas/revision-postproduccion.html?id=sin-guion"
   },
   "songReviews": [
     {
       "id": "mt49etebp55v4",
-      "songName": "MIX CUARTETO V.2",
+      "songName": "SIN GUION CUARTETO",
       "audio": null,
       "video": {
-        "activeVersionId": "mtcta5mn96sag",
+        "activeVersionId": "mtluom4p3zm7m",
         "versions": [
           {
             "id": "mt49ob61dfj1g",
@@ -34,16 +34,23 @@
               }
             ],
             "youtubeId": "OAgsd7TQ3wk"
+          },
+          {
+            "id": "mtluom4p3zm7m",
+            "version": "Corte v3",
+            "versionDate": "2026-09-03",
+            "comments": [],
+            "youtubeId": "Ii1EjvX6T9k"
           }
         ]
       }
     },
     {
       "id": "mt49ezph0tvdn",
-      "songName": "MIX BAILE Y FIESTA",
+      "songName": "SIN GUION TRIO",
       "audio": null,
       "video": {
-        "activeVersionId": "mtctbgurk018f",
+        "activeVersionId": "mtlup0vu9vc1n",
         "versions": [
           {
             "id": "mt49fi9c7gfgq",
@@ -101,6 +108,13 @@
               }
             ],
             "youtubeId": "Ae5q8vZ585A"
+          },
+          {
+            "id": "mtlup0vu9vc1n",
+            "version": "Corte v3",
+            "versionDate": "2026-09-03",
+            "comments": [],
+            "youtubeId": "bDv4uyFTTes"
           }
         ]
       }
