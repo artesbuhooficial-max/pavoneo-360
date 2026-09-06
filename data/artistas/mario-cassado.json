@@ -4,7 +4,7 @@
   "pack": "premium",
   "currentStep": "postproduccion",
   "unlockedUntil": "postproduccion",
-  "updatedAt": "2026-08-24",
+  "updatedAt": "2026-09-06",
   "publicLinks": {
     "infoMaestra": "https://artesbuhooficial-max.github.io/pavoneo-360/artistas/mario-cassado/",
     "materialesPublicos": "",
@@ -105,7 +105,18 @@
           }
         ]
       },
-      "video": null
+      "video": {
+        "activeVersionId": "mtpuu1gl8bxc7",
+        "versions": [
+          {
+            "id": "mtpuu1gl8bxc7",
+            "version": "Corte v1",
+            "versionDate": "2026-09-06",
+            "comments": [],
+            "youtubeId": "YV254HcuNxo"
+          }
+        ]
+      }
     },
     {
       "id": "yo-no-soy-el",
