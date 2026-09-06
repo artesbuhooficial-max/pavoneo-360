@@ -91,6 +91,8 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 .mini-track{position:absolute;left:0;right:0;top:12px;height:6px;border-radius:3px;background:var(--blue-soft);cursor:pointer}
 .video-error{background:var(--red-pale);border:1px solid var(--red);color:var(--red);border-radius:10px;padding:14px 16px;font-size:12.5px;margin-bottom:12px}
 .video-error code{background:rgba(0,0,0,.06);padding:1px 5px;border-radius:4px}
+.local-video-wrap{margin-bottom:14px}
+.local-video{width:100%;max-height:70vh;border-radius:10px;background:#000;display:block}
 
 /* --- marcadores (compartido audio/vídeo) --- */
 .markers-row{position:absolute;top:-16px;left:0;right:0;height:16px}
@@ -262,6 +264,25 @@ function resolvePhotoSrc(photo){
   if(/^https?:\/\//i.test(photo.fileName)) return photo.fileName;
   return artistId + '/fotos/' + photo.fileName;
 }
+function resolveVideoFileSrc(ver){
+  if(!ver || !ver.videoFile) return '';
+  if(/^https?:\/\//i.test(ver.videoFile)) return ver.videoFile;
+  return artistId + '/video/' + ver.videoFile;
+}
+function classifyVideoInput(raw){
+  raw = String(raw || '').trim();
+  if(!raw) return { kind:null, value:'' };
+  if(/youtu\.be\/|youtube\.com\//i.test(raw)) return { kind:'youtube', value:parseYouTubeId(raw) };
+  if(/^[a-zA-Z0-9_-]{11}$/.test(raw)) return { kind:'youtube', value:raw };
+  return { kind:'file', value:raw };
+}
+function videoKind(idx){
+  const ver = getSelectedVersion(idx);
+  if(!ver) return null;
+  if(ver.youtubeId) return 'youtube';
+  if(ver.videoFile) return 'file';
+  return null;
+}
 function defaultMedia(song){
   if(!song) return 'audio';
   if(song.audio) return 'audio';
@@ -353,17 +374,21 @@ function onPlayerError(idx, e){
 }
 function miniSeek(event, idx){
   const ver = getSelectedVersion(idx);
-  const player = ytPlayers[idx];
   const dur = ver && ver._duration;
-  if(!dur || !player || !player.seekTo) return;
+  if(!dur) return;
   const rect = event.currentTarget.getBoundingClientRect();
   const pct = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width));
-  player.seekTo(pct * dur, true);
+  seekTo(idx, pct * dur);
 }
 function seekTo(idx, t){
   if(currentMediaType(idx) === 'video'){
-    const player = ytPlayers[idx];
-    if(player && player.seekTo) player.seekTo(t, true);
+    if(videoKind(idx) === 'youtube'){
+      const player = ytPlayers[idx];
+      if(player && player.seekTo) player.seekTo(t, true);
+    }else{
+      const v = document.querySelector(`video.local-video[data-idx="${idx}"]`);
+      if(v) v.currentTime = t;
+    }
   }else{
     const a = document.querySelector(`audio.audio-el[data-idx="${idx}"]`);
     const seek = document.querySelector(`.seek-range[data-idx="${idx}"]`);
@@ -426,7 +451,7 @@ function mountCardMedia(idx){
   if(type === 'audio'){
     const cv = document.querySelectorAll('.song-card')[idx]?.querySelector('.wave-canvas');
     if(cv) drawWave(cv, hashStr(cv.dataset.seed || ''));
-  }else{
+  }else if(videoKind(idx) === 'youtube'){
     mountPlayer(idx);
   }
   updateCommentsList(idx);
@@ -498,6 +523,16 @@ function onAudioError(idx){
   const ver = getSelectedVersion(idx);
   if(wrap) wrap.innerHTML = `<div class="audio-error">⚠ No se pudo cargar el audio. Comprueba que el archivo esté subido en <code>${escapeHtml(artistId)}/audio/${escapeHtml((ver && ver.audioFile)||'')}</code>.</div>`;
 }
+function onLocalVideoReady(idx, videoEl){
+  const ver = getSelectedVersion(idx);
+  if(ver) ver._duration = videoEl.duration || 0;
+  renderMarkers(idx);
+}
+function onLocalVideoError(idx){
+  const wrap = document.querySelectorAll('.song-card')[idx]?.querySelector('.local-video-wrap');
+  const ver = getSelectedVersion(idx);
+  if(wrap) wrap.outerHTML = `<div class="video-error">⚠ No se pudo cargar el vídeo. Comprueba que el archivo esté subido en <code>${escapeHtml(artistId)}/video/${escapeHtml((ver && ver.videoFile)||'')}</code>.</div>`;
+}
 function seekInput(idx, val){
   const a = document.querySelector(`audio.audio-el[data-idx="${idx}"]`);
   if(a) a.currentTime = parseFloat(val);
@@ -529,8 +564,13 @@ function startAddMarker(idx){
   if(!isActiveVersion(idx)) return;
   let t = 0;
   if(currentMediaType(idx) === 'video'){
-    const player = ytPlayers[idx];
-    t = (player && player.getCurrentTime) ? Math.round(player.getCurrentTime()*10)/10 : 0;
+    if(videoKind(idx) === 'youtube'){
+      const player = ytPlayers[idx];
+      t = (player && player.getCurrentTime) ? Math.round(player.getCurrentTime()*10)/10 : 0;
+    }else{
+      const v = document.querySelector(`video.local-video[data-idx="${idx}"]`);
+      t = v ? Math.round(v.currentTime*10)/10 : 0;
+    }
   }else{
     const a = document.querySelector(`audio.audio-el[data-idx="${idx}"]`);
     t = a ? Math.round(a.currentTime*10)/10 : 0;
@@ -689,7 +729,9 @@ function askVersionDetails(type, versionDefault){
   if(type === 'audio'){
     extra = { audioFile: (prompt('Nombre exacto del archivo de audio (súbelo antes a la carpeta audio/ del artista en el repo)', '') || '').trim() };
   }else{
-    extra = { youtubeId: parseYouTubeId(prompt('Enlace o ID de YouTube (el vídeo debe estar en modo "Oculto", no "Privado")', '') || '') };
+    const raw = prompt('Enlace/ID de YouTube (modo "Oculto") — o, para vídeos cortos, el nombre exacto del archivo ya subido a la carpeta video/ del artista en el repo', '') || '';
+    const c = classifyVideoInput(raw);
+    extra = c.kind === 'file' ? { videoFile: c.value } : { youtubeId: c.value };
   }
   return Object.assign({ id:uid(), version:version.trim(), versionDate:fecha.trim(), comments:[] }, extra);
 }
@@ -728,9 +770,12 @@ function startEditVersion(idx){
     if(archivo === null) return;
     ver.audioFile = archivo.trim();
   }else{
-    const enlace = prompt('Enlace o ID de YouTube', ver.youtubeId || '');
+    const enlace = prompt('Enlace/ID de YouTube, o nombre de archivo de vídeo local', ver.youtubeId || ver.videoFile || '');
     if(enlace === null) return;
-    ver.youtubeId = parseYouTubeId(enlace);
+    const c = classifyVideoInput(enlace);
+    delete ver.youtubeId; delete ver.videoFile;
+    if(c.kind === 'file') ver.videoFile = c.value;
+    else if(c.kind === 'youtube') ver.youtubeId = c.value;
   }
   ver.version = label.trim(); ver.versionDate = fecha.trim();
   refreshSongCard(idx);
@@ -808,7 +853,8 @@ function renderSongCardInner(idx){
   const block = getMediaBlock(idx);
   const ver = getSelectedVersion(idx);
   const isActive = isActiveVersion(idx);
-  const hasMediaFile = !!(ver && (type === 'audio' ? ver.audioFile : ver.youtubeId));
+  const vKind = type === 'video' ? videoKind(idx) : null;
+  const hasMediaFile = !!(ver && (type === 'audio' ? ver.audioFile : vKind));
   const seed = ver ? escapeHtml(ver.id) : '';
   return `
     <div class="song-head">
@@ -858,13 +904,23 @@ function renderSongCardInner(idx){
         onended="setPlayIcon(${idx},false)"
         onerror="onAudioError(${idx})"></audio>
     </div>
-    ` : `
+    ` : (vKind === 'youtube' ? `
     <div class="yt-wrap"><div id="yt-embed-${idx}"></div></div>
     <div class="mini-timeline">
       <div class="mini-track" onclick="miniSeek(event,${idx})"></div>
       <div class="markers-row" data-idx="${idx}"></div>
     </div>
-    `)}
+    ` : `
+    <div class="local-video-wrap">
+      <video class="local-video" data-idx="${idx}" src="${escapeHtml(resolveVideoFileSrc(ver))}" controls preload="metadata"
+        onloadedmetadata="onLocalVideoReady(${idx},this)"
+        onerror="onLocalVideoError(${idx})"></video>
+    </div>
+    <div class="mini-timeline">
+      <div class="mini-track" onclick="miniSeek(event,${idx})"></div>
+      <div class="markers-row" data-idx="${idx}"></div>
+    </div>
+    `))}
     ${(hasMediaFile && isActive) ? `<button type="button" class="btn-add-marker" onclick="startAddMarker(${idx})">+ Añadir marcador${type==='video' ? ' (en el momento actual del vídeo)' : ''}</button>` : ''}
     ${hasMediaFile ? `<div class="add-marker-form" data-idx="${idx}" hidden></div><div class="comments-list" data-idx="${idx}"></div>` : ''}
     `}
