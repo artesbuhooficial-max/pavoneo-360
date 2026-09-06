@@ -127,6 +127,10 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 .btn-add-song{display:block;width:100%;border:1.5px dashed var(--blue);background:#fff;color:var(--blue);border-radius:12px;padding:14px;font-size:13px;font-weight:800;cursor:pointer}
 
 /* --- galería de fotos --- */
+.office-tools{background:var(--gold-pale);border:1px solid var(--gold);border-radius:12px;padding:12px 16px;margin-bottom:18px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.office-tools-label{font-size:11.5px;font-weight:800;color:var(--terra)}
+.office-tools a.btn-mini{text-decoration:none;display:inline-block}
+
 .gallery-card{background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--sh);padding:20px 22px;margin-bottom:22px}
 .gallery-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:10px}
 .gallery-note{font-size:12.5px;color:var(--ink-light);margin-bottom:16px;line-height:1.6}
@@ -181,6 +185,8 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
       <button type="button" class="btn btn-blue" id="btnGuardar" onclick="guardar()">☁ Enviar cambios al equipo</button>
       <span class="saved-note" id="savedNote"></span>
     </div>
+
+    <div id="officeToolsWrap"></div>
 
     <div id="galleryWrap"></div>
 
@@ -435,6 +441,7 @@ function toggleMode(){
 
 function render(){
   Object.keys(ytPlayers).forEach(idx => destroyPlayer(idx));
+  renderOfficeTools();
   renderGallery();
   const wrap = document.getElementById('songsWrap');
   if(!songs.length && !officeMode){
@@ -925,6 +932,22 @@ function renderSongCardInner(idx){
     ${(hasMediaFile && isActive) ? `<button type="button" class="btn-add-marker" onclick="startAddMarker(${idx})">+ Añadir marcador${type==='video' ? ' (en el momento actual del vídeo)' : ''}</button>` : ''}
     ${hasMediaFile ? `<div class="add-marker-form" data-idx="${idx}" hidden></div><div class="comments-list" data-idx="${idx}"></div>` : ''}
     `}
+  `;
+}
+
+/* ---- modo oficina: enlaces directos de subida a GitHub ---- */
+function renderOfficeTools(){
+  const wrap = document.getElementById('officeToolsWrap');
+  if(!wrap) return;
+  if(!officeMode || !artistId){ wrap.innerHTML = ''; return; }
+  const base = `https://github.com/artesbuhooficial-max/pavoneo-360/upload/main/artistas/${artistId}`;
+  wrap.innerHTML = `
+    <div class="office-tools">
+      <span class="office-tools-label">📤 Subir archivos directo a GitHub:</span>
+      <a class="btn-mini" href="${base}/audio" target="_blank" rel="noopener">Audio</a>
+      <a class="btn-mini" href="${base}/fotos" target="_blank" rel="noopener">Fotos</a>
+      <a class="btn-mini" href="${base}/video" target="_blank" rel="noopener">Vídeo</a>
+    </div>
   `;
 }
 
