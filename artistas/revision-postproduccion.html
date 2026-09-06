@@ -124,6 +124,30 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 
 .btn-add-song{display:block;width:100%;border:1.5px dashed var(--blue);background:#fff;color:var(--blue);border-radius:12px;padding:14px;font-size:13px;font-weight:800;cursor:pointer}
 
+/* --- galería de fotos --- */
+.gallery-card{background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--sh);padding:20px 22px;margin-bottom:22px}
+.gallery-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:10px}
+.gallery-note{font-size:12.5px;color:var(--ink-light);margin-bottom:16px;line-height:1.6}
+.bg-badge-inline{display:inline-flex;align-items:center;gap:3px;background:var(--green-pale);color:var(--green);font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.gallery-thumb{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;cursor:pointer;background:var(--cream2);border:1px solid var(--border);transition:transform .15s,box-shadow .15s}
+.gallery-thumb:hover{transform:scale(1.03);box-shadow:var(--sh)}
+.gallery-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.gallery-thumb.broken img{display:none}
+.gallery-thumb.broken::after{content:'⚠ No se pudo cargar';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ink-light);text-align:center;padding:8px}
+.bg-badge{position:absolute;bottom:6px;left:6px;background:rgba(30,138,94,.92);color:#fff;font-size:9.5px;font-weight:800;padding:3px 8px;border-radius:20px;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.thumb-del{position:absolute;top:6px;right:6px;background:rgba(7,28,72,.75);color:#fff;border:none;border-radius:6px;width:24px;height:24px;font-size:11px;cursor:pointer;opacity:0;transition:opacity .15s}
+.gallery-thumb:hover .thumb-del{opacity:1}
+
+.lightbox{position:fixed;inset:0;background:rgba(7,28,72,.94);z-index:999;display:flex;align-items:center;justify-content:center;padding:40px 20px}
+.lightbox img{max-width:100%;max-height:82vh;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.lb-close{position:absolute;top:18px;right:22px;background:rgba(255,255,255,.14);border:none;color:#fff;width:38px;height:38px;border-radius:50%;font-size:18px;cursor:pointer}
+.lb-close:hover{background:rgba(255,255,255,.24)}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.14);border:none;color:#fff;width:44px;height:44px;border-radius:50%;font-size:24px;cursor:pointer;line-height:1}
+.lb-nav:hover{background:rgba(255,255,255,.24)}
+.lb-prev{left:18px} .lb-next{right:18px}
+.lb-caption{position:absolute;bottom:22px;left:0;right:0;text-align:center;color:rgba(255,255,255,.88);font-size:12.5px;font-weight:700}
+
 .footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--border);font-size:11px;color:var(--ink-light);text-align:center}
 #loading{text-align:center;padding:60px 0;color:var(--ink-light)}
 @media(max-width:600px){
@@ -132,6 +156,9 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
   .btn{margin-left:0;width:100%;justify-content:center}
   .mode-pill{width:100%;text-align:center}
   .volume{margin-left:0}
+  .gallery-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}
+  .lb-nav{width:36px;height:36px;font-size:19px}
+  .lb-prev{left:8px} .lb-next{right:8px}
 }
 </style>
 </head>
@@ -152,10 +179,20 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
       <span class="saved-note" id="savedNote"></span>
     </div>
 
+    <div id="galleryWrap"></div>
+
     <div id="songsWrap"></div>
 
     <div class="footer"><strong>Artes Búho</strong> · artesbuho.oficial@gmail.com · Pavoneo 360°</div>
   </div>
+</div>
+
+<div class="lightbox" id="lightbox" hidden onclick="if(event.target===this) closeLightbox()">
+  <button type="button" class="lb-close" onclick="closeLightbox()">✕</button>
+  <button type="button" class="lb-nav lb-prev" onclick="lightboxNav(-1)">‹</button>
+  <img id="lightboxImg" src="" alt="Foto del día de grabación">
+  <button type="button" class="lb-nav lb-next" onclick="lightboxNav(1)">›</button>
+  <div class="lb-caption" id="lightboxCaption"></div>
 </div>
 
 <script>
@@ -181,6 +218,8 @@ const VIDEO_CATEGORIES = [
 let artistId = new URLSearchParams(location.search).get('id') || '';
 let expediente = null;
 let songs = [];
+let photos = [];
+let lightboxIndex = -1;
 let officeMode = false;
 let pendingMarker = {};
 let editingComment = {};
@@ -217,6 +256,11 @@ function resolveAudioSrc(ver){
   if(!ver || !ver.audioFile) return '';
   if(/^https?:\/\//i.test(ver.audioFile)) return ver.audioFile;
   return artistId + '/audio/' + ver.audioFile;
+}
+function resolvePhotoSrc(photo){
+  if(!photo || !photo.fileName) return '';
+  if(/^https?:\/\//i.test(photo.fileName)) return photo.fileName;
+  return artistId + '/fotos/' + photo.fileName;
 }
 function defaultMedia(song){
   if(!song) return 'audio';
@@ -339,6 +383,7 @@ async function init(){
     }catch(e){ console.warn(e); }
   }
   songs = (expediente && expediente.songReviews) || [];
+  photos = (expediente && expediente.photoGallery) || [];
   if(expediente){
     document.getElementById('mhSub').textContent =
       `Hola, ${expediente.displayName} 👋 — escucha cada mezcla y mira cada corte, y déjanos tus notas justo en el segundo que quieras cambiar.`;
@@ -364,6 +409,7 @@ function toggleMode(){
 
 function render(){
   Object.keys(ytPlayers).forEach(idx => destroyPlayer(idx));
+  renderGallery();
   const wrap = document.getElementById('songsWrap');
   if(!songs.length && !officeMode){
     wrap.innerHTML = `<div class="empty-state">🎚️ Aún no hay canciones en revisión.<br>En cuanto la oficina suba el primer mix o corte, aparecerá aquí.</div>`;
@@ -825,6 +871,73 @@ function renderSongCardInner(idx){
   `;
 }
 
+/* ---- galería de fotos del día de grabación ---- */
+function renderGallery(){
+  const wrap = document.getElementById('galleryWrap');
+  if(!wrap) return;
+  if(!photos.length && !officeMode){ wrap.innerHTML = ''; return; }
+  wrap.innerHTML = `
+    <div class="gallery-card">
+      <div class="gallery-head">
+        <div>
+          <div class="song-eyebrow">Sesión de fotos</div>
+          <div class="song-title">Fotos del día de grabación</div>
+        </div>
+        ${officeMode ? `<button type="button" class="btn-mini btn-mini-primary" onclick="addPhotos()">+ Añadir fotos</button>` : ''}
+      </div>
+      ${photos.length ? `<p class="gallery-note">📸 Fotos tomadas el día de la grabación. Las marcadas con <span class="bg-badge-inline">✂ Sin fondo</span> ya tienen el fondo eliminado — listas para usarse directamente en dossieres, prensa o materiales de marca, sin edición adicional.</p>
+      <div class="gallery-grid">
+        ${photos.map((p,i) => `
+        <div class="gallery-thumb" onclick="openLightbox(${i})">
+          <img src="${escapeHtml(resolvePhotoSrc(p))}" alt="${escapeHtml(p.fileName || '')}" loading="lazy" onerror="this.closest('.gallery-thumb').classList.add('broken')">
+          ${p.transparentBg ? `<span class="bg-badge">✂ Sin fondo</span>` : ''}
+          ${officeMode ? `<button type="button" class="thumb-del" onclick="event.stopPropagation();deletePhoto('${p.id}')" title="Quitar de la galería">🗑</button>` : ''}
+        </div>`).join('')}
+      </div>` : `<div class="no-media">Todavía no hay fotos — usa "+ Añadir fotos" arriba.</div>`}
+    </div>
+  `;
+}
+function openLightbox(i){
+  if(i < 0 || i >= photos.length) return;
+  lightboxIndex = i;
+  const p = photos[i];
+  document.getElementById('lightboxImg').src = resolvePhotoSrc(p);
+  document.getElementById('lightboxCaption').textContent = p.transparentBg ? '✂ Sin fondo — apta para dossier' : '';
+  document.getElementById('lightbox').hidden = false;
+}
+function closeLightbox(){
+  const lb = document.getElementById('lightbox');
+  if(lb) lb.hidden = true;
+  lightboxIndex = -1;
+}
+function lightboxNav(delta){
+  if(lightboxIndex < 0 || !photos.length) return;
+  openLightbox((lightboxIndex + delta + photos.length) % photos.length);
+}
+document.addEventListener('keydown', e => {
+  const lb = document.getElementById('lightbox');
+  if(!lb || lb.hidden) return;
+  if(e.key === 'Escape') closeLightbox();
+  if(e.key === 'ArrowLeft') lightboxNav(-1);
+  if(e.key === 'ArrowRight') lightboxNav(1);
+});
+function addPhotos(){
+  const normales = prompt('Nombres de archivo con fondo normal, separados por comas (tal como los subiste a la carpeta fotos/ del artista)', '') || '';
+  const sinFondo = prompt('Nombres de archivo CON el fondo ya quitado, separados por comas (déjalo vacío si no hay ninguna esta vez)', '') || '';
+  const parse = (str, transparent) => str.split(',').map(s => s.trim()).filter(Boolean).map(name => ({ id:uid(), fileName:name, transparentBg:transparent }));
+  const nuevas = parse(normales, false).concat(parse(sinFondo, true));
+  if(!nuevas.length) return;
+  photos = photos.concat(nuevas);
+  renderGallery();
+  noteChanged();
+}
+function deletePhoto(id){
+  if(!confirm('¿Quitar esta foto de la galería? (no borra el archivo del repositorio, solo la referencia)')) return;
+  photos = photos.filter(p => p.id !== id);
+  renderGallery();
+  noteChanged();
+}
+
 /* ---- guardado ---- */
 function noteChanged(){
   const note = document.getElementById('savedNote');
@@ -837,7 +950,7 @@ async function guardar(){
   if(!WEBHOOK){ note.className = 'saved-note err'; note.textContent = 'Publicador no configurado'; return; }
   btn.disabled = true; note.className = 'saved-note'; note.textContent = 'Enviando…';
   try{
-    const payload = Object.assign({}, expediente, { songReviews: songs.map(stripTransient), updatedAt: new Date().toISOString().slice(0,10) });
+    const payload = Object.assign({}, expediente, { songReviews: songs.map(stripTransient), photoGallery: photos, updatedAt: new Date().toISOString().slice(0,10) });
     // text/plain evita el preflight CORS de las webapps de Apps Script
     const r = await fetch(WEBHOOK, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(payload) });
     const body = await r.json().catch(() => null);
