@@ -184,6 +184,13 @@
                 "category": "edicion",
                 "text": "Se coló un plano rápido aqui",
                 "createdAt": "2026-09-07"
+              },
+              {
+                "id": "mtrfrrf9cvvf2",
+                "time": 39.9,
+                "category": "audiovid",
+                "text": "Mas comprensión en la voz y bajar un db en toda la voz, me pasé de volumen",
+                "createdAt": "2026-09-07"
               }
             ],
             "youtubeId": "YV254HcuNxo"
@@ -340,6 +347,13 @@
                 "time": 87.4,
                 "category": "audiovid",
                 "text": "Subir 1 db voz principal 1:27-2:00",
+                "createdAt": "2026-09-07"
+              },
+              {
+                "id": "mtrfmz6s2zd03",
+                "time": 118,
+                "category": "edicion",
+                "text": "Cambiar el plano antes de que el cable de la bola en el techo",
                 "createdAt": "2026-09-07"
               }
             ],
