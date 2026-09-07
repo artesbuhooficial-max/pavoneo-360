@@ -135,7 +135,50 @@
             "id": "mtpuu1gl8bxc7",
             "version": "Corte v1",
             "versionDate": "2026-09-06",
-            "comments": [],
+            "comments": [
+              {
+                "id": "mtr61plbn6yas",
+                "time": 8.5,
+                "category": "audiovid",
+                "text": "- Un poquito más de reverb en la voz en toda la cancion",
+                "createdAt": "2026-09-07"
+              },
+              {
+                "id": "mtr62bw2xlkub",
+                "time": 38.1,
+                "category": "audiovid",
+                "text": "Dos puntos más autotune en toda la canción",
+                "createdAt": "2026-09-07"
+              },
+              {
+                "id": "mtr63u5sujemu",
+                "time": 0,
+                "category": "audiovid",
+                "text": "Creo que se corta el primer golpe de la canción",
+                "createdAt": "2026-09-07"
+              },
+              {
+                "id": "mtr65kyvykajc",
+                "time": 52.1,
+                "category": "edicion",
+                "text": "Quitar franjas arriba y abajo.",
+                "createdAt": "2026-09-07"
+              },
+              {
+                "id": "mtr699vau92li",
+                "time": 128.8,
+                "category": "edicion",
+                "text": "Que entren ahora los créditos, no tan pronto",
+                "createdAt": "2026-09-07"
+              },
+              {
+                "id": "mtr6aqn92id0m",
+                "time": 18.6,
+                "category": "edicion",
+                "text": "Molaría aquí ver un plano de la go pro",
+                "createdAt": "2026-09-07"
+              }
+            ],
             "youtubeId": "YV254HcuNxo"
           }
         ]
@@ -263,7 +306,36 @@
             "id": "mt3dnfxrq7mne",
             "version": "Corte v1",
             "versionDate": "2026-08-21",
-            "comments": [],
+            "comments": [
+              {
+                "id": "mtr6eo1yxpzzj",
+                "time": 11.9,
+                "category": "edicion",
+                "text": "Quitar franjate arriba y abajo",
+                "createdAt": "2026-09-07"
+              },
+              {
+                "id": "mtr6jdpv9ulxr",
+                "time": 153.9,
+                "category": "audiovid",
+                "text": "Quitar dos puntos de autotune en esta última frase, ahí es cuando noto vibración rara",
+                "createdAt": "2026-09-07"
+              },
+              {
+                "id": "mtr6kgd17tt1r",
+                "time": 37.6,
+                "category": "audiovid",
+                "text": "Subir 1 db voz principal 0:37-0:55",
+                "createdAt": "2026-09-07"
+              },
+              {
+                "id": "mtr6li3ttjz16",
+                "time": 87.4,
+                "category": "audiovid",
+                "text": "Subir 1 db voz principal 1:27-2:00",
+                "createdAt": "2026-09-07"
+              }
+            ],
             "youtubeId": "E1zLUfv2w5o"
           }
         ]
