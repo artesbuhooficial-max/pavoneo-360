@@ -11,7 +11,29 @@
     "artifactCloud": "https://docs.google.com/forms/d/1DU4ijRq93Lo5yqssmkpXDme8t-3pqkIWsdrnd6Nrip0/edit",
     "revisionApp": "../artistas/revision-postproduccion.html?id=mario-cassado"
   },
-  "photoGallery": [],
+  "driveMaterials": [
+    {
+      "id": "fotos-con-fondo",
+      "label": "Fotos (con fondo)",
+      "kind": "folder",
+      "driveId": "1FXAG-5k0b20E6_VUwYz0DTE2mq68WrW5",
+      "note": ""
+    },
+    {
+      "id": "fotos-sin-fondo",
+      "label": "Fotos (sin fondo — listas para dossier/prensa)",
+      "kind": "folder",
+      "driveId": "1Q5s-ohBecPDi8KI755Hrc6UhFnaMadXj",
+      "note": "Estas fotos ya tienen el fondo eliminado — listas para usarse directamente en dossieres, prensa o materiales de marca sin edición adicional."
+    },
+    {
+      "id": "spot-prescriptor",
+      "label": "Vídeo · Spot Prescriptor",
+      "kind": "file",
+      "driveId": "1eU-naz7A5rygWgsjHG3DzSDnGbua-ngf",
+      "note": ""
+    }
+  ],
   "songReviews": [
     {
       "id": "dimelo",
