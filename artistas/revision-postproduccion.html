@@ -138,8 +138,11 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 .gallery-note{font-size:12.5px;color:var(--ink-light);margin-bottom:14px;line-height:1.6}
 .drive-folder-wrap{border-radius:10px;overflow:hidden;border:1px solid var(--border)}
 .drive-folder-wrap iframe{width:100%;height:420px;border:0;display:block;background:var(--cream2)}
-.drive-video-wrap{position:relative;padding-bottom:56.25%;height:0;border-radius:10px;overflow:hidden;background:#000}
+.drive-video-wrap{position:relative;padding-bottom:56.25%;height:0;border-radius:10px;overflow:hidden;background:#000;margin-bottom:12px}
 .drive-video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.drive-marker-note{font-size:11.5px;color:var(--ink-light);margin-bottom:10px;line-height:1.5}
+.c-time.c-time-static{cursor:default}
+.c-time.c-time-static:hover{color:var(--ink-mid)}
 
 .footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--border);font-size:11px;color:var(--ink-light);text-align:center}
 #loading{text-align:center;padding:60px 0;color:var(--ink-light)}
@@ -204,6 +207,8 @@ let artistId = new URLSearchParams(location.search).get('id') || '';
 let expediente = null;
 let songs = [];
 let driveMaterials = [];
+let pendingDriveMarker = {};
+let editingDriveComment = {};
 let officeMode = false;
 let pendingMarker = {};
 let editingComment = {};
@@ -946,7 +951,7 @@ function renderDriveMaterials(){
   if(!wrap) return;
   if(!driveMaterials.length && !officeMode){ wrap.innerHTML = ''; return; }
   wrap.innerHTML = driveMaterials.map(m => `
-    <div class="drive-card">
+    <div class="drive-card" id="drive-card-${m.id}">
       <div class="drive-head">
         <div>
           <div class="song-eyebrow">Material</div>
@@ -961,8 +966,141 @@ function renderDriveMaterials(){
       ${m.kind === 'file'
         ? `<div class="drive-video-wrap"><iframe src="${escapeHtml(driveEmbedUrl(m))}" loading="lazy" allow="autoplay" allowfullscreen></iframe></div>`
         : `<div class="drive-folder-wrap"><iframe src="${escapeHtml(driveEmbedUrl(m))}" loading="lazy"></iframe></div>`}
+      ${m.kind === 'file' ? `
+      <p class="drive-marker-note">🕒 Apunta el minuto:segundo mirando el reproductor de arriba — en Drive no podemos saltar solos al momento exacto, pero sí dejar la nota anclada a ese tiempo.</p>
+      <button type="button" class="btn-add-marker" onclick="startAddDriveMarker('${m.id}')">+ Añadir marcador</button>
+      <div class="add-marker-form" data-drive="${m.id}" hidden></div>
+      <div class="comments-list" data-drive="${m.id}"></div>
+      ` : ''}
     </div>
   `).join('') + (officeMode ? `<button type="button" class="btn-add-song" onclick="addDriveMaterial()">+ Añadir material de Drive</button>` : '');
+  driveMaterials.forEach(m => { if(m.kind === 'file') updateDriveCommentsList(m.id); });
+}
+function findDriveMaterial(id){ return driveMaterials.find(m => m.id === id) || null; }
+function parseTimeInput(raw){
+  raw = String(raw || '').trim();
+  if(!raw) return null;
+  if(/^\d+(\.\d+)?$/.test(raw)) return parseFloat(raw);
+  const m = raw.match(/^(\d+):(\d{1,2})(?:[.,](\d+))?$/);
+  if(m){
+    const min = parseInt(m[1],10), sec = parseInt(m[2],10);
+    if(sec > 59) return null;
+    const frac = m[3] ? parseFloat('0.'+m[3]) : 0;
+    return min*60 + sec + frac;
+  }
+  return null;
+}
+
+/* ---- comentarios anclados por tiempo en un material de Drive (sin control real del reproductor) ---- */
+function startAddDriveMarker(id){
+  const raw = prompt('¿En qué minuto:segundo del vídeo? (ej. 1:23, mirando el reproductor de arriba)', '0:00');
+  if(raw === null) return;
+  const t = parseTimeInput(raw);
+  if(t === null){ alert('No entendí ese tiempo. Usa el formato m:ss (ej. 1:23) o solo segundos.'); return; }
+  pendingDriveMarker[id] = { time:t, category:'general', text:'' };
+  renderAddDriveMarkerForm(id);
+}
+function cancelAddDriveMarker(id){ delete pendingDriveMarker[id]; renderAddDriveMarkerForm(id); }
+function updatePendingDriveMarker(id, field, value){ if(pendingDriveMarker[id]) pendingDriveMarker[id][field] = value; }
+function saveDriveMarker(id){
+  const pm = pendingDriveMarker[id];
+  if(!pm) return;
+  if(!pm.text || !pm.text.trim()){ alert('Escribe una recomendación antes de guardar.'); return; }
+  const m = findDriveMaterial(id);
+  if(!m) return;
+  if(!m.comments) m.comments = [];
+  m.comments.push({ id:uid(), time:pm.time, category:pm.category, text:pm.text.trim(), createdAt:new Date().toISOString().slice(0,10) });
+  delete pendingDriveMarker[id];
+  renderAddDriveMarkerForm(id);
+  updateDriveCommentsList(id);
+  noteChanged();
+}
+function renderAddDriveMarkerForm(id){
+  const el = document.querySelector(`.add-marker-form[data-drive="${id}"]`);
+  if(!el) return;
+  const pm = pendingDriveMarker[id];
+  if(!pm){ el.hidden = true; el.innerHTML = ''; return; }
+  el.hidden = false;
+  el.innerHTML = `
+    <div class="form-row">
+      <span class="form-time">En ${fmt(pm.time)}</span>
+      <select onchange="updatePendingDriveMarker('${id}','category',this.value)">
+        ${VIDEO_CATEGORIES.map(c => `<option value="${c.id}" ${c.id===pm.category?'selected':''}>${c.label}</option>`).join('')}
+      </select>
+    </div>
+    <textarea placeholder="Escribe tu recomendación..." oninput="updatePendingDriveMarker('${id}','text',this.value)">${escapeHtml(pm.text)}</textarea>
+    <div class="form-actions">
+      <button type="button" class="btn-mini" onclick="cancelAddDriveMarker('${id}')">Cancelar</button>
+      <button type="button" class="btn-mini btn-mini-primary" onclick="saveDriveMarker('${id}')">Guardar marcador</button>
+    </div>`;
+}
+function updateDriveCommentsList(id){
+  const el = document.querySelector(`.comments-list[data-drive="${id}"]`);
+  if(!el) return;
+  const m = findDriveMaterial(id);
+  if(!m) return;
+  const sorted = (m.comments || []).slice().sort((a,b) => a.time - b.time);
+  if(!sorted.length){
+    el.innerHTML = `<div class="no-comments">Aún no hay recomendaciones. Mira el vídeo de arriba y toca "+ Añadir marcador" apuntando el minuto.</div>`;
+    return;
+  }
+  el.innerHTML = sorted.map((c,i) => {
+    const cat = VIDEO_CATEGORIES.find(x => x.id === c.category) || VIDEO_CATEGORIES[VIDEO_CATEGORIES.length - 1];
+    if(editingDriveComment[id] && editingDriveComment[id].id === c.id){
+      const ed = editingDriveComment[id];
+      return `<div class="comment-row editing">
+        <div class="c-num" style="background:${cat.color}">${i+1}</div>
+        <div class="c-time c-time-static">${fmt(c.time)}</div>
+        <div class="c-edit-body">
+          <select onchange="updateEditDriveField('${id}','category',this.value)">
+            ${VIDEO_CATEGORIES.map(x => `<option value="${x.id}" ${x.id===ed.category?'selected':''}>${x.label}</option>`).join('')}
+          </select>
+          <textarea oninput="updateEditDriveField('${id}','text',this.value)">${escapeHtml(ed.text)}</textarea>
+          <div class="form-actions">
+            <button type="button" class="btn-mini" onclick="cancelEditDriveComment('${id}')">Cancelar</button>
+            <button type="button" class="btn-mini btn-mini-primary" onclick="saveEditDriveComment('${id}')">Guardar</button>
+          </div>
+        </div>
+      </div>`;
+    }
+    return `<div class="comment-row">
+      <div class="c-num" style="background:${cat.color}">${i+1}</div>
+      <div class="c-time c-time-static">${fmt(c.time)}</div>
+      <span class="c-tag" style="background:${cat.bg};color:${cat.color}">${cat.label}</span>
+      <div class="c-text">${escapeHtml(c.text)}</div>
+      <div class="c-actions">
+        <button type="button" class="icon-btn" onclick="startEditDriveComment('${id}','${c.id}')" title="Editar">✎</button>
+        <button type="button" class="icon-btn" onclick="deleteDriveComment('${id}','${c.id}')" title="Eliminar">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function startEditDriveComment(id, cid){
+  const m = findDriveMaterial(id);
+  const c = (m.comments || []).find(x => x.id === cid);
+  if(!c) return;
+  editingDriveComment[id] = { id:cid, category:c.category, text:c.text };
+  updateDriveCommentsList(id);
+}
+function cancelEditDriveComment(id){ delete editingDriveComment[id]; updateDriveCommentsList(id); }
+function updateEditDriveField(id, field, value){ if(editingDriveComment[id]) editingDriveComment[id][field] = value; }
+function saveEditDriveComment(id){
+  const ed = editingDriveComment[id];
+  if(!ed) return;
+  if(!ed.text || !ed.text.trim()){ alert('El comentario no puede quedar vacío.'); return; }
+  const m = findDriveMaterial(id);
+  const c = (m.comments || []).find(x => x.id === ed.id);
+  if(c){ c.category = ed.category; c.text = ed.text.trim(); }
+  delete editingDriveComment[id];
+  updateDriveCommentsList(id);
+  noteChanged();
+}
+function deleteDriveComment(id, cid){
+  if(!confirm('¿Eliminar esta recomendación?')) return;
+  const m = findDriveMaterial(id);
+  m.comments = (m.comments || []).filter(x => x.id !== cid);
+  updateDriveCommentsList(id);
+  noteChanged();
 }
 function addDriveMaterial(){
   const label = (prompt('Título (ej. "Fotos con fondo", "Vídeo Spot Prescriptor")', '') || '').trim();
