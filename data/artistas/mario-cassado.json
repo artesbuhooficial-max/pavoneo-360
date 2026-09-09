@@ -11,6 +11,14 @@
     "artifactCloud": "https://docs.google.com/forms/d/1DU4ijRq93Lo5yqssmkpXDme8t-3pqkIWsdrnd6Nrip0/edit",
     "revisionApp": "../artistas/revision-postproduccion.html?id=mario-cassado"
   },
+  "featuredLinks": [
+    {
+      "id": "entrevista-pavoneate",
+      "label": "Entrevista Pavonéate — completa",
+      "url": "https://pavonearte-mario-cassado.artesbuho-oficial.chatgpt.site",
+      "note": ""
+    }
+  ],
   "driveMaterials": [
     {
       "id": "fotos-con-fondo",

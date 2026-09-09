@@ -140,6 +140,22 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 .drive-folder-wrap iframe{width:100%;height:420px;border:0;display:block;background:var(--cream2)}
 .drive-video-wrap{position:relative;padding-bottom:56.25%;height:0;border-radius:10px;overflow:hidden;background:#000;margin-bottom:12px}
 .drive-video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+
+/* --- enlace destacado (ej. entrevista completa) --- */
+.featured-card{background:linear-gradient(135deg,var(--gold-pale),#fff);border:2px solid var(--gold);border-radius:18px;padding:24px 26px;margin-bottom:22px;box-shadow:var(--sh-md)}
+.featured-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.featured-eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--terra);font-weight:900;margin-bottom:5px}
+.featured-title{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:var(--ink);line-height:1.08}
+.featured-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.featured-note{font-size:13px;color:var(--ink-mid);margin-bottom:16px;line-height:1.6}
+.featured-embed-wrap{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--gold);background:#fff;height:75vh;min-height:420px}
+.featured-embed-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.btn-gold{background:var(--gold);color:var(--ink);text-decoration:none;display:inline-flex;align-items:center;gap:6px;border:none;border-radius:8px;padding:9px 16px;font-size:12.5px;font-weight:800;cursor:pointer}
+.btn-gold:hover{background:var(--terra);color:#fff}
+@media(max-width:600px){
+  .featured-title{font-size:23px}
+  .featured-embed-wrap{height:60vh}
+}
 .drive-marker-note{font-size:11.5px;color:var(--ink-light);margin-bottom:10px;line-height:1.5}
 .c-time.c-time-static{cursor:default}
 .c-time.c-time-static:hover{color:var(--ink-mid)}
@@ -166,6 +182,8 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
       <div class="mh-title">Revisión de <em>postproducción</em></div>
       <div class="mh-sub" id="mhSub">Escucha cada mezcla y mira cada corte — déjanos tus notas justo en el segundo que quieras cambiar.</div>
     </div>
+
+    <div id="featuredWrap"></div>
 
     <div class="bar">
       <button type="button" class="mode-pill" id="modeToggle" onclick="toggleMode()">🔐 Modo oficina</button>
@@ -207,6 +225,7 @@ let artistId = new URLSearchParams(location.search).get('id') || '';
 let expediente = null;
 let songs = [];
 let driveMaterials = [];
+let featuredLinks = [];
 let pendingDriveMarker = {};
 let editingDriveComment = {};
 let officeMode = false;
@@ -411,6 +430,7 @@ async function init(){
   }
   songs = (expediente && expediente.songReviews) || [];
   driveMaterials = (expediente && expediente.driveMaterials) || [];
+  featuredLinks = (expediente && expediente.featuredLinks) || [];
   if(expediente){
     document.getElementById('mhSub').textContent =
       `Hola, ${expediente.displayName} 👋 — escucha cada mezcla y mira cada corte, y déjanos tus notas justo en el segundo que quieras cambiar.`;
@@ -437,6 +457,7 @@ function toggleMode(){
 function render(){
   Object.keys(ytPlayers).forEach(idx => destroyPlayer(idx));
   renderOfficeTools();
+  renderFeaturedLinks();
   renderDriveMaterials();
   const wrap = document.getElementById('songsWrap');
   if(!songs.length && !officeMode){
@@ -945,6 +966,53 @@ function renderOfficeTools(){
   `;
 }
 
+/* ---- enlace destacado (ej. entrevista completa embebida) ---- */
+function renderFeaturedLinks(){
+  const wrap = document.getElementById('featuredWrap');
+  if(!wrap) return;
+  if(!featuredLinks.length && !officeMode){ wrap.innerHTML = ''; return; }
+  wrap.innerHTML = featuredLinks.map(item => `
+    <div class="featured-card">
+      <div class="featured-head">
+        <div>
+          <div class="featured-eyebrow">Especial</div>
+          <div class="featured-title">${escapeHtml(item.label || 'Enlace destacado')}</div>
+        </div>
+        <div class="featured-actions">
+          <button type="button" class="btn-gold" onclick="fullscreenFeatured('${item.id}')">⛶ Pantalla completa</button>
+          <a class="btn-mini" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">Abrir en pestaña nueva ↗</a>
+          ${officeMode ? `<button type="button" class="icon-btn" onclick="deleteFeaturedLink('${item.id}')" title="Quitar">🗑</button>` : ''}
+        </div>
+      </div>
+      ${item.note ? `<p class="featured-note">${escapeHtml(item.note)}</p>` : ''}
+      <div class="featured-embed-wrap"><iframe id="featured-iframe-${item.id}" src="${escapeHtml(item.url)}" loading="lazy" allow="fullscreen; autoplay" allowfullscreen></iframe></div>
+    </div>
+  `).join('') + (officeMode ? `<button type="button" class="btn-add-song" onclick="addFeaturedLink()">+ Añadir enlace destacado</button>` : '');
+}
+function fullscreenFeatured(id){
+  const el = document.getElementById('featured-iframe-' + id);
+  if(!el) return;
+  if(el.requestFullscreen) el.requestFullscreen();
+  else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  else window.open(el.src, '_blank');
+}
+function addFeaturedLink(){
+  const label = (prompt('Título (ej. "Entrevista completa")', 'Entrevista completa') || '').trim();
+  if(!label) return;
+  const url = (prompt('Enlace completo (empieza por https://)', '') || '').trim();
+  if(!/^https?:\/\//i.test(url)){ alert('Pega un enlace completo que empiece por https://'); return; }
+  const note = (prompt('Nota opcional para el artista (déjalo vacío si no hace falta)', '') || '').trim();
+  featuredLinks.push({ id:uid(), label, url, note });
+  renderFeaturedLinks();
+  noteChanged();
+}
+function deleteFeaturedLink(id){
+  if(!confirm('¿Quitar este enlace destacado?')) return;
+  featuredLinks = featuredLinks.filter(x => x.id !== id);
+  renderFeaturedLinks();
+  noteChanged();
+}
+
 /* ---- materiales alojados en Drive (fotos, vídeo Spot Prescriptor, etc.) ---- */
 function renderDriveMaterials(){
   const wrap = document.getElementById('driveWrap');
@@ -1132,7 +1200,7 @@ async function guardar(){
   if(!WEBHOOK){ note.className = 'saved-note err'; note.textContent = 'Publicador no configurado'; return; }
   btn.disabled = true; note.className = 'saved-note'; note.textContent = 'Enviando…';
   try{
-    const payload = Object.assign({}, expediente, { songReviews: songs.map(stripTransient), driveMaterials: driveMaterials, updatedAt: new Date().toISOString().slice(0,10) });
+    const payload = Object.assign({}, expediente, { songReviews: songs.map(stripTransient), driveMaterials: driveMaterials, featuredLinks: featuredLinks, updatedAt: new Date().toISOString().slice(0,10) });
     // text/plain evita el preflight CORS de las webapps de Apps Script
     const r = await fetch(WEBHOOK, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(payload) });
     const body = await r.json().catch(() => null);
