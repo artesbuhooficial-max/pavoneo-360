@@ -1,7 +1,7 @@
 {
   "artistId": "sin-guion",
   "displayName": "Sin Guion",
-  "updatedAt": "2026-09-03",
+  "updatedAt": "2026-09-09",
   "publicLinks": {
     "revisionApp": "../artistas/revision-postproduccion.html?id=sin-guion"
   },
@@ -13,7 +13,7 @@
       "songName": "SIN GUION CUARTETO",
       "audio": null,
       "video": {
-        "activeVersionId": "mtluom4p3zm7m",
+        "activeVersionId": "mtugyy26t4c7o",
         "versions": [
           {
             "id": "mt49ob61dfj1g",
@@ -43,6 +43,13 @@
             "versionDate": "2026-09-03",
             "comments": [],
             "youtubeId": "Ii1EjvX6T9k"
+          },
+          {
+            "id": "mtugyy26t4c7o",
+            "version": "Corte v4",
+            "versionDate": "2026-09-09",
+            "comments": [],
+            "youtubeId": "efRzGAljJ7Q"
           }
         ]
       }
@@ -117,6 +124,23 @@
             "versionDate": "2026-09-03",
             "comments": [],
             "youtubeId": "bDv4uyFTTes"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mtugwqgmicv22",
+      "songName": "SIN GUION MIX",
+      "audio": null,
+      "video": {
+        "activeVersionId": "mtugy0eglf3pz",
+        "versions": [
+          {
+            "id": "mtugy0eglf3pz",
+            "version": "MIX v.1",
+            "versionDate": "2026-09-09",
+            "comments": [],
+            "youtubeId": "4oj4Bk3mDrQ"
           }
         ]
       }
