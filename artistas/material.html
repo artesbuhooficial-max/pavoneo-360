@@ -4,36 +4,35 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pavoneo 360 · Entrega de material</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --cream:#F7F2E5; --cream2:#FFF8E8;
-  --ink:#071C48; --ink-mid:#24406E; --ink-light:#6A7EA6;
-  --blue:#0757D8; --blue-deep:#043C9F; --blue-soft:#EAF2FF; --teal-l:#3E83FF;
-  --gold:#E8B83E; --gold-pale:#FFF5D7; --terra:#D59A18;
+  --cream:#FBFDFF; --cream2:#EDF5FF;
+  --ink:#143663; --ink-mid:#2D5680; --ink-light:#6786A9;
+  --blue:#0D56BB; --blue-deep:#0B469B; --blue-soft:#EDF5FF; --teal-l:#3E83FF;
+  --gold:#F7F7BC; --gold-pale:#FFFCE0; --terra:#18528A;
   --green:#1E8A5E; --green-pale:#E8F7F1;
-  --red:#C0392B;
-  --border:#D8E3F5;
-  --sh:0 10px 28px rgba(7,28,72,.07); --sh-md:0 18px 52px rgba(7,28,72,.13);
+  --red:#BD3D3D;
+  --border:#D3E5FA;
+  --sh:0 6px 20px rgba(56,113,164,.06); --sh-md:0 14px 40px rgba(20,54,99,.12);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,#f8fbff 0%,#fff 44%,#fff8e8 100%);color:var(--ink);font-size:15px;line-height:1.6;min-height:100vh}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#F7FBFF;color:var(--ink);font-size:15px;line-height:1.6;min-height:100vh}
 .wrap{max-width:860px;margin:0 auto;padding:28px 22px 90px}
 
-.masthead{background:linear-gradient(135deg,#071C48 0%,#0B3E9A 60%,#0757D8 100%);color:#fff;padding:32px 38px 26px;border-radius:18px;margin-bottom:24px;position:relative;overflow:hidden;box-shadow:var(--sh-md)}
-.masthead::before{content:'📦';position:absolute;right:38px;top:50%;transform:translateY(-50%);font-size:74px;opacity:.1}
-.mh-eye{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);font-weight:800;margin-bottom:8px}
-.mh-title{font-size:30px;font-weight:900;line-height:1.05;letter-spacing:-.03em;margin-bottom:8px}
-.mh-title em{color:var(--gold);font-style:normal}
-.mh-sub{font-size:13px;color:rgba(255,255,255,.7);max-width:520px}
+.masthead{background:linear-gradient(155deg,#1B63C1 0%,#1553A5 65%,#114786 100%);color:#fff;padding:28px 34px;border-radius:18px;margin-bottom:24px;position:relative;overflow:hidden;box-shadow:var(--sh-md);display:flex;align-items:center;gap:20px}
+.masthead-logo{width:64px;height:69px;object-fit:contain;border-radius:11px;background:#1356AE;box-shadow:0 0 0 1px rgba(255,255,255,.08);flex-shrink:0}
+.mh-eye{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:#E5EFB4;font-weight:700;margin-bottom:8px}
+.mh-title{font-size:28px;font-weight:900;line-height:1.05;letter-spacing:-.03em;margin-bottom:8px}
+.mh-title em{color:#F7F7BC;font-style:normal}
+.mh-sub{font-size:13px;color:rgba(255,255,255,.78);max-width:520px}
 
 .progress-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px 22px;box-shadow:var(--sh);margin-bottom:22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
 .prog-bar{flex:1;min-width:180px;height:12px;background:var(--blue-soft);border-radius:8px;overflow:hidden}
 .prog-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--teal-l));border-radius:8px;transition:width .4s}
 .prog-label{font-weight:800;font-size:14px;white-space:nowrap}
-.btn{display:inline-flex;align-items:center;gap:7px;border:none;border-radius:9px;padding:10px 18px;font-size:13px;font-weight:800;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;transition:.15s}
-.btn-gold{background:var(--gold);color:var(--ink)}
-.btn-gold:hover{background:var(--terra);color:#fff}
+.btn{display:inline-flex;align-items:center;gap:7px;border:none;border-radius:20px;padding:11px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;text-decoration:none;transition:.15s}
+.btn-gold{background:var(--gold);color:var(--terra)}
+.btn-gold:hover{background:#EDED9F}
 .btn-blue{background:var(--blue);color:#fff}
 .btn-blue:hover{background:var(--blue-deep)}
 .btn:disabled{opacity:.5;cursor:not-allowed}
@@ -41,7 +40,7 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,#f8fbff 
 .group{background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
 .g-head{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border);background:var(--cream2)}
 .g-ico{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;font-size:17px;background:var(--blue-soft)}
-.g-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:700}
+.g-name{font-size:17px;font-weight:700}
 .g-sub{font-size:11px;color:var(--ink-light)}
 .item{display:flex;align-items:flex-start;gap:13px;padding:13px 20px;border-bottom:1px solid #EEF3FB;cursor:pointer;transition:background .12s}
 .item:last-child{border-bottom:none}
@@ -52,14 +51,14 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,#f8fbff 
 .i-name{font-weight:700;font-size:14px}
 .i-desc{font-size:12px;color:var(--ink-light)}
 
-.upload-card{background:linear-gradient(135deg,var(--gold-pale),#fff);border:1.5px solid var(--gold);border-radius:14px;padding:22px 24px;margin:24px 0;text-align:center}
-.upload-card h3{font-family:'Playfair Display',serif;font-size:19px;margin-bottom:6px}
+.upload-card{background:linear-gradient(120deg,#FFFFE8,#F4F5E3);border:1px solid #E6EDDB;border-radius:14px;padding:22px 24px;margin:24px 0;text-align:center}
+.upload-card h3{font-size:19px;font-weight:700;margin-bottom:6px}
 .upload-card p{font-size:12.5px;color:var(--ink-mid);margin-bottom:14px}
 .saved-note{font-size:12px;font-weight:700;margin-left:6px}
 .saved-note.ok{color:var(--green)} .saved-note.err{color:var(--red)}
 .footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--border);font-size:11px;color:var(--ink-light);text-align:center}
 #loading{text-align:center;padding:60px 0;color:var(--ink-light)}
-@media(max-width:600px){.masthead{padding:24px 20px}.mh-title{font-size:23px}}
+@media(max-width:600px){.masthead{padding:24px 20px;gap:14px}.masthead-logo{width:48px;height:52px}.mh-title{font-size:21px}}
 </style>
 </head>
 <body>
@@ -68,9 +67,12 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,#f8fbff 
   <div id="app" style="display:none">
 
     <div class="masthead">
-      <div class="mh-eye">Pavoneo 360° · Artes Búho</div>
-      <div class="mh-title">Entrega de <em>material</em></div>
-      <div class="mh-sub" id="mhSub">Todo lo que necesitamos de ti para arrancar tu proyecto. Marca cada elemento cuando lo hayas subido.</div>
+      <img class="masthead-logo" src="pavoneo-logo-v2.png" alt="Artes Búho">
+      <div>
+        <div class="mh-eye">Pavoneo 360° · Artes Búho</div>
+        <div class="mh-title">Entrega de <em>material</em></div>
+        <div class="mh-sub" id="mhSub">Todo lo que necesitamos de ti para arrancar tu proyecto. Marca cada elemento cuando lo hayas subido.</div>
+      </div>
     </div>
 
     <div class="progress-card">
