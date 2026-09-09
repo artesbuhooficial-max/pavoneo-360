@@ -4,30 +4,29 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pavoneo 360 · Registro de Enlaces</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --cream:#F7F2E5; --cream2:#FFF8E8; --parchment:#EADDBF;
-  --ink:#071C48; --ink-mid:#24406E; --ink-light:#6A7EA6;
-  --blue:#0757D8; --blue-deep:#043C9F; --blue-soft:#EAF2FF; --teal-l:#3E83FF;
-  --gold:#E8B83E; --gold-pale:#FFF5D7; --terra:#D59A18; --terra-pale:#FFF2CE;
-  --sage:#456C8F; --sage-pale:#EEF5FB;
+  --cream:#FBFDFF; --cream2:#EDF5FF; --parchment:#EADDBF;
+  --ink:#143663; --ink-mid:#2D5680; --ink-light:#6786A9;
+  --blue:#0D56BB; --blue-deep:#0B469B; --blue-soft:#EDF5FF; --teal-l:#3E83FF;
+  --gold:#F7F7BC; --gold-pale:#FFFCE0; --terra:#8A6A16; --terra-pale:#FFF2CE;
+  --sage:#3D6A94; --sage-pale:#EEF5FB;
   --green:#1E8A5E; --green-pale:#E8F7F1;
   --violet:#2347A5; --violet-pale:#EDF2FF;
-  --border:#D8E3F5;
-  --sh:0 10px 28px rgba(7,28,72,.07); --sh-md:0 18px 52px rgba(7,28,72,.13);
+  --border:#D3E5FA;
+  --sh:0 10px 28px rgba(20,54,99,.07); --sh-md:0 18px 52px rgba(20,54,99,.13);
   --r:10px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,#f8fbff 0%,#fff 44%,#fff8e8 100%);color:var(--ink);font-size:15px;line-height:1.65;min-height:100vh}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#F7FBFF;color:var(--ink);font-size:15px;line-height:1.65;min-height:100vh}
 a{color:var(--blue);text-decoration:none}
 a:hover{text-decoration:underline}
 
 .app{display:flex;min-height:100vh}
 
 /* SIDEBAR */
-.sidebar{width:262px;min-width:262px;background:linear-gradient(180deg,#0757D8 0%,#054CC2 52%,#03378E 100%);color:#fff;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;z-index:100;scrollbar-width:none;box-shadow:10px 0 34px rgba(7,87,216,.16)}
+.sidebar{width:262px;min-width:262px;background:linear-gradient(180deg,#1B63C1 0%,#1553A5 52%,#114786 100%);color:#fff;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;z-index:100;scrollbar-width:none;box-shadow:10px 0 34px rgba(13,86,187,.16)}
 .sidebar::-webkit-scrollbar{display:none}
 .sb-head{padding:28px 18px 22px;border-bottom:1px solid rgba(255,255,255,.12)}
 .brand-lockup{display:flex;align-items:center;gap:11px;margin-bottom:14px}
@@ -49,10 +48,10 @@ a:hover{text-decoration:underline}
 .main{flex:1;min-width:0;padding:28px 40px 80px}
 
 /* MASTHEAD */
-.masthead{background:linear-gradient(135deg,#071C48 0%,#0B3E9A 60%,#0757D8 100%);color:#fff;padding:36px 46px 28px;border-radius:18px;margin-bottom:32px;position:relative;overflow:hidden;box-shadow:var(--sh-md)}
+.masthead{background:linear-gradient(155deg,#1B63C1 0%,#1553A5 65%,#114786 100%);color:#fff;padding:36px 46px 28px;border-radius:18px;margin-bottom:32px;position:relative;overflow:hidden;box-shadow:var(--sh-md)}
 .masthead::before{content:'🔗';position:absolute;right:48px;top:50%;transform:translateY(-50%);font-size:80px;opacity:.08}
 .mh-eye{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);font-weight:800;margin-bottom:10px}
-.mh-title{font-family:'DM Sans',sans-serif;font-size:38px;font-weight:900;line-height:1;margin-bottom:8px;letter-spacing:-.04em}
+.mh-title{font-size:38px;font-weight:900;line-height:1;margin-bottom:8px;letter-spacing:-.04em}
 .mh-title em{color:var(--gold);font-style:normal}
 .mh-sub{font-size:13px;color:rgba(255,255,255,.6)}
 
@@ -60,7 +59,7 @@ a:hover{text-decoration:underline}
 .group{margin-bottom:36px}
 .group-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:2px solid var(--border)}
 .group-ico{width:36px;height:36px;border-radius:8px;display:grid;place-items:center;font-size:18px;flex-shrink:0}
-.group-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--ink)}
+.group-name{font-size:20px;font-weight:700;color:var(--ink)}
 .group-sub{font-size:11px;color:var(--ink-light);margin-top:1px}
 .group-count{margin-left:auto;background:var(--blue-soft);color:var(--blue);font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.06em}
 
@@ -79,12 +78,12 @@ a:hover{text-decoration:underline}
 .lc-name{font-weight:700;font-size:14px;color:var(--ink);margin-bottom:2px}
 .lc-desc{font-size:11.5px;color:var(--ink-light);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lc-actions{display:flex;gap:8px;align-items:center;flex-shrink:0}
-.btn-open{display:inline-flex;align-items:center;gap:5px;background:var(--blue);color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;transition:.14s}
+.btn-open{display:inline-flex;align-items:center;gap:5px;background:var(--blue);color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit;text-decoration:none;transition:.14s}
 .btn-open:hover{background:var(--blue-deep);color:#fff;text-decoration:none}
-.btn-copy{display:inline-flex;align-items:center;gap:5px;background:#fff;color:var(--ink-light);border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.14s}
+.btn-copy{display:inline-flex;align-items:center;gap:5px;background:#fff;color:var(--ink-light);border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:.14s}
 .btn-copy:hover{background:var(--blue-soft);color:var(--blue);border-color:var(--teal-l)}
 .btn-copy.ok{background:var(--green-pale);color:var(--green);border-color:var(--green)}
-.lc-url{background:var(--cream2);border-top:1px solid var(--border);padding:10px 20px;font-family:'DM Mono',monospace;font-size:11px;color:var(--ink-light);word-break:break-all;display:flex;align-items:center;gap:10px}
+.lc-url{background:var(--cream2);border-top:1px solid var(--border);padding:10px 20px;font-family:Consolas,monospace;font-size:11px;color:var(--ink-light);word-break:break-all;display:flex;align-items:center;gap:10px}
 .lc-url-text{flex:1}
 .lc-date{font-size:10px;color:var(--ink-light);flex-shrink:0;white-space:nowrap}
 

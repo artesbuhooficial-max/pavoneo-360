@@ -4,40 +4,39 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pavoneo 360 · Dashboard General</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --cream:#F7F2E5; --cream2:#FFF8E8; --parchment:#EADDBF;
-  --ink:#071C48; --ink-mid:#24406E; --ink-light:#6A7EA6;
-  --blue:#0757D8; --blue-deep:#043C9F; --blue-soft:#EAF2FF; --teal-l:#3E83FF;
-  --gold:#E8B83E; --gold-pale:#FFF5D7; --terra:#D59A18;
+  --cream:#FBFDFF; --cream2:#EDF5FF; --parchment:#B8C4D6;
+  --ink:#143663; --ink-mid:#2D5680; --ink-light:#6786A9;
+  --blue:#0D56BB; --blue-deep:#0B469B; --blue-soft:#EDF5FF; --teal-l:#3E83FF;
+  --gold:#D9B84A; --gold-pale:#FFF8DE; --terra:#A9862B;
   --green:#1E8A5E; --green-pale:#E8F7F1;
   --violet:#2347A5; --violet-pale:#EDF2FF;
-  --sage:#456C8F; --sage-pale:#EEF5FB;
-  --red:#C0392B; --red-pale:#FDECEA;
-  --border:#D8E3F5;
-  --sh:0 10px 28px rgba(7,28,72,.07); --sh-md:0 18px 52px rgba(7,28,72,.13);
+  --sage:#3D6A94; --sage-pale:#EEF5FB;
+  --red:#BD3D3D; --red-pale:#FFEDED;
+  --border:#D3E5FA;
+  --sh:0 10px 28px rgba(20,54,99,.07); --sh-md:0 18px 52px rgba(20,54,99,.13);
   --r:12px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,#f8fbff 0%,#fff 44%,#fff8e8 100%);color:var(--ink);font-size:15px;line-height:1.6;min-height:100vh}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#F7FBFF;color:var(--ink);font-size:15px;line-height:1.6;min-height:100vh}
 a{color:var(--blue);text-decoration:none}
 a:hover{text-decoration:underline}
 
 /* ── GATE ── */
-#gate{position:fixed;inset:0;background:linear-gradient(135deg,#071C48 0%,#0B3E9A 60%,#0757D8 100%);display:flex;align-items:center;justify-content:center;z-index:1000}
+#gate{position:fixed;inset:0;background:linear-gradient(155deg,#1B63C1 0%,#1553A5 65%,#114786 100%);display:flex;align-items:center;justify-content:center;z-index:1000}
 .gate-card{background:#fff;border-radius:16px;padding:38px 42px;max-width:360px;width:92%;text-align:center;box-shadow:var(--sh-md)}
-.gate-card h1{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:6px}
+.gate-card h1{font-size:22px;margin-bottom:6px}
 .gate-card p{font-size:12px;color:var(--ink-light);margin-bottom:18px}
-.gate-card input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:'DM Mono',monospace;text-align:center;margin-bottom:12px}
+.gate-card input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:Consolas,monospace;text-align:center;margin-bottom:12px}
 .gate-card input:focus{outline:none;border-color:var(--blue)}
-.gate-card button{width:100%;background:var(--blue);color:#fff;border:none;border-radius:8px;padding:11px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif}
+.gate-card button{width:100%;background:var(--blue);color:#fff;border:none;border-radius:8px;padding:11px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
 .gate-card button:hover{background:var(--blue-deep)}
 .gate-err{color:var(--red);font-size:11px;margin-top:10px;display:none}
 
 /* ── LAYOUT ── */
 .wrap{max-width:1200px;margin:0 auto;padding:28px 32px 90px}
-.masthead{background:linear-gradient(135deg,#071C48 0%,#0B3E9A 60%,#0757D8 100%);color:#fff;padding:34px 44px 28px;border-radius:18px;margin-bottom:26px;position:relative;overflow:hidden;box-shadow:var(--sh-md);display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.masthead{background:linear-gradient(155deg,#1B63C1 0%,#1553A5 65%,#114786 100%);color:#fff;padding:34px 44px 28px;border-radius:18px;margin-bottom:26px;position:relative;overflow:hidden;box-shadow:var(--sh-md);display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap}
 .masthead::before{content:'🦉';position:absolute;right:34px;bottom:-14px;font-size:84px;opacity:.1;pointer-events:none}
 .mh-text{flex:1;min-width:260px;position:relative;z-index:1}
 .mh-eye{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);font-weight:800;margin-bottom:9px}
@@ -45,7 +44,7 @@ a:hover{text-decoration:underline}
 .mh-title em{color:var(--gold);font-style:normal}
 .mh-sub{font-size:13px;color:rgba(255,255,255,.65);max-width:640px}
 .mh-actions{display:flex;gap:8px;flex-shrink:0;position:relative;z-index:1}
-.mh-btn{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:7px 14px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none}
+.mh-btn{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:7px 14px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit;text-decoration:none}
 .mh-btn:hover{background:rgba(255,255,255,.26);color:#fff;text-decoration:none}
 
 /* ── KPIs ── */
@@ -58,14 +57,14 @@ a:hover{text-decoration:underline}
 /* ── SECTION HEAD ── */
 .sec-head{display:flex;align-items:center;gap:12px;margin:34px 0 16px;padding-bottom:11px;border-bottom:2px solid var(--border)}
 .sec-ico{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;font-size:17px;background:var(--blue-soft)}
-.sec-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:700}
+.sec-name{font-size:20px;font-weight:700}
 .sec-sub{font-size:11px;color:var(--ink-light)}
 
 /* ── PIPELINE ── */
 .pipeline{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;overflow-x:auto}
 .pl-col{background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px 8px;min-height:110px}
 .pl-col-head{font-size:9px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:var(--ink-light);text-align:center;padding-bottom:8px;border-bottom:1.5px dashed var(--border);margin-bottom:8px}
-.pl-col-head .n{display:block;font-size:15px;color:var(--parchment);font-family:'Playfair Display',serif;margin-bottom:1px}
+.pl-col-head .n{display:block;font-size:15px;color:var(--parchment);margin-bottom:1px}
 .pl-artist{background:var(--gold-pale);border:1px solid var(--gold);border-radius:7px;padding:6px 7px;font-size:10.5px;font-weight:700;margin-bottom:6px;cursor:pointer;text-align:center;line-height:1.3}
 .pl-artist:hover{background:var(--gold)}
 .pl-artist .pe{font-size:14px;display:block}
@@ -76,7 +75,7 @@ a:hover{text-decoration:underline}
 .card:hover{box-shadow:var(--sh-md)}
 .c-head{display:flex;align-items:center;gap:13px;padding:18px 20px 12px}
 .c-avatar{width:46px;height:46px;border-radius:11px;background:var(--blue-soft);display:grid;place-items:center;font-size:24px;flex-shrink:0}
-.c-name{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;line-height:1.15}
+.c-name{font-size:18px;font-weight:700;line-height:1.15}
 .c-desc{font-size:11px;color:var(--ink-light)}
 .c-badges{margin-left:auto;display:flex;flex-direction:column;gap:4px;align-items:flex-end}
 .badge{font-size:8.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;padding:3px 9px;border-radius:20px}
