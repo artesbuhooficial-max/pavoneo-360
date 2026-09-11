@@ -1,7 +1,7 @@
 {
   "artistId": "sin-guion",
   "displayName": "Sin Guion",
-  "updatedAt": "2026-09-09",
+  "updatedAt": "2026-09-11",
   "publicLinks": {
     "revisionApp": "../artistas/revision-postproduccion.html?id=sin-guion"
   },
@@ -59,7 +59,7 @@
       "songName": "SIN GUION TRIO",
       "audio": null,
       "video": {
-        "activeVersionId": "mtlup0vu9vc1n",
+        "activeVersionId": "mtwpvbxmepbpl",
         "versions": [
           {
             "id": "mt49fi9c7gfgq",
@@ -124,6 +124,13 @@
             "versionDate": "2026-09-03",
             "comments": [],
             "youtubeId": "bDv4uyFTTes"
+          },
+          {
+            "id": "mtwpvbxmepbpl",
+            "version": "Corte v4",
+            "versionDate": "2026-09-11",
+            "comments": [],
+            "youtubeId": "dPLoDRdALgg"
           }
         ]
       }
