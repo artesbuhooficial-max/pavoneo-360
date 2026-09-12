@@ -4,7 +4,7 @@
   "pack": "premium",
   "currentStep": "postproduccion",
   "unlockedUntil": "postproduccion",
-  "updatedAt": "2026-09-11",
+  "updatedAt": "2026-09-12",
   "publicLinks": {
     "infoMaestra": "https://artesbuhooficial-max.github.io/pavoneo-360/artistas/mario-cassado/",
     "materialesPublicos": "",
@@ -222,7 +222,15 @@
             "id": "mtwt1xakvzjwe",
             "version": "Corte v2",
             "versionDate": "2026-09-11",
-            "comments": [],
+            "comments": [
+              {
+                "id": "mtyifd3dd9md7",
+                "time": 8,
+                "category": "audiovid",
+                "text": "Bajar autotune en esta palabra \"real\"",
+                "createdAt": "2026-09-12"
+              }
+            ],
             "youtubeId": "WDFjv55hhiU"
           }
         ]
@@ -393,7 +401,22 @@
             "id": "mtwt1fsjjlle0",
             "version": "Corte v2",
             "versionDate": "2026-09-11",
-            "comments": [],
+            "comments": [
+              {
+                "id": "mtyihreayocs7",
+                "time": 117.8,
+                "category": "edicion",
+                "text": "Sustituir por la bola del inicio del video de dímelo (sin que salga la mano dándole) y ponerlo a cámara lenta",
+                "createdAt": "2026-09-12"
+              },
+              {
+                "id": "mtyiih2v6n0im",
+                "time": 112.8,
+                "category": "edicion",
+                "text": "Que no vaya tan lento este plano",
+                "createdAt": "2026-09-12"
+              }
+            ],
             "youtubeId": "4OVPmnpigy8"
           }
         ]
