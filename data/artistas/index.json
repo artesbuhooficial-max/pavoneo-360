@@ -1,8 +1,18 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-07",
+  "updatedAt": "2026-09-15",
   "descripcion": "Manifest central de artistas Pavoneo 360. Alimenta el dashboard general de oficina (oficina/global.html). Al dar de alta un artista, añadir aquí su entrada. URLs relativas a la raíz del repo.",
   "artistas": [
+    {
+      "id": "alvaro-jacaro",
+      "nombre": "Álvaro Jácaro",
+      "descripcion": "Revisión de postproducción",
+      "emoji": "🎵",
+      "expediente": "data/artistas/alvaro-jacaro.json",
+      "documentos": [
+        { "tipo": "panel", "nombre": "Revisión de postproducción", "url": "artistas/revision-postproduccion.html?id=alvaro-jacaro" }
+      ]
+    },
     {
       "id": "epiybrass",
       "nombre": "Epi&Brass",
