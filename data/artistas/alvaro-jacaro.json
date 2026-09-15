@@ -7,5 +7,40 @@
   },
   "featuredLinks": [],
   "driveMaterials": [],
-  "songReviews": []
+  "songReviews": [
+    {
+      "id": "mu36lq03k4mfx",
+      "songName": "MEDIA VIDA CON VOZ",
+      "audio": {
+        "activeVersionId": "mu36lvsvq3bcm",
+        "versions": [
+          {
+            "id": "mu36lvsvq3bcm",
+            "version": "Pre-mix v1",
+            "versionDate": "2026-09-15",
+            "comments": [],
+            "audioFile": "MEDIA VIDA CON VOZ.mp3"
+          }
+        ]
+      },
+      "video": null
+    },
+    {
+      "id": "mu36m49d29oxo",
+      "songName": "MEDIA VIDA SIN VOZ",
+      "audio": {
+        "activeVersionId": "mu36mm90atks9",
+        "versions": [
+          {
+            "id": "mu36mm90atks9",
+            "version": "Pre-mix v1",
+            "versionDate": "2026-09-15",
+            "comments": [],
+            "audioFile": "MEDIA VIDA.mp3"
+          }
+        ]
+      },
+      "video": null
+    }
+  ]
 }
