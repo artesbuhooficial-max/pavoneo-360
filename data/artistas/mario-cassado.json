@@ -4,7 +4,7 @@
   "pack": "premium",
   "currentStep": "postproduccion",
   "unlockedUntil": "postproduccion",
-  "updatedAt": "2026-09-12",
+  "updatedAt": "2026-09-17",
   "publicLinks": {
     "infoMaestra": "https://artesbuhooficial-max.github.io/pavoneo-360/artistas/mario-cassado/",
     "materialesPublicos": "",
@@ -352,7 +352,7 @@
         ]
       },
       "video": {
-        "activeVersionId": "mtwt1fsjjlle0",
+        "activeVersionId": "mu5qdnvumv6en",
         "versions": [
           {
             "id": "mt3dnfxrq7mne",
@@ -418,6 +418,13 @@
               }
             ],
             "youtubeId": "4OVPmnpigy8"
+          },
+          {
+            "id": "mu5qdnvumv6en",
+            "version": "FINAL",
+            "versionDate": "2026-09-17",
+            "comments": [],
+            "youtubeId": "VcWNVeULSrY"
           }
         ]
       }
