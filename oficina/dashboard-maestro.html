@@ -41,6 +41,8 @@
     /* La portada conserva su proporción original para no cortar el logotipo ni el texto. */
     .pav-opening-media{align-self:center;min-height:0!important;aspect-ratio:1672/941!important}
     .pav-opening-media>img{object-fit:contain!important}
+    .pav-opening-media>iframe{position:absolute;inset:0;z-index:4;width:100%;height:100%;border:0}
+    button.pav-opening-placeholder{width:100%;border:0;color:inherit;background:transparent;cursor:pointer}
   </style>
   <link rel="stylesheet" href="oficina/dashboard-maestro-assets/pavoneo-public.css">
   <link rel="stylesheet" href="oficina/dashboard-maestro-assets/pavoneo-refinado.css">
@@ -57,7 +59,7 @@
     </div>
     <div class="pav-opening-media" id="pav-opening-media" aria-label="Espacio reservado para la portada del vídeo de presentación">
       <img src="images/portada-video-roman.png" alt="Román presenta Pavoneo 360º desde el estudio de Artes Búho">
-      <a class="pav-opening-placeholder" href="https://www.youtube.com/watch?v=M4z2WLgJ7QE" target="_blank" rel="noopener" aria-label="Ver el vídeo de Román: Quiénes somos"><span class="pav-opening-play" aria-hidden="true">▶</span><span class="sr-only">Ver el vídeo de Román: Quiénes somos</span></a>
+      <button class="pav-opening-placeholder" type="button" data-video="https://www.youtube-nocookie.com/embed/M4z2WLgJ7QE?autoplay=1&amp;rel=0" data-title="Quiénes somos · Román" aria-label="Reproducir aquí el vídeo de Román: Quiénes somos"><span class="pav-opening-play" aria-hidden="true">▶</span><span class="sr-only">Reproducir aquí el vídeo de Román: Quiénes somos</span></button>
     </div>
     <a class="pav-opening-scroll" href="#inicio"><span>DESCUBRE EL PROCESO</span><i aria-hidden="true"></i></a>
   </section>
