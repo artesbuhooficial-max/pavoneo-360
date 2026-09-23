@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Hackea las redes: formación práctica de Pavoneo 360° con Román, vídeo embebido y guía de capítulos.">
+<title>Hackea las redes · Pavoneo 360°</title>
+<style>
+:root{
+  --paper:#f8fbff;--white:#fff;--ink:#143663;--ink2:#2d5680;--muted:#6786a9;
+  --blue:#0d56bb;--deep:#0b469b;--soft:#edf5ff;--line:#d3e5fa;
+  --yellow:#f7f7bc;--yellow2:#fffce0;--shadow:0 16px 45px rgba(20,54,99,.12)
+}
+*,*::before,*::after{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Segoe UI",Arial,sans-serif;line-height:1.6}
+a{color:inherit}.wrap{width:min(calc(100% - 36px),980px);margin:auto;padding:30px 0 80px}
+.brandbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:22px}
+.brand{display:flex;align-items:center;gap:11px}.mark{display:grid;place-items:center;width:42px;height:42px;border-radius:10px;background:var(--ink);font-size:20px}
+.word{font-size:16px;font-weight:900;line-height:.88;letter-spacing:-.04em}.word span{display:block}.note{margin-top:4px;color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+.back{color:var(--ink2);font-size:12px;font-weight:800;text-decoration:none}.back:hover{color:var(--blue)}
+.hero{position:relative;overflow:hidden;padding:46px;border-radius:22px;background:linear-gradient(145deg,#0b2f69,#0d56bb 68%,#3e83ff);color:#fff;box-shadow:var(--shadow)}
+.hero::after{content:"#";position:absolute;right:28px;bottom:-80px;color:rgba(255,255,255,.08);font-size:260px;font-weight:900;line-height:1}
+.badge{position:relative;z-index:1;display:inline-flex;padding:5px 12px;border-radius:99px;background:var(--yellow);color:var(--ink);font-size:9px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+h1{position:relative;z-index:1;max-width:700px;margin:16px 0 8px;font-size:clamp(38px,7vw,68px);line-height:.95;letter-spacing:-.045em}h1 em{color:var(--yellow);font-style:normal}
+.lead{position:relative;z-index:1;max-width:700px;margin:0;color:#dbeaff;font-size:16px}.hero-meta{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}.hero-meta span{padding:7px 10px;border:1px solid rgba(255,255,255,.2);border-radius:99px;color:#e5f0ff;font-size:10px;font-weight:700}
+.quote{margin:20px 0;padding:20px 24px;border-left:4px solid var(--yellow);border-radius:0 14px 14px 0;background:var(--soft);color:var(--ink2);font-size:15px}
+.card{margin-top:18px;padding:26px;border:1px solid var(--line);border-radius:18px;background:var(--white);box-shadow:0 8px 24px rgba(56,113,164,.06)}
+.eyebrow{margin-bottom:7px;color:var(--blue);font-size:9px;font-weight:900;letter-spacing:.2em;text-transform:uppercase}h2{margin:0 0 8px;font-size:clamp(23px,4vw,34px);line-height:1.12}p{margin-top:0;color:var(--ink2)}
+.video-shell{position:relative;margin-top:18px;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:14px;background:#071c48}.video-shell iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.video-actions{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-top:14px}.video-note{max-width:620px;margin:0;color:var(--muted);font-size:11.5px}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 15px;border-radius:9px;background:var(--blue);color:#fff;font-size:12px;font-weight:900;text-decoration:none}.btn:hover{background:var(--deep)}
+.guide{display:grid;grid-template-columns:.75fr 1.25fr;gap:18px;align-items:start}.guide-note{position:sticky;top:18px;padding:24px;border-radius:16px;background:linear-gradient(145deg,var(--yellow2),#fff);border:1px solid #ececa0}.guide-note strong{display:block;margin-bottom:8px;font-size:17px}.guide-note p{margin:0;font-size:12.5px}.guide-note ol{margin:15px 0 0;padding-left:18px;color:var(--ink2);font-size:12px}
+.chapters{display:grid;gap:10px}.chapter{display:grid;grid-template-columns:78px 1fr;gap:14px;padding:17px;border:1px solid var(--line);border-radius:14px;background:#fff}.time{align-self:start;padding:6px 8px;border-radius:8px;background:var(--blue);color:#fff;text-align:center;font-variant-numeric:tabular-nums;font-size:12px;font-weight:900}.chapter h3{margin:0 0 4px;font-size:15px}.chapter p{margin:0;color:var(--muted);font-size:12px;line-height:1.5}
+.takeaways{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}.takeaway{padding:20px;border:1px solid var(--line);border-radius:14px;background:var(--soft)}.takeaway b{display:block;margin-bottom:7px;font-size:14px}.takeaway p{margin:0;color:var(--muted);font-size:12px}.num{display:grid;place-items:center;width:30px;height:30px;margin-bottom:13px;border-radius:50%;background:var(--blue);color:#fff;font-size:11px;font-weight:900}
+.transcript-note{margin-top:18px;padding:18px 20px;border-radius:14px;background:#fff;border:1px dashed var(--line);color:var(--muted);font-size:11.5px}.footer{margin-top:38px;padding-top:17px;border-top:1px solid var(--line);color:var(--muted);text-align:center;font-size:11px}
+@media(max-width:760px){.hero{padding:32px 24px}.guide{grid-template-columns:1fr}.guide-note{position:static}.takeaways{grid-template-columns:1fr}.chapter{grid-template-columns:66px 1fr}}
+@media(max-width:480px){.wrap{width:min(calc(100% - 22px),980px)}.brandbar{align-items:flex-start}.back{max-width:115px;text-align:right}.card{padding:20px}.chapter{grid-template-columns:1fr}.time{justify-self:start}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="brandbar">
+    <div class="brand"><div class="mark">🦉</div><div><div class="word"><span>Pavoneo</span><span>360°</span></div><div class="note">Artes Búho Management</div></div></div>
+    <a class="back" href="index.html">← Volver a Extras</a>
+  </header>
+
+  <section class="hero">
+    <span class="badge">Formación · Pack Full Pavoneo 360°</span>
+    <h1>Hackea <em>las redes</em></h1>
+    <p class="lead">Román desmonta el lanzamiento como un único anuncio y lo convierte en una historia por capítulos: preparación, contexto, publicación y continuidad.</p>
+    <div class="hero-meta"><span>Vídeo completo</span><span>Guía por minutos</span><span>Ideas accionables</span></div>
+  </section>
+
+  <div class="quote">No se trata de publicar más por publicar. Se trata de que cada pieza tenga una función, llegue en el momento correcto y ayude al público a seguir la historia.</div>
+
+  <section class="card" aria-labelledby="video-title">
+    <div class="eyebrow">La sesión completa</div>
+    <h2 id="video-title">Mira el vídeo sin salir de Pavoneo</h2>
+    <p>La formación está alojada en Drive y se reproduce dentro de esta página. Debajo encontrarás una guía de capítulos para volver a cada idea importante sin perderte.</p>
+    <div class="video-shell"><iframe src="https://drive.google.com/file/d/113mb07vsHa-VoTgndttysuXgWBdX9AFc/preview" title="Hackea las redes · Formación con Román" allow="autoplay; fullscreen" allowfullscreen loading="eager"></iframe></div>
+    <div class="video-actions"><p class="video-note">Si el visor de Drive tarda en cargar, usa el acceso directo. El archivo está configurado para verse en modo lectura.</p><a class="btn" href="https://drive.google.com/file/d/113mb07vsHa-VoTgndttysuXgWBdX9AFc/view?usp=sharing" target="_blank" rel="noopener">Abrir en Drive ↗</a></div>
+  </section>
+
+  <section class="card" aria-labelledby="chapters-title">
+    <div class="eyebrow">Mapa de la formación</div>
+    <h2 id="chapters-title">Capítulos para no perder el hilo</h2>
+    <div class="guide">
+      <aside class="guide-note"><strong>Cómo usar esta guía</strong><p>Drive no permite que una web externa salte automáticamente a un segundo concreto. Utiliza el minuto indicado en el reproductor para localizar cada bloque.</p><ol><li>Elige la idea que necesitas.</li><li>Mueve la barra al minuto señalado.</li><li>Apunta una acción antes de continuar.</li></ol></aside>
+      <div class="chapters" id="chapters"></div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="ideas-title">
+    <div class="eyebrow">Qué te llevas</div>
+    <h2 id="ideas-title">Tres ideas para aplicar al terminar</h2>
+    <div class="takeaways">
+      <article class="takeaway"><span class="num">01</span><b>Diseña una narrativa</b><p>Ordena el lanzamiento como una secuencia que despierta curiosidad, explica y mantiene el interés.</p></article>
+      <article class="takeaway"><span class="num">02</span><b>Da una función a cada pieza</b><p>Cada publicación debe preparar, revelar, demostrar o recordar; si no cumple una función, sobra.</p></article>
+      <article class="takeaway"><span class="num">03</span><b>Sostén la conversación</b><p>El lanzamiento no termina el día de publicación: reutiliza señales, respuestas y resultados para darle continuidad.</p></article>
+    </div>
+    <div class="transcript-note">Esta guía se ha elaborado a partir de la transcripción con marcas de tiempo del vídeo original. Los capítulos condensan las ideas de Román para facilitar el visionado; no sustituyen la sesión completa.</div>
+  </section>
+
+  <footer class="footer"><strong>Artes Búho</strong> · Pavoneo 360° · Formación para el desarrollo artístico</footer>
+</main>
+<script>
+const chapters = [
+  {time:'00:00',title:'Presentar el lanzamiento en sociedad',desc:'Publicar una canción no basta: hay que acompañarla y hacerla circular por redes, WhatsApp o Telegram, email y el entorno cercano.'},
+  {time:'01:53',title:'Elegir el perfil correcto en redes',desc:'Diferencias entre perfiles de empresa, creador y usuario, y cuándo conviene utilizar cada uno.'},
+  {time:'03:19',title:'Conectar antes de vender',desc:'Un artista debe entretener, emocionar y construir vínculo; la escucha, la venta y la asistencia llegan como consecuencia.'},
+  {time:'04:11',title:'Emoción, comunidades y grandes temáticas',desc:'Cómo cruzar la música con hobbies, familia, amor, trabajo, salud o deporte para hacer cada historia más relevante.'},
+  {time:'07:28',title:'Cruzar nichos para favorecer el alcance',desc:'Ejemplos de música y salud mental o punk y mundo laboral: la identificación ayuda también al algoritmo a encontrar público.'},
+  {time:'10:09',title:'De una escucha a una comunidad real',desc:'Una escucha aislada no crea un fan. La comunidad nace del recorrido entre canciones, contenidos, perfiles y plataformas.'},
+  {time:'14:18',title:'Mitos que frenan a los artistas',desc:'Publicar a diario, estar en todas las redes, producirlo todo perfecto o perseguir la viralidad no son requisitos para crecer.'},
+  {time:'20:31',title:'La proporción 5 / 15 / 80',desc:'5 % de venta directa, 15 % de directo, estudio y proceso, y 80 % de contenido cotidiano, emocional y de estilo de vida.'},
+  {time:'25:26',title:'Profundidad, identidad y autenticidad',desc:'La comunicación merece el mismo cuidado que la composición: quién eres, qué cuenta la canción y por qué debería importar.'},
+  {time:'30:34',title:'Ideas para Instagram, TikTok y Reels',desc:'Ensayos, conciertos, conversaciones, respuestas, promociones limitadas, retos con giro propio e historias visuales.'},
+  {time:'33:08',title:'Contar lo que hay detrás de la canción',desc:'De qué habla el tema, por qué fue escrito, a quién se dedica y qué emoción contiene: la historia da peso al lanzamiento.'},
+  {time:'34:37',title:'YouTube, Spotify y vida larga',desc:'Videoclips, Shorts, documentales, colaboraciones y versiones en directo para extender la vida útil de una canción.'},
+  {time:'36:04',title:'Formatos, nichos, ganchos y CTA',desc:'Un mapa de vídeos lifestyle, venta, emoción o humor y nicho, con un ejemplo de gancho y llamada a la acción.'},
+  {time:'38:23',title:'Construir una biblioteca de inspiración',desc:'Guardar referencias, entender por qué funcionan y activar ideas propias sin copiar; además, documentos y plantillas de apoyo.'},
+  {time:'41:42',title:'Usar inteligencia artificial con criterio',desc:'Cómo dar contexto del proyecto, el single y el tono a la IA, y por qué sus propuestas siempre necesitan revisión humana.'},
+  {time:'43:08',title:'El calendario de tres meses',desc:'Un mes previo de preparación, un primer mes de lanzamiento activo y un segundo mes para refrescar y reactivar la campaña.'},
+  {time:'47:59',title:'Medir sin convertir los números en autoestima',desc:'Valorar cada escucha, revisar lo aprendido y mejorar sin confundir las métricas con el valor del artista o de su música.'}
+];
+document.querySelector('#chapters').innerHTML=chapters.map((chapter,index)=>`<article class="chapter"><span class="time">${chapter.time}</span><div><h3>${String(index+1).padStart(2,'0')} · ${chapter.title}</h3><p>${chapter.desc}</p></div></article>`).join('');
+</script>
+</body>
+</html>

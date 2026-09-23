@@ -173,9 +173,9 @@
     const artistCard=([name,id],i,compact=false)=>`<a class="artist${compact?' artist-compact':''}" href="https://www.youtube.com/watch?v=${id}" target="_blank" rel="noopener" aria-label="Ver Live Session de ${name}"><img src="https://i.ytimg.com/vi/${id}/hqdefault.jpg" alt="" loading="lazy"><small>${compact?'+':String(i+1).padStart(2,'0')}</small><strong>${name}</strong></a>`;
     document.querySelector('#artist-grid').innerHTML=featuredArtists.map((artist,i)=>artistCard(artist,i)).join('');
     document.querySelector('#artist-grid-more').innerHTML=moreArtists.map((artist,i)=>artistCard(artist,i,true)).join('');
-    const marioPanelUrl='artistas/panel-editorial/?id=mario-cassado';
+    const marioPanelUrl='artistas/?id=mario-cassado';
     const salesAccess=document.querySelector('.sales-access');
-    if(salesAccess){salesAccess.querySelector('h3').textContent='Accede al panel completo de Mario Cassado.';salesAccess.querySelector('p').textContent='Recorrido, materiales, dossier digital e instrucciones reunidos en un mismo espacio.';const accessButton=salesAccess.querySelector('button');accessButton.textContent='Abrir panel de Mario →';accessButton.dataset.artistPanel='';}
+    if(salesAccess){salesAccess.querySelector('h3').textContent='Accede al espacio de artista de Mario Cassado.';salesAccess.querySelector('p').textContent='Consulta su proceso, materiales y entregables desde el panel activo de Pavoneo 360°.';const accessButton=salesAccess.querySelector('button');accessButton.textContent='Abrir espacio de Mario →';accessButton.dataset.artistPanel='';}
     document.querySelectorAll('[data-artist-panel]').forEach(button=>button.addEventListener('click',()=>window.location.assign(marioPanelUrl)));
     document.querySelectorAll('a[href^="#"]').forEach(link=>link.addEventListener('click',event=>{const target=document.querySelector(link.getAttribute('href'));if(target){event.preventDefault();target.scrollIntoView({behavior:'smooth'});}}));
   </script>
