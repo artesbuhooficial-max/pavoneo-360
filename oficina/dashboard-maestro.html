@@ -76,13 +76,13 @@
     </div>
     <a class="pav-opening-scroll" href="#inicio"><span>DESCUBRE EL PROCESO</span><i aria-hidden="true"></i></a>
   </section>
-  <div class="mobile-head"><a class="brand" href="#inicio"><img src="logo-pavoneo-transparent.png" alt=""><strong>PAVONEO <b>360º</b></strong></a><button data-artist-panel>Abrir panel de Mario</button></div>
+  <div class="mobile-head"><a class="brand" href="#inicio"><img src="logo-pavoneo-transparent.png" alt=""><strong>PAVONEO <b>360º</b></strong></a><button data-artist-panel>Acceso artista</button></div>
   <div class="shell">
     <aside class="sidebar">
       <a class="brand" href="#inicio"><img src="logo-pavoneo-transparent.png" alt="Artes Búho"><strong>PAVONEO <b>360º</b></strong></a>
       <small>CREACIÓN CON ACOMPAÑAMIENTO</small>
       <nav class="nav" aria-label="Navegación principal">
-        <a class="active" href="#inicio"><i>⌂</i> Inicio</a><a href="#entregamos"><i>✦</i> Qué entregamos</a><a href="#packs"><i>▣</i> Packs Pavoneo</a><a href="#comunidad"><i>◎</i> Comunidad</a><a href="#caso-mario"><i>◎</i> Caso Mario</a><a href="#equipo"><i>▶</i> David y Román</a><a href="#artistas"><i>♫</i> Artistas</a><button data-artist-panel><i>→</i> Panel de Mario</button>
+        <a class="active" href="#inicio"><i>⌂</i> Inicio</a><a href="#entregamos"><i>✦</i> Qué entregamos</a><a href="#packs"><i>▣</i> Packs Pavoneo</a><a href="#comunidad"><i>◎</i> Comunidad</a><a href="#caso-mario"><i>◎</i> Caso Mario</a><a href="#equipo"><i>▶</i> David y Román</a><a href="#artistas"><i>♫</i> Artistas</a><button data-artist-panel><i>→</i> Acceso artista</button>
       </nav>
       <div class="sidebar-bottom"><strong>Artes Búho</strong><span>Personas trabajando para personas.</span></div>
     </aside>
@@ -170,10 +170,10 @@
   <dialog class="login" id="artist-login" aria-labelledby="artist-login-title">
     <form class="login-inner" id="artist-login-form">
       <div class="login-head">
-        <div><span class="pack-label">ACCESO PRIVADO</span><h2 id="artist-login-title">Panel editorial de Mario Cassado.</h2></div>
+        <div><span class="pack-label">ACCESO PRIVADO</span><h2 id="artist-login-title">Acceso de artistas.</h2></div>
         <button class="close" type="button" data-artist-login-close aria-label="Cerrar">×</button>
       </div>
-      <p>Introduce las credenciales facilitadas por Artes Búho para abrir el panel editorial completo del artista.</p>
+      <p>Introduce las credenciales facilitadas por Artes Búho para abrir tu espacio personal de Pavoneo 360°.</p>
       <label for="artist-login-user">Usuario</label>
       <input id="artist-login-user" name="username" autocomplete="username" required>
       <label for="artist-login-password">Contraseña</label>
@@ -189,15 +189,19 @@
     const artistCard=([name,id],i,compact=false)=>`<a class="artist${compact?' artist-compact':''}" href="https://www.youtube.com/watch?v=${id}" target="_blank" rel="noopener" aria-label="Ver Live Session de ${name}"><img src="https://i.ytimg.com/vi/${id}/hqdefault.jpg" alt="" loading="lazy"><small>${compact?'+':String(i+1).padStart(2,'0')}</small><strong>${name}</strong></a>`;
     document.querySelector('#artist-grid').innerHTML=featuredArtists.map((artist,i)=>artistCard(artist,i)).join('');
     document.querySelector('#artist-grid-more').innerHTML=moreArtists.map((artist,i)=>artistCard(artist,i,true)).join('');
-    const marioPanelUrl='artistas/mario-cassado/panel/?id=mario-cassado';
-    const marioAccessHash='ad05ab481658cf9cdbb9bbe94a452a9a57ad71882604d58783f5480a87b5a9c0';
-    const marioSessionKey='pavoneo-artist-session-mario-cassado';
-    const marioSessionDuration=8*60*60*1000;
+    const artistAccess={
+      'mario-cassado':{
+        passwordHash:'ad05ab481658cf9cdbb9bbe94a452a9a57ad71882604d58783f5480a87b5a9c0',
+        panelUrl:'artistas/mario-cassado/panel/?id=mario-cassado',
+        sessionKey:'pavoneo-artist-session-mario-cassado'
+      }
+    };
+    const artistSessionDuration=8*60*60*1000;
     const artistLogin=document.querySelector('#artist-login');
     const artistLoginForm=document.querySelector('#artist-login-form');
     const artistLoginStatus=document.querySelector('#artist-login-status');
     const salesAccess=document.querySelector('.sales-access');
-    if(salesAccess){salesAccess.querySelector('h3').textContent='Accede al panel editorial de Mario Cassado.';salesAccess.querySelector('p').textContent='Consulta su recorrido, materiales, dossier digital y formaciones desde su espacio completo de Pavoneo 360°.';const accessButton=salesAccess.querySelector('button');accessButton.textContent='Abrir panel editorial →';accessButton.dataset.artistPanel='';}
+    if(salesAccess){salesAccess.querySelector('h3').textContent='Accede a tu espacio de artista.';salesAccess.querySelector('p').textContent='Consulta tu recorrido, materiales, dossier digital y formaciones desde tu panel personal de Pavoneo 360°.';const accessButton=salesAccess.querySelector('button');accessButton.textContent='Entrar en mi panel →';accessButton.dataset.artistPanel='';}
     function openArtistLogin(){artistLoginStatus.textContent='';artistLogin.showModal();setTimeout(()=>document.querySelector('#artist-login-user').focus(),0)}
     async function accessHash(value){const bytes=new TextEncoder().encode(value);const digest=await crypto.subtle.digest('SHA-256',bytes);return Array.from(new Uint8Array(digest)).map(byte=>byte.toString(16).padStart(2,'0')).join('')}
     document.querySelectorAll('[data-artist-panel]').forEach(button=>button.addEventListener('click',openArtistLogin));
@@ -208,15 +212,17 @@
       artistLoginStatus.textContent='Comprobando acceso…';
       const user=document.querySelector('#artist-login-user').value.trim().toLowerCase();
       const password=document.querySelector('#artist-login-password').value;
-      if(user==='mario-cassado'&&await accessHash(password)===marioAccessHash){
-        try{localStorage.setItem(marioSessionKey,String(Date.now()+marioSessionDuration));}catch(error){}
-        window.location.assign(marioPanelUrl);
+      const access=artistAccess[user];
+      if(access&&await accessHash(password)===access.passwordHash){
+        try{localStorage.setItem(access.sessionKey,String(Date.now()+artistSessionDuration));}catch(error){}
+        window.location.assign(access.panelUrl);
         return;
       }
       artistLoginStatus.textContent='Usuario o contraseña incorrectos.';
       document.querySelector('#artist-login-password').select();
     });
-    if(new URLSearchParams(location.search).get('access')==='mario-cassado')openArtistLogin();
+    const requestedArtist=new URLSearchParams(location.search).get('access');
+    if(requestedArtist&&artistAccess[requestedArtist]){document.querySelector('#artist-login-user').value=requestedArtist;openArtistLogin();}
     document.querySelectorAll('a[href^="#"]').forEach(link=>link.addEventListener('click',event=>{const target=document.querySelector(link.getAttribute('href'));if(target){event.preventDefault();target.scrollIntoView({behavior:'smooth'});}}));
   </script>
 <script>
