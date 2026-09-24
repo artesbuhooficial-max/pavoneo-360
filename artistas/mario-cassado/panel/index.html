@@ -2429,6 +2429,111 @@ Error generating stack: `+e.message+`
         box-sizing: border-box;
       }
 
+      .learning-card.pav-training-summary {
+        display: block !important;
+        min-width: 0;
+        padding: 22px !important;
+        border-top-color: #0d56bb !important;
+        background: #fff !important;
+      }
+
+      .pav-training-summary h3 {
+        margin: 12px 0 8px;
+        font-size: 20px;
+      }
+
+      .pav-training-summary > p {
+        margin: 0 0 16px;
+        color: #668ab0;
+        font-size: 12px;
+        line-height: 1.55;
+      }
+
+      .pav-training-list {
+        display: grid;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+
+      .pav-training-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 10px;
+        align-items: center;
+        padding: 10px 11px;
+        border: 1px solid #dce9f5;
+        border-radius: 10px;
+        background: #f8fbff;
+      }
+
+      .pav-training-row strong {
+        min-width: 0;
+        color: #0b376d;
+        font-size: 12px;
+      }
+
+      .pav-training-row span,
+      .pav-training-status {
+        padding: 4px 7px;
+        border-radius: 999px;
+        color: #176599;
+        background: #e7f4ff;
+        font-size: 8px;
+        font-weight: 800;
+        letter-spacing: .06em;
+        white-space: nowrap;
+      }
+
+      .pav-training-row.is-locked span,
+      .pav-training-status.is-locked {
+        color: #735e00;
+        background: #f7f7cb;
+      }
+
+      .pav-training-open {
+        width: 100%;
+        min-height: 42px;
+        border: 0;
+        border-radius: 9px;
+        color: #fff;
+        background: var(--pav-blue);
+        font: inherit;
+        font-size: 11px;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .pav-course-card {
+        position: relative;
+        min-width: 0;
+      }
+
+      .pav-course-card > p {
+        min-height: 0;
+      }
+
+      .pav-course-card.is-locked {
+        background: linear-gradient(145deg, #fffef0, #fff) !important;
+      }
+
+      .pav-course-card .pav-training-status {
+        display: inline-flex;
+        margin: 4px 0 14px;
+      }
+
+      .pav-course-card .pav-course-disabled {
+        display: inline-flex;
+        align-items: center;
+        min-height: 38px;
+        padding: 10px 13px;
+        border: 1px solid #d9d9a8;
+        border-radius: 8px;
+        color: #776b31;
+        background: #f7f7d8;
+        font-size: 10px;
+        font-weight: 800;
+      }
+
       .pav-intake-dialog {
         width: min(680px, calc(100% - 30px));
         max-height: min(88vh, 850px);
@@ -3583,6 +3688,43 @@ Error generating stack: `+e.message+`
           });
         }
 
+        function openTrainingView() {
+          const navigation = [...document.querySelectorAll("button")].find((button) =>
+            button.textContent.trim().includes("Formación y recursos"),
+          );
+          if (navigation) navigation.click();
+        }
+
+        function enhanceTrainingView() {
+          const heading = [...document.querySelectorAll(".view-heading h1")].find(
+            (title) => title.textContent.trim() === "Formación y recursos",
+          );
+          if (!heading) return;
+
+          const cards = document.querySelector(".course-feature + .phasegrid");
+          if (!cards || cards.dataset.pavTrainingCatalog === "true") return;
+          cards.dataset.pavTrainingCatalog = "true";
+          cards.innerHTML = `
+            <section class="card pav-course-card">
+              <span class="pav-training-status">DISPONIBLE</span>
+              <h3>Método Sold Out</h3>
+              <p>Guía y materiales para preparar tu concierto, trabajar la promoción y movilizar a tu público.</p>
+              <a class="text-link" href="../../../extras/metodo-sold-out.html" target="_blank" rel="noopener">Abrir formación →</a>
+            </section>
+            <section class="card pav-course-card is-locked">
+              <span class="pav-training-status is-locked">🔒 BLOQUEADO</span>
+              <h3>Hackea las redes</h3>
+              <p>La formación de Román para convertir cada lanzamiento en una historia, comunicar con intención y sostener la atención.</p>
+              <span class="pav-course-disabled" aria-label="Formación todavía bloqueada">Próximamente disponible</span>
+            </section>
+            <section class="card pav-course-card">
+              <span class="pav-training-status">RECURSOS</span>
+              <h3>Más recursos</h3>
+              <p>Consulta los materiales complementarios de Artes Búho disponibles para tu proyecto.</p>
+              <a class="text-link" href="../../ecosistema.html?id=mario-cassado" target="_blank" rel="noopener">Abrir recursos →</a>
+            </section>`;
+        }
+
         function enhanceDashboard() {
           const focus = document.querySelector(".focus-card");
           if (focus && !focus.dataset.pavEnhanced) {
@@ -3691,16 +3833,17 @@ Error generating stack: `+e.message+`
           if (learning && !learning.dataset.pavEnhanced) {
             learning.dataset.pavEnhanced = "true";
             learning.classList.remove("is-access-locked");
+            learning.classList.add("pav-training-summary");
             learning.innerHTML = `
-              <span class="pav-lock-badge">✓ FORMACIÓN INCLUIDA · ACCESO PROTEGIDO</span>
-              <h3>Hackea las redes</h3>
-              <p>La formación de Román para convertir cada lanzamiento en una historia por capítulos, comunicar con intención y sostener la atención.</p>
-              <div class="pav-key-state">Vídeo completo · guía de 17 capítulos · puntos clave por minuto</div>
-              <div style="display:grid;gap:8px">
-                <a class="pav-key-link" href="../../../extras/hackea-las-redes.html?id=mario-cassado">Abrir Hackea las redes →</a>
-                <a class="pav-key-link" href="../../../extras/metodo-sold-out.html">Ver Método Sold Out →</a>
-                <a class="pav-key-link" href="../../ecosistema.html?id=mario-cassado">Explorar todos los recursos →</a>
-              </div>`;
+              <span class="pav-lock-badge">FORMACIÓN Y RECURSOS</span>
+              <h3>Tu biblioteca Pavoneo</h3>
+              <p>Consulta desde un mismo lugar las formaciones incluidas y las que se irán desbloqueando.</p>
+              <div class="pav-training-list">
+                <div class="pav-training-row"><strong>Método Sold Out</strong><span>DISPONIBLE</span></div>
+                <div class="pav-training-row is-locked"><strong>Hackea las redes</strong><span>🔒 BLOQUEADO</span></div>
+              </div>
+              <button class="pav-training-open" type="button">Ver formación y recursos →</button>`;
+            learning.querySelector(".pav-training-open")?.addEventListener("click", openTrainingView);
           }
         }
 
@@ -3789,6 +3932,7 @@ Error generating stack: `+e.message+`
         }
 
         function renderHumanLayer() {
+          enhanceTrainingView();
           const welcome = document.querySelector(".welcome");
           const studio = document.querySelector(".studio-grid");
           if (!welcome || !studio) return false;
