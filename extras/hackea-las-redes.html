@@ -20,6 +20,17 @@
 <meta name="twitter:description" content="Vídeo con Román y guía práctica de 17 capítulos para preparar tus lanzamientos.">
 <meta name="twitter:image" content="https://artesbuhooficial-max.github.io/pavoneo-360/images/social/og-hackea-las-redes.png?v=20260923">
 <title>Hackea las redes · Pavoneo 360°</title>
+<script>
+(()=>{
+  let accessUntil=0;
+  try{accessUntil=Number(localStorage.getItem('pavoneo-artist-session-mario-cassado')||0);}catch(error){}
+  if(accessUntil<=Date.now()){
+    const gate=new URL('../oficina/dashboard-maestro.html',location.href);
+    gate.searchParams.set('access','mario-cassado');
+    location.replace(gate.href);
+  }
+})();
+</script>
 <style>
 :root{
   --paper:#f8fbff;--white:#fff;--ink:#143663;--ink2:#2d5680;--muted:#6786a9;
@@ -47,34 +58,15 @@ h1{position:relative;z-index:1;max-width:700px;margin:16px 0 8px;font-size:clamp
 .chapters{display:grid;gap:10px}.chapter{display:grid;grid-template-columns:78px 1fr;gap:14px;padding:17px;border:1px solid var(--line);border-radius:14px;background:#fff}.time{align-self:start;padding:6px 8px;border-radius:8px;background:var(--blue);color:#fff;text-align:center;font-variant-numeric:tabular-nums;font-size:12px;font-weight:900}.chapter h3{margin:0 0 4px;font-size:15px}.chapter p{margin:0;color:var(--muted);font-size:12px;line-height:1.5}
 .takeaways{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}.takeaway{padding:20px;border:1px solid var(--line);border-radius:14px;background:var(--soft)}.takeaway b{display:block;margin-bottom:7px;font-size:14px}.takeaway p{margin:0;color:var(--muted);font-size:12px}.num{display:grid;place-items:center;width:30px;height:30px;margin-bottom:13px;border-radius:50%;background:var(--blue);color:#fff;font-size:11px;font-weight:900}
 .transcript-note{margin-top:18px;padding:18px 20px;border-radius:14px;background:#fff;border:1px dashed var(--line);color:var(--muted);font-size:11.5px}.footer{margin-top:38px;padding-top:17px;border-top:1px solid var(--line);color:var(--muted);text-align:center;font-size:11px}
-.access-gate{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:22px;background:linear-gradient(145deg,#061d44,#0d56bb 70%,#3e83ff)}
-.access-gate[hidden]{display:none}
-.access-card{width:min(100%,430px);padding:34px;border:1px solid rgba(255,255,255,.22);border-radius:22px;background:#fff;box-shadow:0 24px 70px rgba(0,20,60,.38);text-align:center}
-.access-icon{display:grid;place-items:center;width:58px;height:58px;margin:0 auto 15px;border-radius:50%;background:var(--soft);font-size:25px}
-.access-card h2{margin-bottom:8px}.access-card p{margin-bottom:18px;font-size:13px}.access-field{width:100%;height:48px;padding:0 15px;border:1.5px solid var(--line);border-radius:10px;color:var(--ink);font:700 14px "Segoe UI",Arial,sans-serif;outline:none}.access-field:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(13,86,187,.12)}
-.access-submit{width:100%;height:46px;margin-top:10px;border:0;border-radius:10px;background:var(--blue);color:#fff;font:900 13px "Segoe UI",Arial,sans-serif;cursor:pointer}.access-submit:hover{background:var(--deep)}
-.access-error{min-height:20px;margin:9px 0 0!important;color:#b22e3a!important;font-size:11.5px!important}.access-help{display:inline-block;margin-top:8px;color:var(--muted);font-size:11px;text-decoration:none}.access-help:hover{color:var(--blue)}
 @media(max-width:760px){.hero{padding:32px 24px}.guide{grid-template-columns:1fr}.guide-note{position:static}.takeaways{grid-template-columns:1fr}.chapter{grid-template-columns:66px 1fr}}
 @media(max-width:480px){.wrap{width:min(calc(100% - 22px),980px)}.brandbar{align-items:flex-start}.back{max-width:115px;text-align:right}.card{padding:20px}.chapter{grid-template-columns:1fr}.time{justify-self:start}}
 </style>
 </head>
 <body>
-<section class="access-gate" id="accessGate" aria-labelledby="accessTitle">
-  <form class="access-card" id="accessForm">
-    <div class="access-icon">🔒</div>
-    <div class="eyebrow">Contenido privado · Mario Cassado</div>
-    <h2 id="accessTitle">Hackea las redes</h2>
-    <p>Introduce la clave facilitada por Artes Búho para acceder a la formación.</p>
-    <input class="access-field" id="accessPassword" type="password" autocomplete="current-password" placeholder="Clave de acceso" aria-label="Clave de acceso" required>
-    <button class="access-submit" type="submit">Entrar a la formación</button>
-    <p class="access-error" id="accessError" role="alert" aria-live="polite"></p>
-    <a class="access-help" href="mailto:artesbuho.oficial@gmail.com">Solicitar acceso a Artes Búho</a>
-  </form>
-</section>
-<main class="wrap" id="protectedContent" hidden>
+<main class="wrap">
   <header class="brandbar">
     <div class="brand"><div class="mark">🦉</div><div><div class="word"><span>Pavoneo</span><span>360°</span></div><div class="note">Artes Búho Management</div></div></div>
-    <a class="back" href="index.html">← Volver a Extras</a>
+    <a class="back" href="../artistas/ecosistema.html?id=mario-cassado">← Volver a mi ecosistema</a>
   </header>
 
   <section class="hero">
@@ -117,43 +109,6 @@ h1{position:relative;z-index:1;max-width:700px;margin:16px 0 8px;font-size:clamp
   <footer class="footer"><strong>Artes Búho</strong> · Pavoneo 360° · Formación para el desarrollo artístico</footer>
 </main>
 <script>
-const ACCESS_HASH='ad05ab481658cf9cdbb9bbe94a452a9a57ad71882604d58783f5480a87b5a9c0';
-const ACCESS_STORAGE_KEY='pavoneo-hackea-redes-access';
-const ACCESS_DURATION=8*60*60*1000;
-
-async function hashAccessValue(value){
-  const bytes=new TextEncoder().encode(value);
-  const digest=await crypto.subtle.digest('SHA-256',bytes);
-  return Array.from(new Uint8Array(digest)).map(byte=>byte.toString(16).padStart(2,'0')).join('');
-}
-
-function showProtectedContent(){
-  document.getElementById('accessGate').hidden=true;
-  document.getElementById('protectedContent').hidden=false;
-}
-
-function hasActiveAccess(){
-  try{return Number(localStorage.getItem(ACCESS_STORAGE_KEY)||0)>Date.now();}catch(error){return false;}
-}
-
-if(hasActiveAccess()) showProtectedContent();
-
-document.getElementById('accessForm').addEventListener('submit',async event=>{
-  event.preventDefault();
-  const field=document.getElementById('accessPassword');
-  const error=document.getElementById('accessError');
-  const submittedHash=await hashAccessValue(field.value);
-  if(submittedHash===ACCESS_HASH){
-    try{localStorage.setItem(ACCESS_STORAGE_KEY,String(Date.now()+ACCESS_DURATION));}catch(storageError){}
-    error.textContent='';
-    field.value='';
-    showProtectedContent();
-    return;
-  }
-  error.textContent='La clave no es correcta. Revísala o solicita acceso.';
-  field.select();
-});
-
 const chapters = [
   {time:'00:00',title:'Presentar el lanzamiento en sociedad',desc:'Publicar una canción no basta: hay que acompañarla y hacerla circular por redes, WhatsApp o Telegram, email y el entorno cercano.'},
   {time:'01:53',title:'Elegir el perfil correcto en redes',desc:'Diferencias entre perfiles de empresa, creador y usuario, y cuándo conviene utilizar cada uno.'},

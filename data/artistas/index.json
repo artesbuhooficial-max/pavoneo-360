@@ -39,7 +39,8 @@
       "documentos": [
         { "tipo": "info-maestra", "nombre": "Info Maestra", "url": "artistas/mario-cassado/" },
         { "tipo": "panel", "nombre": "Panel de proceso (oficina)", "url": "oficina/?id=mario-cassado" },
-        { "tipo": "panel", "nombre": "Vista del artista", "url": "artistas/?id=mario-cassado" },
+        { "tipo": "panel", "nombre": "Panel editorial del artista", "url": "artistas/mario-cassado/panel/?id=mario-cassado" },
+        { "tipo": "ecosistema", "nombre": "Recursos, herramientas y formación", "url": "artistas/ecosistema.html?id=mario-cassado" },
         { "tipo": "extra", "nombre": "Método Sold Out (exclusivo Pack Full Pavoneo 360°)", "url": "extras/metodo-sold-out.html" },
         { "tipo": "extra", "nombre": "Hackea las redes (formación Pavoneo 360°)", "url": "extras/hackea-las-redes.html" }
       ]

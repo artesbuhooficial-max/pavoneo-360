@@ -173,7 +173,7 @@ a:hover{text-decoration:underline}
 
 <script>
 /* ═══ CONFIG ═══ */
-const KEY = 'pavoneo360';
+const KEY_HASH = '1f07d045031355c36705937795f175c4bec49880488f40d90a39a20e84c93e07';
 const STEPS = [
   { id:'contacto',       label:'Entrada',        n:'01' },
   { id:'formulario',     label:'Info Maestra',   n:'02' },
@@ -187,9 +187,14 @@ const STEPS = [
 const DOC_ICON = { 'info-maestra':'📘', 'dashboard':'📊', 'panel':'🧩', 'protocolo':'📋', 'otro':'📄' };
 
 /* ═══ GATE ═══ */
-function checkKey(){
+async function hashAccessKey(value){
+  const bytes = new TextEncoder().encode(value);
+  const digest = await crypto.subtle.digest('SHA-256', bytes);
+  return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
+}
+async function checkKey(){
   const v = document.getElementById('gateKey').value.trim();
-  if(v === KEY){
+  if(await hashAccessKey(v) === KEY_HASH){
     sessionStorage.setItem('pavoneo-gate','ok');
     openApp();
   } else {

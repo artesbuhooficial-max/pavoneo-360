@@ -2,6 +2,13 @@
   "artistId": "mario-cassado",
   "displayName": "Mario Cassado",
   "pack": "premium",
+  "ecosystemAccess": {
+    "hoja-ruta": "available",
+    "control-financiero": "available",
+    "arreglos": "available",
+    "metodo-sold-out": "included",
+    "hackea-las-redes": "included"
+  },
   "currentStep": "postproduccion",
   "unlockedUntil": "postproduccion",
   "updatedAt": "2026-09-17",

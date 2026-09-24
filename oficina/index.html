@@ -807,6 +807,11 @@
       box-shadow:0 14px 34px rgba(20,54,99,.25);
     }
     .toast.show{opacity:1;transform:translateY(0)}
+    .ecosystem-callout{margin:18px 0 20px;padding:22px 24px;border-radius:14px;background:linear-gradient(125deg,var(--ink),#123f7b);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:22px;box-shadow:0 18px 38px rgba(7,28,72,.18)}
+    .ecosystem-callout .eco-eye{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:900}
+    .ecosystem-callout h3{margin:6px 0 5px;font-family:'Playfair Display',Georgia,serif;font-size:23px}
+    .ecosystem-callout p{margin:0;color:#d9e7fb;font-size:12px;line-height:1.55;max-width:720px}
+    .ecosystem-callout a{flex:0 0 auto;background:var(--gold);color:var(--ink);text-decoration:none;border-radius:9px;padding:12px 17px;font-size:11px;font-weight:900}
     .hidden{display:none!important}
     @media(max-width:1160px){
       .hero-grid,.step-body,.summary-band{grid-template-columns:1fr}
@@ -833,6 +838,7 @@
       .reference-line{grid-template-columns:1fr}
       .calendar-tools{grid-template-columns:1fr}
       .calendar-grid{grid-template-columns:1fr}
+      .ecosystem-callout{display:grid}
       .cal-head,.cal-week{display:none}
       .cal-cell{min-height:0}
     }
@@ -929,6 +935,11 @@
           </div>
         </div>
 
+        <aside class="ecosystem-callout">
+          <div><div class="eco-eye">Recursos · Herramientas · Infraestructura</div><h3>Ecosistema para el desarrollo artístico</h3><p>Apps de producción, gestión y creación, además de formaciones Pavoneo. Consulta qué incluye el plan y qué herramientas puede activar el artista por separado.</p></div>
+          <a id="ecosystemLink" href="../artistas/ecosistema.html">Explorar ecosistema →</a>
+        </aside>
+
         <div class="kpis internal-only" aria-label="Resumen de progreso">
           <div class="kpi"><div class="kpi-value" id="kpiDone">0</div><div class="kpi-label">Bloques cerrados</div></div>
           <div class="kpi"><div class="kpi-value" id="kpiActive">0</div><div class="kpi-label">En curso</div></div>
@@ -1008,7 +1019,7 @@
     const TIMING_KEY = "pavoneo360-recording-timing-v1";
     const CALENDAR_KEY = "pavoneo360-editorial-calendar-v1";
     const PRECONSULTORIA_FORM_URL = "https://docs.google.com/forms/d/1DU4ijRq93Lo5yqssmkpXDme8t-3pqkIWsdrnd6Nrip0/edit?usp=drive_web&ouid=103619232809009489616";
-    const OFFICE_PASSWORD = "pavoneo360";
+    const OFFICE_PASSWORD_HASH = "1f07d045031355c36705937795f175c4bec49880488f40d90a39a20e84c93e07";
     const OFFICE_UNLOCK_KEY = "pavoneo360-office-unlocked";
     // Publicador Google Apps Script (reemplaza al webhook n8n). Pegar aquí la URL /exec
     // que devuelve "Implementar → Aplicación web". Mientras esté vacío, el botón
@@ -2011,14 +2022,20 @@
       return sessionStorage.getItem(OFFICE_UNLOCK_KEY) === "true";
     }
 
-    function requestOfficeMode(){
+    async function hashAccessKey(value){
+      const bytes = new TextEncoder().encode(value);
+      const digest = await crypto.subtle.digest("SHA-256", bytes);
+      return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, "0")).join("");
+    }
+
+    async function requestOfficeMode(){
       if(ARTIST_ROUTE) return;
       if(officeUnlocked()){
         setMode("office");
         return;
       }
       const pass = window.prompt("Clave de oficina");
-      if(pass === OFFICE_PASSWORD){
+      if(pass !== null && await hashAccessKey(pass) === OFFICE_PASSWORD_HASH){
         sessionStorage.setItem(OFFICE_UNLOCK_KEY, "true");
         setMode("office");
         showToast("Modo oficina desbloqueado");
@@ -2125,7 +2142,8 @@
         palette: data.palette,
         materialChecklist: data.materialChecklist,
         songReviews: data.songReviews,
-        publicLinks: data.publicLinks || {}
+        publicLinks: data.publicLinks || {},
+        ecosystemAccess: data.ecosystemAccess
       };
       if(data.displayName) document.getElementById("artistName").value = data.displayName;
       if(data.pack) document.getElementById("artistPack").value = normalizePack(data.pack);
@@ -2204,6 +2222,7 @@
       if(publishedExtra.palette) json.palette = publishedExtra.palette;
       if(publishedExtra.materialChecklist) json.materialChecklist = publishedExtra.materialChecklist;
       if(publishedExtra.songReviews) json.songReviews = publishedExtra.songReviews;
+      if(publishedExtra.ecosystemAccess) json.ecosystemAccess = publishedExtra.ecosystemAccess;
       return json;
     }
 
@@ -2264,6 +2283,7 @@
     loadMeta();
     loadTiming();
     loadEditorialCalendar();
+    document.getElementById("ecosystemLink").href = `../artistas/ecosistema.html?id=${encodeURIComponent(queryArtistId())}`;
     loadPublishedArtistData().finally(() => setMode(currentMode));
   </script>
 </body>

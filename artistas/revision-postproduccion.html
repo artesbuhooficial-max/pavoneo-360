@@ -213,7 +213,7 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 <script>
 // Publicador Google Apps Script (misma URL /exec que usa la oficina). Vacío = solo local.
 const WEBHOOK = 'https://script.google.com/macros/s/AKfycbz2gTZgugtG4hi2Ju7KRryZrOO24-CNDEzylyMjVGuR9cDJ3N1r1zRbrm7QM4UjM2o-gg/exec';
-const OFFICE_PASSWORD = 'pavoneo360';
+const OFFICE_PASSWORD_HASH = '1f07d045031355c36705937795f175c4bec49880488f40d90a39a20e84c93e07';
 const OFFICE_UNLOCK_KEY = 'pavoneo360-office-unlocked';
 const AUDIO_CATEGORIES = [
   { id:'instrumental', label:'Instrumental', color:'#0D56BB', bg:'#EDF5FF' },
@@ -451,11 +451,17 @@ async function init(){
   document.getElementById('app').style.display = 'block';
 }
 
-function toggleMode(){
+async function hashAccessKey(value){
+  const bytes = new TextEncoder().encode(value);
+  const digest = await crypto.subtle.digest('SHA-256', bytes);
+  return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
+}
+
+async function toggleMode(){
   if(officeMode){ officeMode = false; selectedVersion = {}; render(); return; }
   if(officeUnlocked()){ officeMode = true; selectedVersion = {}; render(); return; }
   const pass = window.prompt('Clave de oficina');
-  if(pass === OFFICE_PASSWORD){
+  if(pass !== null && await hashAccessKey(pass) === OFFICE_PASSWORD_HASH){
     sessionStorage.setItem(OFFICE_UNLOCK_KEY, 'true');
     officeMode = true; selectedVersion = {}; render();
   }else if(pass !== null){

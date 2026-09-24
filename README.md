@@ -39,15 +39,12 @@ https://artesbuhooficial-max.github.io/pavoneo-360/artistas/?id=artista-001
 https://artesbuhooficial-max.github.io/pavoneo-360/mezcla/
 ```
 
-## Clave de acceso a la oficina
+## Acceso a la oficina
 
-```
-pavoneo360
-```
-
-Se introduce al pulsar el boton "Oficina" en el panel. Es una barrera visual de front-end
-para evitar accesos accidentales. No sustituye permisos reales de servidor — la clave
-esta visible en el codigo fuente.
+La clave se facilita al equipo por un canal privado y se introduce al pulsar el botón
+"Oficina" en el panel. El sitio solo conserva su huella SHA-256. Es una barrera visual de
+front-end para evitar accesos accidentales. No sustituye permisos reales de servidor: la huella
+SHA-256 es visible en el código fuente, pero no la clave original.
 
 ## Capas del sistema
 
@@ -153,7 +150,7 @@ El webhook de n8n es la pieza que sustituye al script `Sincronizar_Pavoneo.ps1`
 ## Flujo alternativo manual (sin webhook)
 
 1. Oficina abre `oficina/`.
-2. Introduce la clave `pavoneo360`.
+2. Introduce la clave de oficina facilitada por Artes Búho.
 3. Cambia el estado del expediente.
 4. Pulsa "Exportar JSON" y descarga el archivo.
 5. Deposita el JSON en `inbox/`.

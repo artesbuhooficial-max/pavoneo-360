@@ -167,16 +167,56 @@
     </main>
   </div>
 
+  <dialog class="login" id="artist-login" aria-labelledby="artist-login-title">
+    <form class="login-inner" id="artist-login-form">
+      <div class="login-head">
+        <div><span class="pack-label">ACCESO PRIVADO</span><h2 id="artist-login-title">Panel editorial de Mario Cassado.</h2></div>
+        <button class="close" type="button" data-artist-login-close aria-label="Cerrar">×</button>
+      </div>
+      <p>Introduce las credenciales facilitadas por Artes Búho para abrir el panel editorial completo del artista.</p>
+      <label for="artist-login-user">Usuario</label>
+      <input id="artist-login-user" name="username" autocomplete="username" required>
+      <label for="artist-login-password">Contraseña</label>
+      <input id="artist-login-password" name="password" type="password" autocomplete="current-password" required>
+      <p class="form-status" id="artist-login-status" role="alert" aria-live="polite"></p>
+      <button class="btn btn-blue" type="submit">Entrar en el panel →</button>
+    </form>
+  </dialog>
+
   <script>
     const featuredArtists=[['La Mare','3R8G8itIifs'],['Los Justicieros','7r2fDjg28MU'],['Rozalén y La Otra','OivwTJIHXdo'],['Upperlips','dCbvhHjsxWc'],['Pink Flamingos','aeHNSE1lKK0'],['Alicia Vatra','BJhl8G2nVlc'],['Samuel Socas','NMayaFOTQ7E'],['Altillo','O7hlNhw9pQU']];
     const moreArtists=[['EPI & BRASS','sPHbx7z-heA'],['Dilenna','pexv5ag_ANs'],['Carmen Massanet','tNgHLc4nxcY'],['MUD','A7xRIlOqBY0'],['Gato Gris','a4lEz1SFDLE'],['Álamo 51','p4D51sm62hM'],['Rotx','rnj1YP954Y0'],['Lalibela Beat Band','YfsoF5XOd0A'],['Habuela','6wh1YrertxM'],['Guillermo Solís','TiZoXCUFP6g'],['Tierra Roja','9l8m28qzo-g'],['Por Callejuelas','XPFpY0VKDSo'],['David Hueso','TMAhk2NA_p0'],['Proyecto Ballena','f4YGVnJz-J8']];
     const artistCard=([name,id],i,compact=false)=>`<a class="artist${compact?' artist-compact':''}" href="https://www.youtube.com/watch?v=${id}" target="_blank" rel="noopener" aria-label="Ver Live Session de ${name}"><img src="https://i.ytimg.com/vi/${id}/hqdefault.jpg" alt="" loading="lazy"><small>${compact?'+':String(i+1).padStart(2,'0')}</small><strong>${name}</strong></a>`;
     document.querySelector('#artist-grid').innerHTML=featuredArtists.map((artist,i)=>artistCard(artist,i)).join('');
     document.querySelector('#artist-grid-more').innerHTML=moreArtists.map((artist,i)=>artistCard(artist,i,true)).join('');
-    const marioPanelUrl='artistas/?id=mario-cassado';
+    const marioPanelUrl='artistas/mario-cassado/panel/?id=mario-cassado';
+    const marioAccessHash='ad05ab481658cf9cdbb9bbe94a452a9a57ad71882604d58783f5480a87b5a9c0';
+    const marioSessionKey='pavoneo-artist-session-mario-cassado';
+    const marioSessionDuration=8*60*60*1000;
+    const artistLogin=document.querySelector('#artist-login');
+    const artistLoginForm=document.querySelector('#artist-login-form');
+    const artistLoginStatus=document.querySelector('#artist-login-status');
     const salesAccess=document.querySelector('.sales-access');
-    if(salesAccess){salesAccess.querySelector('h3').textContent='Accede al espacio de artista de Mario Cassado.';salesAccess.querySelector('p').textContent='Consulta su proceso, materiales y entregables desde el panel activo de Pavoneo 360°.';const accessButton=salesAccess.querySelector('button');accessButton.textContent='Abrir espacio de Mario →';accessButton.dataset.artistPanel='';}
-    document.querySelectorAll('[data-artist-panel]').forEach(button=>button.addEventListener('click',()=>window.location.assign(marioPanelUrl)));
+    if(salesAccess){salesAccess.querySelector('h3').textContent='Accede al panel editorial de Mario Cassado.';salesAccess.querySelector('p').textContent='Consulta su recorrido, materiales, dossier digital y formaciones desde su espacio completo de Pavoneo 360°.';const accessButton=salesAccess.querySelector('button');accessButton.textContent='Abrir panel editorial →';accessButton.dataset.artistPanel='';}
+    function openArtistLogin(){artistLoginStatus.textContent='';artistLogin.showModal();setTimeout(()=>document.querySelector('#artist-login-user').focus(),0)}
+    async function accessHash(value){const bytes=new TextEncoder().encode(value);const digest=await crypto.subtle.digest('SHA-256',bytes);return Array.from(new Uint8Array(digest)).map(byte=>byte.toString(16).padStart(2,'0')).join('')}
+    document.querySelectorAll('[data-artist-panel]').forEach(button=>button.addEventListener('click',openArtistLogin));
+    document.querySelector('[data-artist-login-close]').addEventListener('click',()=>artistLogin.close());
+    artistLogin.addEventListener('click',event=>{if(event.target===artistLogin)artistLogin.close()});
+    artistLoginForm.addEventListener('submit',async event=>{
+      event.preventDefault();
+      artistLoginStatus.textContent='Comprobando acceso…';
+      const user=document.querySelector('#artist-login-user').value.trim().toLowerCase();
+      const password=document.querySelector('#artist-login-password').value;
+      if(user==='mario-cassado'&&await accessHash(password)===marioAccessHash){
+        try{localStorage.setItem(marioSessionKey,String(Date.now()+marioSessionDuration));}catch(error){}
+        window.location.assign(marioPanelUrl);
+        return;
+      }
+      artistLoginStatus.textContent='Usuario o contraseña incorrectos.';
+      document.querySelector('#artist-login-password').select();
+    });
+    if(new URLSearchParams(location.search).get('access')==='mario-cassado')openArtistLogin();
     document.querySelectorAll('a[href^="#"]').forEach(link=>link.addEventListener('click',event=>{const target=document.querySelector(link.getAttribute('href'));if(target){event.preventDefault();target.scrollIntoView({behavior:'smooth'});}}));
   </script>
 <script>
