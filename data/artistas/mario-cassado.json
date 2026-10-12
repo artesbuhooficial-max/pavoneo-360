@@ -493,32 +493,32 @@
       "title": "Corte de Entrevista 1",
       "date": "2026-10-12",
       "channel": "Instagram",
-      "status": "En revisión",
-      "notes": "Pre-Teaser sobre la Canción de Mario Cassado"
-    },
-    {
-      "id": "10d62451-3c54-4662-af97-a658d173f25a",
-      "title": "Comparacion de Miriam",
-      "date": "2026-10-14",
-      "channel": "Instagram",
-      "status": "En revisión",
-      "notes": ""
+      "status": "Listo",
+      "notes": "ENTREVISTA CORTE 1.mp4\nhttps://drive.google.com/file/d/10KIFNAKbKm3ymhwmZzEpE6jfT40D1hBU/view"
     },
     {
       "id": "f1c2f96e-317e-4743-9e90-daaecaf34f86",
       "title": "Pre-teaser",
-      "date": "2026-10-16",
+      "date": "2026-10-14",
       "channel": "Instagram",
       "status": "En revisión",
-      "notes": ""
+      "notes": "Preteaser de Yo no soy él. Archivo PRE-TEASER 16_10.mp4; se conserva la fecha del calendario.\nhttps://drive.google.com/file/d/1ukFqVZr2kGU0Ft9vWnxSiDK43LXU2YQy/view"
     },
     {
       "id": "1b22723c-8e55-4b4a-8497-3c5422f4b90c",
       "title": "Teaser / Lanzamiento",
+      "date": "2026-10-16",
+      "channel": "Instagram",
+      "status": "En revisión",
+      "notes": "Teaser lanzamiento de Yo no soy él. Orden confirmado por el equipo.\nhttps://drive.google.com/file/d/1n8UE--Hfd1HNnNnC-9gwtaekiCcgnFFU/view"
+    },
+    {
+      "id": "10d62451-3c54-4662-af97-a658d173f25a",
+      "title": "Comparacion de Miriam",
       "date": "2026-10-19",
       "channel": "Instagram",
       "status": "En revisión",
-      "notes": ""
+      "notes": "Comparación de Miriam — SPOT PRESCRIPTOR DEF.V.6.mp4\nhttps://drive.google.com/file/d/1eU-naz7A5rygWgsjHG3DzSDnGbua-ngf/view"
     },
     {
       "id": "0276ac39-d506-49b2-98bd-5a72972565f8",
@@ -526,91 +526,34 @@
       "date": "2026-10-21",
       "channel": "Instagram",
       "status": "Borrador",
-      "notes": ""
-    },
-    {
-      "id": "257cdace-337e-4999-8a00-c2050cc832ec",
-      "title": "Carrusel de Fotos",
-      "date": "2026-10-23",
-      "channel": "Instagram",
-      "status": "Borrador",
-      "notes": ""
+      "notes": "Pendiente de recibir el archivo definitivo del corte 2. No usar la entrevista completa como sustituto."
     },
     {
       "id": "227f9b8e-e911-47fb-8963-2eac0d653795",
       "title": "Pre-Teaser Video 2",
-      "date": "2026-10-26",
+      "date": "2026-10-23",
       "channel": "Instagram",
       "status": "Borrador",
-      "notes": ""
+      "notes": "Preteaser de Dímelo. Archivo PRE-TEASER 26_10.mp4; se conserva la fecha del calendario.\nhttps://drive.google.com/file/d/1PwsDlTFNjQTK_kOn3EZZdq6uyrlZAKqJ/view"
     },
     {
       "id": "c140113e-b1c9-4f29-9866-ddb36000e89b",
       "title": "Teaser/Lanzamiento",
-      "date": "2026-10-28",
+      "date": "2026-10-26",
       "channel": "Instagram",
       "status": "Borrador",
-      "notes": ""
+      "notes": "Teaser lanzamiento de Dímelo. Orden confirmado por el equipo.\nhttps://drive.google.com/file/d/1fZxecOERXiq7DiwRk40RbiGCmsjUOFn5/view"
+    },
+    {
+      "id": "257cdace-337e-4999-8a00-c2050cc832ec",
+      "title": "Carrusel de Fotos",
+      "date": "2026-10-28",
+      "channel": "Instagram",
+      "status": "En revisión",
+      "notes": "Carrusel propuesto de 5 fotos, en este orden: 023, 004, 016, 042, 039. Selección pendiente de revisión.\nFoto 023: https://drive.google.com/file/d/1MfOA2dMPTTHBUMNApmRAjWtMWno0WMSE/view\nFoto 004: https://drive.google.com/file/d/10W9NWF7t0rXVamEoKLLqEaB490GChUXX/view\nFoto 016: https://drive.google.com/file/d/1NJOJTk2cuFADlwpGBRvI7nKb607-l2an/view\nFoto 042: https://drive.google.com/file/d/18mP45yujuLm37pemmdBcsz0_fIwd0Fn-/view\nFoto 039: https://drive.google.com/file/d/17tKs8EV7PgbThR87iw0VwVrHHV7TE1Tn/view"
     }
   ],
-  "editorialCalendar": [
-    {
-      "week": "1",
-      "day": "Lunes",
-      "type": "Video promocional",
-      "platform": "Instagram",
-      "status": "Pendiente",
-      "note": "Presentacion del proyecto y apertura de narrativa."
-    },
-    {
-      "week": "1",
-      "day": "Miercoles",
-      "type": "Clip live session",
-      "platform": "Instagram",
-      "status": "Pendiente",
-      "note": "Primer fragmento musical de alto impacto."
-    },
-    {
-      "week": "1",
-      "day": "Viernes",
-      "type": "Making off",
-      "platform": "Instagram",
-      "status": "Pendiente",
-      "note": "Proceso creativo y contexto de estudio."
-    },
-    {
-      "week": "2",
-      "day": "Martes",
-      "type": "Entrevista clip",
-      "platform": "Instagram",
-      "status": "Pendiente",
-      "note": "Frase fuerte del artista sobre el proyecto."
-    },
-    {
-      "week": "2",
-      "day": "Jueves",
-      "type": "Live session completa",
-      "platform": "YouTube",
-      "status": "Pendiente",
-      "note": "Publicacion larga para archivo y enlace principal."
-    },
-    {
-      "week": "3",
-      "day": "Lunes",
-      "type": "Carrusel fotos",
-      "platform": "Instagram",
-      "status": "Pendiente",
-      "note": "Material de sesion fotografica y estetica."
-    },
-    {
-      "week": "3",
-      "day": "Miercoles",
-      "type": "Reel / contenido RRSS",
-      "platform": "Instagram",
-      "status": "Pendiente",
-      "note": "Pieza nativa para cierre de campana organica."
-    }
-  ],
+  "editorialCalendar": [],
   "steps": {
     "contacto": {
       "status": "done",
