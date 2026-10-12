@@ -4030,6 +4030,29 @@ Error generating stack: `+e.message+`
       })();
     </script>
     <style>
+      .pav-load-recovery {
+        max-width: 540px;
+        margin: 12vh auto 32px;
+        padding: 28px;
+        border: 1px solid #cbdff2;
+        border-radius: 18px;
+        background: #fff;
+        box-shadow: 0 15px 40px rgba(7, 28, 72, .1);
+        color: #071c48;
+        font: 16px/1.5 "DM Sans", sans-serif;
+      }
+      .pav-load-recovery strong { display: block; font-size: 22px; }
+      .pav-load-recovery p { margin: 10px 0 20px; }
+      .pav-load-recovery a {
+        display: inline-block;
+        padding: 11px 18px;
+        border-radius: 999px;
+        background: #0757d8;
+        color: #fff;
+        font-weight: 700;
+        text-decoration: none;
+      }
+      .pav-load-recovery[hidden] { display: none !important; }
       .pav-return-home {
         position: fixed;
         right: 28px;
@@ -4055,10 +4078,16 @@ Error generating stack: `+e.message+`
         .pav-return-home { right: 16px; bottom: 16px; min-height: 44px; }
       }
     </style>
+    <div id="pav-load-recovery" class="pav-load-recovery" role="alert" hidden>
+      <strong>No se ha podido abrir tu panel</strong>
+      <p>Prueba a cargarlo de nuevo. Tu calendario y tus notas guardadas en este navegador se conservarán.</p>
+      <a href="./?id=mario-cassado">Reintentar carga</a>
+    </div>
     <script>
       (() => {
         const root = document.getElementById("root");
         if (!root) return;
+        const recovery = document.getElementById("pav-load-recovery");
 
         const back = document.createElement("button");
         back.type = "button";
@@ -4078,9 +4107,21 @@ Error generating stack: `+e.message+`
         });
         document.body.appendChild(back);
 
-        const sync = () => { back.hidden = !root.querySelector(".view-heading"); };
+        let hasRendered = false;
+        const sync = () => {
+          back.hidden = !root.querySelector(".view-heading");
+          const rendered = !!root.querySelector(".artist-main, .pv-public");
+          if (rendered) hasRendered = true;
+          if (hasRendered) recovery.hidden = rendered;
+        };
         new MutationObserver(sync).observe(root, { childList: true, subtree: true });
         sync();
+        setTimeout(() => {
+          if (!root.querySelector(".artist-main, .pv-public")) recovery.hidden = false;
+        }, 5000);
+        window.addEventListener("error", () => {
+          if (!root.querySelector(".artist-main, .pv-public")) recovery.hidden = false;
+        });
       })();
     </script>
   </body>
