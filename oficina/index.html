@@ -2143,7 +2143,8 @@
         materialChecklist: data.materialChecklist,
         songReviews: data.songReviews,
         publicLinks: data.publicLinks || {},
-        ecosystemAccess: data.ecosystemAccess
+        ecosystemAccess: data.ecosystemAccess,
+        sharedPublications: data.sharedPublications
       };
       if(data.displayName) document.getElementById("artistName").value = data.displayName;
       if(data.pack) document.getElementById("artistPack").value = normalizePack(data.pack);
@@ -2223,6 +2224,7 @@
       if(publishedExtra.materialChecklist) json.materialChecklist = publishedExtra.materialChecklist;
       if(publishedExtra.songReviews) json.songReviews = publishedExtra.songReviews;
       if(publishedExtra.ecosystemAccess) json.ecosystemAccess = publishedExtra.ecosystemAccess;
+      if(Array.isArray(publishedExtra.sharedPublications)) json.sharedPublications = publishedExtra.sharedPublications;
       return json;
     }
 
