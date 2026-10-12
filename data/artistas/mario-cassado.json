@@ -487,6 +487,72 @@
       "detail": "Confirmar archivos, naming, copia de seguridad y siguientes pasos de postproduccion."
     }
   ],
+  "sharedPublications": [
+    {
+      "id": "94d402f6-85b9-4571-b9eb-14d9d141b230",
+      "title": "Corte de Entrevista 1",
+      "date": "2026-10-12",
+      "channel": "Instagram",
+      "status": "En revisión",
+      "notes": "Pre-Teaser sobre la Canción de Mario Cassado"
+    },
+    {
+      "id": "10d62451-3c54-4662-af97-a658d173f25a",
+      "title": "Comparacion de Miriam",
+      "date": "2026-10-14",
+      "channel": "Instagram",
+      "status": "En revisión",
+      "notes": ""
+    },
+    {
+      "id": "f1c2f96e-317e-4743-9e90-daaecaf34f86",
+      "title": "Pre-teaser",
+      "date": "2026-10-16",
+      "channel": "Instagram",
+      "status": "En revisión",
+      "notes": ""
+    },
+    {
+      "id": "1b22723c-8e55-4b4a-8497-3c5422f4b90c",
+      "title": "Teaser / Lanzamiento",
+      "date": "2026-10-19",
+      "channel": "Instagram",
+      "status": "En revisión",
+      "notes": ""
+    },
+    {
+      "id": "0276ac39-d506-49b2-98bd-5a72972565f8",
+      "title": "Corte de la entrevista 2",
+      "date": "2026-10-21",
+      "channel": "Instagram",
+      "status": "Borrador",
+      "notes": ""
+    },
+    {
+      "id": "257cdace-337e-4999-8a00-c2050cc832ec",
+      "title": "Carrusel de Fotos",
+      "date": "2026-10-23",
+      "channel": "Instagram",
+      "status": "Borrador",
+      "notes": ""
+    },
+    {
+      "id": "227f9b8e-e911-47fb-8963-2eac0d653795",
+      "title": "Pre-Teaser Video 2",
+      "date": "2026-10-26",
+      "channel": "Instagram",
+      "status": "Borrador",
+      "notes": ""
+    },
+    {
+      "id": "c140113e-b1c9-4f29-9866-ddb36000e89b",
+      "title": "Teaser/Lanzamiento",
+      "date": "2026-10-28",
+      "channel": "Instagram",
+      "status": "Borrador",
+      "notes": ""
+    }
+  ],
   "editorialCalendar": [
     {
       "week": "1",
