@@ -59,7 +59,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#F7FBFF;color:var(--ink)
 #loading{text-align:center;padding:60px 0;color:var(--ink-light)}
 #empty{display:none;text-align:center;padding:50px 20px;background:#fff;border:1px dashed var(--border);border-radius:14px;color:var(--ink-light)}
 @media(max-width:600px){.masthead{padding:24px 20px;gap:14px}.masthead-logo{width:48px;height:52px}.mh-title{font-size:21px}.btn{margin-left:0;width:100%;justify-content:center}}
-</style>
+.publication-controls{display:flex;gap:16px;flex-wrap:wrap;padding:12px 20px;border-bottom:1px solid var(--border)}.publication-controls label{display:grid;gap:4px;font-size:12px;font-weight:700}.publication-controls input,.publication-controls select{font:inherit;padding:8px;border:1px solid var(--border);border-radius:7px;background:white}.p-note{white-space:pre-wrap}</style>
 </head>
 <body>
 <div class="wrap">
@@ -87,7 +87,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#F7FBFF;color:var(--ink)
 
     <div id="weeks"></div>
     <div id="empty">Tu calendario editorial aún no está definido. La oficina lo publicará aquí cuando entres en la fase de lanzamiento. 🚀</div>
-    <div class="hint">Toca el botón de estado de cada publicación para pasarla de Pendiente → Programado → Publicado.</div>
+    <div class="hint">La hora y la carga en Metricool son controles manuales y se guardan en este navegador. «Subido» no significa programado ni publicado. Usa «Guardar cambios» para enviarlos a la oficina.</div>
 
     <div class="footer"><strong>Artes Búho</strong> · artesbuho.oficial@gmail.com · Pavoneo 360°</div>
   </div>
@@ -100,6 +100,12 @@ const CICLO = ['Pendiente','Programado','Publicado'];
 const artistId = new URLSearchParams(location.search).get('id') || '';
 let expediente = null;
 
+function esc(value){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function publicaciones(){return expediente?.sharedPublications?.length ? expediente.sharedPublications : expediente?.editorialCalendar || [];}
+function editarPublicacion(i,field,value){const p=publicaciones()[i];if(!p)return;p[field]=value;guardarLocal();}
+function guardarLocal(){try{localStorage.setItem('pavoneo-calendar-fields-v1:'+artistId,JSON.stringify(publicaciones().map((p,i)=>({id:p.id,index:i,time:p.time||'',metricoolStatus:p.metricoolStatus||'sin-confirmar'}))));document.getElementById('savedNote').textContent='Guardado en este navegador';}catch{document.getElementById('savedNote').textContent='No se pudo guardar en este navegador';}}
+function cargarLocal(){try{const saved=JSON.parse(localStorage.getItem('pavoneo-calendar-fields-v1:'+artistId)||'[]');if(!Array.isArray(saved))return;publicaciones().forEach((p,i)=>{const row=saved.find(t=>p.id?t.id===p.id:t.index===i);if(row){p.time=/^([01]\d|2[0-3]):[0-5]\d$/.test(row.time)?row.time:'';p.metricoolStatus=['sin-confirmar','pendiente','subido'].includes(row.metricoolStatus)?row.metricoolStatus:'sin-confirmar';}});}catch{}}
+
 async function init(){
   if(artistId){
     try{
@@ -109,13 +115,14 @@ async function init(){
   }
   if(expediente) document.getElementById('mhSub').textContent =
     `Hola, ${expediente.displayName} 👋 — este es el plan de publicaciones de tu lanzamiento. Toca el estado de cada pieza para actualizarlo.`;
+  cargarLocal();
   render();
   document.getElementById('loading').style.display = 'none';
   document.getElementById('app').style.display = 'block';
 }
 
 function render(){
-  const cal = expediente?.editorialCalendar || [];
+  const cal = publicaciones();
   const cont = document.getElementById('weeks');
   if(!cal.length){
     cont.innerHTML = '';
@@ -124,28 +131,29 @@ function render(){
     return;
   }
   const semanas = {};
-  cal.forEach((p,i) => { (semanas[p.week] = semanas[p.week] || []).push({...p, _i:i}); });
+  cal.forEach((p,i) => { const grupo = p.date ? p.date.slice(0,7) : p.week; (semanas[grupo] = semanas[grupo] || []).push({...p, _i:i}); });
   cont.innerHTML = Object.keys(semanas).sort((a,b)=>a-b).map(w => `
     <div class="week">
-      <div class="w-head"><div class="w-name">Semana ${w}</div>
+      <div class="w-head"><div class="w-name">${/^\d{4}-\d{2}$/.test(w) ? new Date(w+'-01T12:00:00').toLocaleDateString('es-ES',{month:'long',year:'numeric'}) : 'Semana '+esc(w)}</div>
         <span class="w-count">${semanas[w].length} publicación(es)</span></div>
       ${semanas[w].map(p => {
-        const st = CICLO.includes(p.status) ? p.status : 'Pendiente';
+        const st = ['Pendiente','Programado','Publicado','Borrador','En revisión','Listo'].includes(p.status) ? p.status : 'Pendiente';
         return `<div class="post" data-st="${st}">
-          <div class="p-day">${p.day || ''}</div>
-          <div class="p-main"><div class="p-type">${p.type || 'Publicación'}</div>
-            <div class="p-note">${p.note || ''}</div></div>
-          <span class="p-platform">${p.platform || ''}</span>
+          <div class="p-day">${esc(p.date || p.day || '')}</div>
+          <div class="p-main"><div class="p-type">${esc(p.title || p.type || 'Publicación')}</div>
+            <div class="p-note">${esc(p.notes || p.note || '')}</div></div>
+          <span class="p-platform">${esc(p.channel || p.platform || '')}</span>
           <button class="p-status ${st}" onclick="ciclar(${p._i})">${st==='Publicado'?'✓ ':''}${st}</button>
-        </div>`;
+        </div><div class="publication-controls"><label>Hora de publicación (Madrid)<input type="time" aria-label="Hora de publicación" value="${esc(p.time || '')}" onchange="editarPublicacion(${p._i}, 'time', this.value)"></label><label>Archivo subido a Metricool<select aria-label="Archivo subido a Metricool" onchange="editarPublicacion(${p._i}, 'metricoolStatus', this.value)">${[['sin-confirmar','Sin confirmar'],['pendiente','Pendiente de subir'],['subido','Sí, subido']].map(([value,label])=>`<option value="${value}" ${(p.metricoolStatus || 'sin-confirmar')===value?'selected':''}>${label}</option>`).join('')}</select></label></div>`;
       }).join('')}
     </div>`).join('');
 }
 
 function ciclar(i){
-  const p = expediente.editorialCalendar[i];
+  const p = publicaciones()[i];
   const actual = CICLO.indexOf(CICLO.includes(p.status) ? p.status : 'Pendiente');
   p.status = CICLO[(actual + 1) % CICLO.length];
+  guardarLocal();
   render();
 }
 

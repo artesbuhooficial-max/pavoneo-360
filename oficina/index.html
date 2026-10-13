@@ -1340,7 +1340,9 @@
             type:item.type || "Video promocional",
             platform:item.platform || "Instagram",
             status:item.status || "Pendiente",
-            note:item.note || ""
+            note:item.note || "",
+          time:item.time || "",
+          metricoolStatus:item.metricoolStatus || "sin-confirmar"
           }));
         }
       }catch(error){}
@@ -1723,6 +1725,7 @@
                 <strong>${escapeHtml(item.type)}</strong>
                 ${editable ? `<input value="${escapeHtml(item.note || "")}" placeholder="Nota / caption" oninput="updateEditorialItem(${index}, 'note', this.value)">` : `<span>${escapeHtml(item.note || "Sin nota")}</span>`}
                 ${editable ? `<select onchange="updateEditorialItem(${index}, 'status', this.value)">${selectedOptions(statusOptions, item.status)}</select>` : ""}
+                ${editable ? `<label>Hora (Madrid)<input type="time" aria-label="Hora de publicación" value="${escapeHtml(item.time || '')}" onchange="updateEditorialItem(${index}, 'time', this.value)"></label><label>Archivo subido a Metricool<select aria-label="Archivo subido a Metricool" onchange="updateEditorialItem(${index}, 'metricoolStatus', this.value)">${selectedOptions(['Sin confirmar','Pendiente de subir','Sí, subido'], ({'subido':'Sí, subido','pendiente':'Pendiente de subir'})[item.metricoolStatus] || 'Sin confirmar')}</select></label>` : `<span>Hora: ${escapeHtml(item.time || 'Pendiente')} · Metricool: ${item.metricoolStatus === 'subido' ? 'Subido' : item.metricoolStatus === 'pendiente' ? 'Pendiente' : 'Sin confirmar'}</span>`}
                 <div class="cal-meta"><span>${escapeHtml(item.platform)}</span><span>${escapeHtml(item.status)}</span>${editable ? `<button class="cal-delete" type="button" onclick="deleteEditorialItem(${index})">x</button>` : ""}</div>
               </div>`;
             }).join("") || `<div class="calendar-empty">Sin publicacion</div>`}
@@ -1763,7 +1766,7 @@
 
     function updateEditorialItem(index, field, value){
       if(!editorialCalendar[index]) return;
-      editorialCalendar[index][field] = value;
+      editorialCalendar[index][field] = field === 'metricoolStatus' ? ({'Sí, subido':'subido','Pendiente de subir':'pendiente'})[value] || 'sin-confirmar' : value;
       persistEditorialCalendar();
       if(field === "status") render();
     }
@@ -2167,7 +2170,9 @@
           type:item.type || "Video promocional",
           platform:item.platform || "Instagram",
           status:item.status || "Pendiente",
-          note:item.note || ""
+          note:item.note || "",
+          time:item.time || "",
+          metricoolStatus:item.metricoolStatus || "sin-confirmar"
         }));
         persistEditorialCalendar();
       }
