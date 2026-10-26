@@ -13,3 +13,7 @@ exports/*.json
 .DS_Store
 Thumbs.db
 .vscode/
+
+# Private editing trial: explicitly excluded from publication
+comunidad/bime/prueba-edicion/
+comunidad/bime/piloto.css
