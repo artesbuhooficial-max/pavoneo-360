@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#071d3b">
+  <title>BIME · 9 tarjetas de rodaje | Artes Búho · Pavoneo 360°</title>
+  <meta name="description" content="Nueve conversaciones para BIME. Preguntas, guion de apoyo, temporizador y fichas de montaje de Artes Búho / Pavoneo 360°.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="BIME · 9 tarjetas de rodaje">
+  <meta property="og:description" content="Una idea. Un ejemplo. Una acción. Herramienta de rodaje de Artes Búho / Pavoneo 360°.">
+  <meta property="og:url" content="https://artesbuhooficial-max.github.io/pavoneo-360/comunidad/bime/tarjetas/">
+  <meta property="og:image" content="https://artesbuhooficial-max.github.io/pavoneo-360/images/og-pavoneo-360-social-v2.png">
+  <meta property="og:image:alt" content="Pavoneo 360° · Tu música, con dirección">
+  <link rel="icon" href="../../../logo-pavoneo-transparent.png" type="image/png">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="bank.js"></script>
+  <script defer src="cards.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <header class="masthead">
+    <div class="brand"><img src="../../../logo-pavoneo-transparent.png" alt="Pavoneo 360°" width="76" height="56"><div>ARTES BÚHO<span>PAVONEO 360° / CUADERNO DE RODAJE</span></div></div>
+    <div class="heading"><div><p class="eyebrow">BIME · TEMPORADA 2026</p><h1>Una conversación.<br><em>Una pieza útil.</em></h1></div><span class="edition">09<br><small>VÍDEOS</small></span></div>
+    <p class="intro">Una idea, un ejemplo y una acción. Tú marcas el ritmo.</p>
+    <div class="progress-row"><span id="progress"></span><span id="saveState" role="status">Guardado local</span></div>
+    <progress id="progressBar" max="9" value="0" aria-label="Avance de la colección"></progress>
+  </header>
+  <main>
+    <details class="panel controls" id="organize"><summary>Elegir tarjeta y filtrar <span id="collectionLabel">Serie principal · 9 vídeos</span></summary>
+      <div class="grid"><label>Colección<select id="collection"><option value="series">Serie principal · 9 vídeos</option><option value="bank">Banco extra · 15 preguntas</option></select></label><label>Área<select id="area"><option value="">Todas las áreas</option></select></label></div>
+      <label class="check"><input type="checkbox" id="priorityOnly"> Solo mis prioritarias</label>
+      <label>Ir a tarjeta<select id="jump"></select></label>
+      <p class="small">La serie conserva el orden de los nueve vídeos. Las prioritarias las eliges tú.</p>
+    </details>
+    <p id="empty" class="panel" hidden>No hay tarjetas con estos filtros. Cambia el área o desactiva «Solo mis prioritarias».</p>
+    <article class="card" id="card" aria-labelledby="question">
+      <div class="card-top"><span class="eyebrow" id="code"></span><span class="pill" id="category"></span></div>
+      <h2 id="question" tabindex="-1"></h2>
+      <p id="purpose" class="purpose"></p>
+      <div class="focus"><span class="label">EL HILO DE ESTA TOMA</span><p id="focus"></p></div>
+      <details class="script"><summary>Guion de apoyo y repregunta</summary><ol id="beats"></ol><div class="rescue"><strong>Para concretar</strong><p id="rescue"></p></div><details id="extraDetails"><summary>Ampliar objetivos y consejos</summary><ul id="extra"></ul></details><p id="guard" class="small"></p></details>
+      <section class="timer-section" aria-label="Temporizador de respuesta">
+        <div class="timer-top"><div><span class="label">TIEMPO DE RESPUESTA</span><output id="clock" aria-label="Tiempo restante">00:45</output></div><label>Objetivo<select id="duration"><option value="30">30 s</option><option value="45" selected>45 s</option><option value="60">60 s</option><option value="90">90 s</option><option value="120">120 s</option></select></label></div>
+        <div class="timer-actions"><button id="timerButton" class="primary">Iniciar</button><button id="resetTimer">Reiniciar</button></div><p id="timerHint" class="small" aria-live="polite">Idea → ejemplo → acción. Sin prisa al empezar.</p>
+      </section>
+      <div class="grid state-row"><label>Estado<select id="status"><option>Pendiente</option><option>Grabada</option><option>Seleccionada</option><option>Montada</option><option>Publicada</option></select></label><label class="check"><input id="priority" type="checkbox"> Prioritaria para hoy</label></div>
+      <details id="editing"><summary>Notas y ficha de montaje <span id="noteIndicator"></span></summary>
+        <p class="small">Di el código antes de la toma y deja dos segundos de silencio a cada lado. La respuesta debe entenderse sin escuchar la pregunta.</p>
+        <p><strong>Rótulo sugerido · borrador</strong><br><span id="title"></span></p><p><strong>Recurso sugerido</strong><br><span id="resource"></span></p><p><strong>Pregunta de cierre · borrador</strong><br><span id="cta"></span></p>
+        <div class="grid"><label>Archivo y toma buena<input id="take" maxlength="20000" placeholder="C0042.MP4 · toma 2"></label><label>Entrada / salida<input id="range" maxlength="20000" placeholder="00:12–00:51 del archivo"></label></div>
+        <label>Frase REAL del entrevistado<textarea id="quote" maxlength="20000" placeholder="Transcribe solo lo que se haya dicho en la grabación."></textarea></label>
+        <label>Recursos grabados y notas<textarea id="notes" maxlength="20000" placeholder="Archivos de apoyo, cortes, aclaraciones…"></textarea></label>
+        <label>Texto de publicación · borrador editable<textarea id="caption" maxlength="20000" rows="5"></textarea></label>
+        <label>Enlace publicado<input id="url" type="url" maxlength="20000" placeholder="https://…"></label>
+        <p class="small">Revisa el contenido real, los permisos y los subtítulos antes de publicar. Cambiar el estado aquí solo organiza tu trabajo.</p>
+      </details>
+    </article>
+    <details class="panel backup"><summary>Copias y fichas de montaje</summary><p>Para cambiar de móvil u ordenador, exporta una copia JSON e impórtala en el otro navegador.</p><div class="backup-buttons"><button id="exportJSON" class="primary">Descargar copia JSON</button><button id="exportText">Exportar fichas de montaje</button><button id="importJSON">Importar copia JSON</button></div><input id="file" type="file" accept=".json,application/json" hidden><p class="small">Las exportaciones incluyen ambas colecciones y todas tus notas, aunque tengas filtros activos. Importar sustituye los datos de las tarjetas incluidas; primero verás un resumen y podrás cancelar.</p></details>
+    <p id="notice" role="status" aria-live="polite"></p>
+    <footer><strong>Artes Búho · Pavoneo 360°</strong><p>Notas guardadas solo en este navegador. No se sincronizan entre dispositivos; borrar los datos del navegador puede eliminarlas. Descarga copias con frecuencia.</p><p>Esta herramienta no graba, monta ni publica vídeos. El enlace es público; las notas no se suben al repositorio. Necesitas conexión para abrir la aplicación.</p></footer>
+  </main>
+  <nav class="bottom-nav" aria-label="Navegación de tarjetas"><button id="prev" aria-label="Tarjeta anterior">← <span>Anterior</span></button><span id="position" aria-live="polite">1 / 9</span><button id="next" aria-label="Tarjeta siguiente"><span>Siguiente</span> →</button></nav>
+  <dialog id="importDialog" aria-labelledby="importTitle"><h2 id="importTitle">Revisar importación</h2><p id="importSummary"></p><p>Se sustituirán las notas, estados y duraciones de estas tarjetas. Las demás se conservan. Puedes descargar antes una copia de seguridad.</p><div class="backup-buttons"><button id="backupBefore">Descargar copia actual</button><button id="confirmImport" class="primary">Sustituir e importar</button><button id="cancelImport">Cancelar</button></div></dialog>
+  <noscript><p>Activa JavaScript para consultar las tarjetas, usar el temporizador y guardar notas.</p></noscript>
+</body>
+</html>
